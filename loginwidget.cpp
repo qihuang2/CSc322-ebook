@@ -1,6 +1,4 @@
 #include "loginwidget.h"
-#include <QPushButton>
-#include <QLabel>
 #include <QChar>
 
 
