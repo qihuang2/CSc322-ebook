@@ -15,6 +15,7 @@ MainWindow::MainWindow(bool loginStatus)
     createActions();
 
     setCentralWidget(m_centralWidget);
+    setMinimumSize(600, 400);
     setWindowTitle("图书馆");
 }
 
