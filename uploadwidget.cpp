@@ -8,7 +8,7 @@
 
 UploadWidget::UploadWidget(QWidget *parent) : QWidget(parent)
 {
-    m_fileLabel = new QLineEdit("");
+    m_filename = QString();
     createWidgets();
     createLayouts();
     createActions();
@@ -16,7 +16,7 @@ UploadWidget::UploadWidget(QWidget *parent) : QWidget(parent)
 }
 
 void UploadWidget::s_clear() {
-    m_filename = "";
+    m_filename = QString();
     m_fileLabel->setText(m_filename);
 }
 
@@ -29,7 +29,7 @@ void UploadWidget::s_browse() {
 void UploadWidget::createWidgets() {
     m_clearButton = new QPushButton(tr("Clear"));
     m_browseButton = new QPushButton(tr("Browse"));
-    m_fileLabel = new QLineEdit("");
+    m_fileLabel = new QLineEdit(m_filename);
     m_fileLabel->setReadOnly(true);
 }
 

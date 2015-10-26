@@ -20,11 +20,10 @@ private:
     void createActions();
 
     QHBoxLayout*    m_mainLayout;
-
-    QString         m_filename;
-    QPushButton*    m_clearButton;
-    QPushButton*    m_browseButton;
-    QLineEdit*      m_fileLabel;
+    QString         m_filename;     /* Holds path to file, otherwise NULL. */
+    QPushButton*    m_clearButton;  /* Clears current path. */
+    QPushButton*    m_browseButton; /* Allows user to browse for a file. */
+    QLineEdit*      m_fileLabel;    /* Displays file path. */
 
 private slots:
     void s_clear();
