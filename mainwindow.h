@@ -8,21 +8,15 @@ class QLabel;
 class QVBoxLayout;
 class QPushButton;
 
-namespace Ui {
-class MainWindow;
-}
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(bool loginStatus, QWidget *parent = 0);
+    MainWindow(bool loginStatus);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-
     QWidget*        m_centralWidget;
     // Main vertical layout
     QVBoxLayout*    m_mainLayout;

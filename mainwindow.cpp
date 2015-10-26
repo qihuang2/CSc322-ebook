@@ -1,18 +1,12 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "librarywidget.h"
 #include "uploadwidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 
-MainWindow::MainWindow(bool loginStatus, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(bool loginStatus)
 {
-    // [?] No idea what this does
-    ui->setupUi(this);
-
     // will recieve `loggedIn` through contructor parameters when I figure out how
     m_loggedIn = loginStatus;
 
@@ -57,7 +51,4 @@ void MainWindow::createActions() {
             this, SLOT(close()));
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() {}
