@@ -5,10 +5,10 @@
 #include <QLabel>
 #include <QPushButton>
 
-MainWindow::MainWindow(bool loginStatus)
+MainWindow::MainWindow(QString loginUsername)
 {
     // will recieve `loggedIn` through contructor parameters when I figure out how
-    m_loggedIn = loginStatus;
+    m_username = loginUsername;
 
     createWidgets();
     createLayouts();
@@ -29,8 +29,14 @@ void MainWindow::createWidgets() {
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
 
+    // if username is NULL, show visiting user
+    // else show username
     m_loginLabel = new QLabel();
-    m_loginLabel->setText(m_loggedIn ? "Logged in as USR" : "Visiting User");
+    if(m_username.isNull()) {
+        m_loginLabel->setText("Visiting User");
+    }else {
+        m_loginLabel->setText(QString("Logged in as: %s").arg(m_username));
+    }
 
     m_exitButton = new QPushButton("Exit");
     m_exitButton->setMaximumSize(QSize(100, 50));

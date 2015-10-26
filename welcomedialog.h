@@ -11,12 +11,10 @@ class WelcomeDialog : public QDialog
 {
     Q_OBJECT
 public:
-    WelcomeDialog(bool* userLoggedIn);
+    WelcomeDialog(QString* username);
 
 private:
-    // A pointer to a bool which will be set to true if the user has logged in
-    // Will be used to construct MainWindow from within main.cpp
-    bool*           m_loginSuccessful;
+    QString*        m_username;     /* Pointer to variable holding username. */
     QVBoxLayout*    m_mainLayout;
 
     // widgets

@@ -13,11 +13,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(bool loginStatus);
+    MainWindow(QString loginUsername);
     ~MainWindow();
 
 private:
-    bool            m_loggedIn;         /* Flag indicating whether or not user is logged in. */
+    QString         m_username;         /* Flag indicating whether or not user is logged in. */
     QWidget*        m_centralWidget;    /* Main widget. */
     QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
     QLabel*         m_loginLabel;       /* Displays login status. */

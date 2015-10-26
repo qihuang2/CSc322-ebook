@@ -4,9 +4,9 @@
 #include "loginwidget.h"
 #include "registerwidget.h"
 
-WelcomeDialog::WelcomeDialog(bool *userLoggedIn)
+WelcomeDialog::WelcomeDialog(QString *username)
 {
-    m_loginSuccessful = userLoggedIn;
+    m_username = username;
 
     // Create and configure buttons
     createWidgets();
@@ -62,7 +62,6 @@ void WelcomeDialog::createActions() {
 void WelcomeDialog::s_login() {
     // If login was accepted, show main window
     if(m_loginWidget->exec() == QDialog::Accepted) {
-        *m_loginSuccessful = true;
         accept();
     }
 }
@@ -72,7 +71,6 @@ void WelcomeDialog::s_register() {
     if(m_registerWidget->exec() == QDialog::Accepted) {
         // [!] Assuming that registering automatically logs user in
         // Qi Feng needs to decide how to do that
-        *m_loginSuccessful = true;
         accept();
     }
 }
@@ -80,7 +78,6 @@ void WelcomeDialog::s_register() {
 void WelcomeDialog::s_visit() {
     // No login or registration required, show main window
     // return accepted and that user is NOT logged in
-    *m_loginSuccessful = false;
     accept();
 }
 

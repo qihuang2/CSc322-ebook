@@ -5,12 +5,12 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    bool loginSuccessful = false;
-    WelcomeDialog initialDialog(&loginSuccessful);
+    QString loginUsername = QString();              // will hold username after executing dialogs
+    WelcomeDialog initialDialog(&loginUsername);
 
     if(initialDialog.exec() == QDialog::Accepted) {
         // if dialog was accepted, show main window
-        MainWindow w(loginSuccessful);
+        MainWindow w(loginUsername);
         w.show();
         return a.exec();
     }else {
