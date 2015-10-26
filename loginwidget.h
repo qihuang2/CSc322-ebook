@@ -27,12 +27,12 @@ private:
 
     void reject();
 
-    QLabel* userLabel;
-    QLabel* passLabel;
-    QLineEdit* userLineEdit;
-    QLineEdit* passLineEdit;
-    QPushButton* loginButton;
-    QPushButton* cancelButton;
+    QLabel*         userLabel;
+    QLabel*         passLabel;
+    QLineEdit*      userLineEdit;
+    QLineEdit*      passLineEdit;
+    QPushButton*    loginButton;
+    QPushButton*    cancelButton;
 };
 
 #endif // LOGINWIDGET_H

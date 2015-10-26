@@ -17,15 +17,11 @@ public:
     ~MainWindow();
 
 private:
-    QWidget*        m_centralWidget;
-    // Main vertical layout
-    QVBoxLayout*    m_mainLayout;
-    // Displays login status
-    QLabel*         m_loginLabel;
-    // Central widget to hold Library and Upload tabs
-    QTabWidget*     m_tabWidget;
-    bool m_loggedIn;
-
+    bool            m_loggedIn;         /* Flag indicating whether or not user is logged in. */
+    QWidget*        m_centralWidget;    /* Main widget. */
+    QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
+    QLabel*         m_loginLabel;       /* Displays login status. */
+    QTabWidget*     m_tabWidget;        /* Central widget to hold Library and Upload tabs. */
     QPushButton*    m_exitButton;
 
     void createWidgets();
