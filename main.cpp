@@ -1,17 +1,20 @@
 #include "mainwindow.h"
+#include "welcomedialog.h"
 #include <QApplication>
-#include <logindb.h>
 
 int main(int argc, char *argv[])
 {
+    QApplication a(argc, argv);
+    bool loginSuccessful = false;
+    WelcomeDialog initialDialog(&loginSuccessful);
 
-    // init variables and application font
-    QString	      program = argv[0];
-    QApplication  app(argc, argv);
-
-    // invoke  MainWindow constructor
-    MainWindow window(program);
-    // display MainWindow
-    window.show();
-    return app.exec();
+    if(initialDialog.exec() == QDialog::Accepted) {
+        // if dialog was accepted, show main window
+        MainWindow w(loginSuccessful);
+        w.show();
+        return a.exec();
+    }else {
+        // User exited with logging in
+        return EXIT_SUCCESS;
+    }
 }

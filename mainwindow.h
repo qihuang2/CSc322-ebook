@@ -2,86 +2,41 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QDialog>
-#include <QTabWidget>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QFileInfo>
-#include <QListWidget>
-#include <QLineEdit>
-#include <QString>
-#include <QTableWidget>
-#include <QDir>
-#include <QSplitter>
-#include "loginwidget.h"
-#include "registerwidget.h"
 
-class QDialogButtonBox;
-class QFileInfo;
-class QTabWidget;
+class QWidget;
+class QLabel;
+class QVBoxLayout;
+class QPushButton;
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
 
 public:
-    //! Constructor.
-    MainWindow(QString);
-    explicit MainWindow(QWidget *parent = 0);
-
-    void createActions();
-    void createMenus();
-    void createWidgets();
-//    void traverseDirs(QString);
-//    void initLists();
-
-    QSplitter	*mainSplit;
-    QSplitter   *rightSplit;
-
-    QAction		*loadAction;
-    QAction		*quitAction;
-
-    QMenu		*fileMenu;
-
-    QString directory;
-
-    QList<QStringList> listBooks;
-
-    QTabWidget *tabWidget;
-
-    QPushButton *loginButton;
-    QPushButton *registerButton;
-
+    MainWindow(bool loginStatus, QWidget *parent = 0);
     ~MainWindow();
-
-public slots:
-//    void s_load();
-    void onLoginPushed();
-    void onRegisterPushed();
 
 private:
     Ui::MainWindow *ui;
-};
 
-class tableWindow : public QWidget {
-    Q_OBJECT
+    QWidget*        m_centralWidget;
+    // Main vertical layout
+    QVBoxLayout*    m_mainLayout;
+    // Displays login status
+    QLabel*         m_loginLabel;
+    // Central widget to hold Library and Upload tabs
+    QTabWidget*     m_tabWidget;
+    bool m_loggedIn;
 
-public:
-    explicit tableWindow(QWidget *parent = 0);
-    QTableWidget *table;
-    QSplitter *mainTable;
-};
+    QPushButton*    m_exitButton;
 
-class uploadWindow : public QWidget {
-    Q_OBJECT
-
-public:
-    explicit uploadWindow(QWidget *parent = 0);
-    QSplitter *mainUpload;
+    void createWidgets();
+    void createLayouts();
+    void createActions();
 };
 
 #endif // MAINWINDOW_H

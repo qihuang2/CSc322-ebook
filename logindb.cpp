@@ -3,7 +3,6 @@
 
 LoginDB::LoginDB()
 {
-
     /*
      * MYSQL CODE
      * this->loginDB = QSqlDatabase::addDatabase("QMYSQL");

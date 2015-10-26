@@ -1,137 +1,61 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"  
-#include <QGridLayout>
+#include "ui_mainwindow.h"
+#include "librarywidget.h"
+#include "uploadwidget.h"
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(bool loginStatus, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    // [?] No idea what this does
     ui->setupUi(this);
-}
 
+    // will recieve `loggedIn` through contructor parameters when I figure out how
+    m_loggedIn = loginStatus;
 
-MainWindow::MainWindow (QString program)
-    : directory(".")
-{
-    createActions();
-    createMenus  ();
     createWidgets();
-    setCentralWidget(mainSplit);
-    setMinimumSize(400, 300);
-    resize(800, 600);
+    createLayouts();
+    createActions();
+
+    setCentralWidget(m_centralWidget);
+    setWindowTitle("图书馆");
 }
 
-void MainWindow::createWidgets()
-{
+void MainWindow::createWidgets() {
+    m_tabWidget = new QTabWidget();
 
-    mainSplit  = new QSplitter(this);
-    tabWidget = new QTabWidget;
+    // create the widgets to be added to the tabs
+    LibraryWidget* lib = new LibraryWidget(m_tabWidget);
+    UploadWidget* up = new UploadWidget(m_tabWidget);
 
-    tabWidget->addTab(new tableWindow(), tr("Table of Contents"));
-    tabWidget->addTab(new uploadWindow(), tr("Upload a book"));
+    m_tabWidget->addTab(lib, "Library");
+    m_tabWidget->addTab(up, "Upload");
 
-    mainSplit->addWidget(tabWidget);
+    m_loginLabel = new QLabel();
+    m_loginLabel->setText(m_loggedIn ? "Logged in as USR" : "Visiting User");
 
-/*
- * I don't know how to position them
- *
- *
-    //Add login button
+    m_exitButton = new QPushButton("Exit");
+    m_exitButton->setMaximumSize(QSize(100, 50));
 
-
-    loginButton = new QPushButton(this);
-    loginButton->setText("Login");
-    connect(loginButton, SIGNAL(clicked()), this, SLOT(onLoginPushed()));
-
-    registerButton = new QPushButton(this);
-    registerButton->setText("Register");
-    connect(registerButton, SIGNAL(clicked()), this, SLOT(onRegisterPushed()));
-
-*/
+    m_centralWidget = new QWidget();
 }
 
-void MainWindow::createMenus()
-{
-    fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(loadAction);
-    fileMenu->addAction(quitAction);
+void MainWindow::createLayouts() {
+    m_mainLayout = new QVBoxLayout();
+    m_mainLayout->addWidget(m_loginLabel);
+    m_mainLayout->addWidget(m_tabWidget);
+    m_mainLayout->addWidget(m_exitButton);
+
+    m_centralWidget->setLayout(m_mainLayout);
 }
 
-void MainWindow::createActions()
-{
-    loadAction = new QAction("&Load Files", this);
-    loadAction->setShortcut(tr("Ctrl+L"));
-    connect(loadAction, SIGNAL(triggered()), this, SLOT(s_load()));
-    quitAction = new QAction("&Quit", this);
-    quitAction->setShortcut(tr("Ctrl+Q"));
-    connect(quitAction, SIGNAL(triggered()), this, SLOT(close()));
+void MainWindow::createActions() {
+    connect(m_exitButton, SIGNAL(clicked()),
+            this, SLOT(close()));
 }
-
-void MainWindow::onLoginPushed(){
-    LoginWidget *l = new LoginWidget(this);
-    l->show();
-}
-
-void MainWindow::onRegisterPushed(){
-    RegisterWidget *l = new RegisterWidget(this);
-    l->show();
-}
-
-//void MainWindow::s_load()
-//{
-//    directory = path;
-//    traverseDirs(directory);
-//    initLists();
-//}
-
-//void MainWindow::initLists()
-//{
-//    // copy data to table widget
-//    QTableWidgetItem *item[COLS];
-//    for(int i=0; i<listBooks.size(); i++)
-//    {
-//        table->insertRow(i);
-
-//        for(int j=0; j<COLS; j++)
-//        {
-//            item[j] = new QTableWidgetItem;
-//            item[j]->setText(listBooks[i][j]);
-//            item[j]->setTextAlignment(Qt::AlignCenter);
-//            table->setItem(i, j, item[j]);
-//        }
-//    }
-//}
-
-//void MainWindow::traverseDirs(QString path)
-//{
-//    QStringList list;
-
-//    // init listDirs with subdirectories of path
-//    QDir dir(path);
-//    dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-//    QFileInfoList listDirs = dir.entryInfoList();
-
-//    // init listFiles with all *.mp3 files in path
-//    QDir files(path);
-//    files.setFilter(QDir::Files);
-//    files.setNameFilters(QStringList("*.txt"));
-//    QFileInfoList listFiles = files.entryInfoList();
-
-//    for(int i=0; i < listFiles.size(); i++)
-//    {
-//        // init list with default values: ""
-//        for(int j=0; j<=COLS; j++)
-//            list.insert(j,"");
-//        listBooks << list;
-//    }
-//    // recursively descend through all subdirectories
-//    for(int i=0; i<listDirs.size(); i++)
-//    {
-//        QFileInfo fileInfo = listDirs.at(i);
-//        traverseDirs( fileInfo.filePath() );
-//    }
-//    return;
-//}
 
 MainWindow::~MainWindow()
 {

@@ -1,7 +1,6 @@
 #ifndef REGISTERWIDGET_H
 #define REGISTERWIDGET_H
 
-
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -14,6 +13,7 @@
 class RegisterWidget : public QDialog
 {
     Q_OBJECT
+
 public:
     explicit RegisterWidget(QWidget *parent = 0);
     ~RegisterWidget();

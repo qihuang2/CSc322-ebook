@@ -29,7 +29,6 @@ RegisterWidget::RegisterWidget(QWidget *parent) : QDialog(parent)
     QHBoxLayout* hbox3 = new QHBoxLayout();
     QHBoxLayout* hbox4 = new QHBoxLayout();
 
-
     hbox1->addWidget(userLabel, 1);
     hbox1->addWidget(userLineEdit, 2);
     hbox2->addWidget(passLabel, 1);
@@ -49,13 +48,11 @@ RegisterWidget::RegisterWidget(QWidget *parent) : QDialog(parent)
     connect(registerButton, SIGNAL(clicked()), this, SLOT(onRegister()));
 }
 
-
 void RegisterWidget::onCancel()
 {
     LOGIN_DB->closeDB();
     this->destroy();
 }
-
 
 void RegisterWidget::reject()
 {
@@ -95,14 +92,5 @@ bool RegisterWidget:: passwordsMatch(QString first, QString second){
 }
 
 RegisterWidget::~RegisterWidget(){
-    delete LOGIN_DB;
-    delete userLabel;
-    delete passLabel;
-    delete confirmLabel;
-    delete confirmLineEdit;
-    delete userLineEdit;
-    delete passLineEdit;
-    delete registerButton;
-    delete cancelButton;
-}
 
+}
