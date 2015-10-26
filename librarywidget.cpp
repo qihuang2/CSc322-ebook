@@ -15,6 +15,8 @@ LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
     m_tableWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
     // Makes column labels stretchable
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // Make cells read only
+    m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     m_mainLayout->addWidget(m_tableWidget);
     setLayout(m_mainLayout);
