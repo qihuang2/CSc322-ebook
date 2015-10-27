@@ -7,17 +7,18 @@ class QWidget;
 class QLabel;
 class QVBoxLayout;
 class QPushButton;
+class BaseUser;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QString loginUsername);
+    MainWindow(QString loginUsername, int userType);
     ~MainWindow();
 
 private:
-    QString         m_username;         /* Flag indicating whether or not user is logged in. */
+    BaseUser*       m_user;             //Keeps track of user info
     QWidget*        m_centralWidget;    /* Main widget. */
     QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
     QLabel*         m_loginLabel;       /* Displays login status. */
