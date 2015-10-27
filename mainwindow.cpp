@@ -49,11 +49,11 @@ void MainWindow::createWidgets() {
 
         //Test info
         RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user
-        if(t != NULL){
-            qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
-            qDebug()<<"Complaints: "<<t->getNumOfComplaints()<<"   Date Created: "<< t->getDateCreated();
-            qDebug()<<"Uploads: "<<t->getNumOfUploads();
-        }
+        
+        qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
+        qDebug()<<"Complaints: "<<t->getNumOfComplaints()<<"   Date Created: "<< t->getDateCreated();
+        qDebug()<<"Uploads: "<<t->getNumOfUploads();
+        
 
     }
 
