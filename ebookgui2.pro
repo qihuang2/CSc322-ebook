@@ -16,19 +16,29 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     librarywidget.cpp \
-    logindb.cpp \
     loginwidget.cpp \
     registerwidget.cpp \
     uploadwidget.cpp \
-    welcomedialog.cpp
+    welcomedialog.cpp \
+    maindb.cpp \
+    logindb.cpp \
+    userinfodb.cpp \
+    baseuser.cpp \
+    visitinguser.cpp \
+    registereduser.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
-    logindb.h \
     loginwidget.h \
     registerwidget.h \
     uploadwidget.h \
-    welcomedialog.h
+    welcomedialog.h \
+    maindb.h \
+    logindb.h \
+    userinfodb.h \
+    baseuser.h \
+    visitinguser.h \
+    registereduser.h
 
 FORMS    +=
 

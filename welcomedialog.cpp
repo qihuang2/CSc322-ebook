@@ -3,10 +3,13 @@
 #include <QPushButton>
 #include "loginwidget.h"
 #include "registerwidget.h"
+#include "logindb.h"
 
-WelcomeDialog::WelcomeDialog(QString *username)
+WelcomeDialog::WelcomeDialog(QString *username, int *userType)
 {
     m_username = username;
+    m_userType = userType;
+    m_loginDB = new LoginDB();
 
     // Create and configure buttons
     createWidgets();
@@ -34,8 +37,6 @@ void WelcomeDialog::createWidgets() {
     m_exit = new QPushButton(tr("Exit"));
     m_exit->setMaximumSize(buttonSize);
 
-    m_loginWidget = new LoginWidget();
-    m_registerWidget = new RegisterWidget();
 }
 
 void WelcomeDialog::createLayouts() {
@@ -61,26 +62,35 @@ void WelcomeDialog::createActions() {
 
 void WelcomeDialog::s_login() {
     // If login was accepted, show main window
-    if(m_loginWidget->exec() == QDialog::Accepted) {
+    LoginWidget* lWidget = new LoginWidget(m_loginDB, m_username, m_userType);
+    if(lWidget->exec() == QDialog::Accepted) {
+        //username and usertype will be set by lWidget
+        //close loginDB
+        m_loginDB->closeDB();
         accept();
     }
 }
 
 void WelcomeDialog::s_register() {
     // If successfully registered, show main window
-    if(m_registerWidget->exec() == QDialog::Accepted) {
-        // [!] Assuming that registering automatically logs user in
-        // Qi Feng needs to decide how to do that
+    RegisterWidget* regWidget = new RegisterWidget(m_loginDB, m_username, m_userType);
+    if(regWidget->exec() == QDialog::Accepted) {
+        // username and usertype will have been set by regWidget
+        //finished with login_DB so close it
+        m_loginDB->closeDB();
         accept();
     }
+
 }
 
 void WelcomeDialog::s_visit() {
     // No login or registration required, show main window
     // return accepted and that user is NOT logged in
+    m_loginDB->closeDB();
     accept();
 }
 
 void WelcomeDialog::s_exit() {
+    m_loginDB->closeDB();
     reject();
 }

@@ -6,20 +6,20 @@
 class QVBoxLayout;
 class LoginWidget;
 class RegisterWidget;
+class LoginDB;
 
 class WelcomeDialog : public QDialog
 {
     Q_OBJECT
 public:
-    WelcomeDialog(QString* username);
+    WelcomeDialog(QString* username, int* userType);
 
 private:
     QString*        m_username;     /* Pointer to variable holding username. */
+    int*            m_userType;
     QVBoxLayout*    m_mainLayout;
 
-    // widgets
-    LoginWidget*    m_loginWidget;
-    RegisterWidget* m_registerWidget;
+    LoginDB*        m_loginDB;
 
     // buttons
     QPushButton*    m_login;

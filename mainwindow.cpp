@@ -1,14 +1,24 @@
 #include "mainwindow.h"
 #include "librarywidget.h"
+#include "registereduser.h"
+#include "visitinguser.h"
 #include "uploadwidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 
-MainWindow::MainWindow(QString loginUsername)
+#include<QDebug>
+
+MainWindow::MainWindow(QString loginUsername, int userType)
 {
-    // will recieve `loggedIn` through contructor parameters when I figure out how
-    m_username = loginUsername;
+    //if is visitiing user
+    if (userType == 0) m_user = new VisitingUser();
+
+    //if is registered user
+    else if (userType == 1) m_user = new RegisteredUser(loginUsername);
+
+    //need a superuser class. using registed user for the moment
+    else m_user = new RegisteredUser(loginUsername);
 
     createWidgets();
     createLayouts();
@@ -29,13 +39,22 @@ void MainWindow::createWidgets() {
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
 
-    // if username is NULL, show visiting user
-    // else show username
     m_loginLabel = new QLabel();
-    if(m_username.isNull()) {
-        m_loginLabel->setText("Visiting User");
-    }else {
-        m_loginLabel->setText(QString("Logged in as: %s").arg(m_username));
+
+    //Set username
+    m_loginLabel->setText(QString("Logged in as: %1").arg(m_user->getUsername()));
+
+    //if it's a registered user or super user, print info
+    if (m_user->getUserType() != 0) {
+
+        //Test info
+        RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user
+        
+        qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
+        qDebug()<<"Complaints: "<<t->getNumOfComplaints()<<"   Date Created: "<< t->getDateCreated();
+        qDebug()<<"Uploads: "<<t->getNumOfUploads();
+        
+
     }
 
     m_exitButton = new QPushButton("Exit");
