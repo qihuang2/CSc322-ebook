@@ -1,6 +1,6 @@
 #include "visitinguser.h"
 
-VisitingUser::VisitingUser() : BaseUser("anon", 0)
+VisitingUser::VisitingUser() : BaseUser("Visiting User", 0)
 {}
 
 

@@ -3,6 +3,7 @@
 #include "registereduser.h"
 #include "visitinguser.h"
 #include "uploadwidget.h"
+#include "documentwidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -35,9 +36,11 @@ void MainWindow::createWidgets() {
     // create the widgets to be added to the tabs
     LibraryWidget* lib = new LibraryWidget(m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
+    DocumentWidget* doc = new DocumentWidget(m_tabWidget);
 
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
+    m_tabWidget->addTab(doc, "Document");
 
     m_loginLabel = new QLabel();
 

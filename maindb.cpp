@@ -3,7 +3,6 @@
 #include <QDebug>
 #include <QString>
 
-
 MainDB::MainDB()
 {
     /*
@@ -134,5 +133,3 @@ void MainDB::closeDB(){
         QSqlDatabase::removeDatabase(c);
     }
 }
-
-

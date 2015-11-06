@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     userinfodb.cpp \
     baseuser.cpp \
     visitinguser.cpp \
-    registereduser.cpp
+    registereduser.cpp \
+    documentwidget.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     userinfodb.h \
     baseuser.h \
     visitinguser.h \
-    registereduser.h
+    registereduser.h \
+    documentwidget.h
 
 FORMS    +=
 
