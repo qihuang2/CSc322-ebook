@@ -65,8 +65,6 @@ void WelcomeDialog::s_login() {
     LoginWidget* lWidget = new LoginWidget(m_loginDB, m_username, m_userType);
     if(lWidget->exec() == QDialog::Accepted) {
         //username and usertype will be set by lWidget
-        //close loginDB
-        m_loginDB->closeDB();
         accept();
     }
 }
@@ -76,8 +74,6 @@ void WelcomeDialog::s_register() {
     RegisterWidget* regWidget = new RegisterWidget(m_loginDB, m_username, m_userType);
     if(regWidget->exec() == QDialog::Accepted) {
         // username and usertype will have been set by regWidget
-        //finished with login_DB so close it
-        m_loginDB->closeDB();
         accept();
     }
 
@@ -86,11 +82,9 @@ void WelcomeDialog::s_register() {
 void WelcomeDialog::s_visit() {
     // No login or registration required, show main window
     // return accepted and that user is NOT logged in
-    m_loginDB->closeDB();
     accept();
 }
 
 void WelcomeDialog::s_exit() {
-    m_loginDB->closeDB();
     reject();
 }

@@ -4,11 +4,14 @@
 #include "visitinguser.h"
 #include "uploadwidget.h"
 #include "documentwidget.h"
+#include<documentsdb.h>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 
 #include<QDebug>
+#include <QtSql>
+
 
 MainWindow::MainWindow(QString loginUsername, int userType)
 {
@@ -21,9 +24,13 @@ MainWindow::MainWindow(QString loginUsername, int userType)
     //need a superuser class. using registed user for the moment
     else m_user = new RegisteredUser(loginUsername);
 
+    //init DB that keeps track of uploaded documents
+    this->m_docDB = new DocumentsDB();
+
     createWidgets();
     createLayouts();
     createActions();
+
 
     setCentralWidget(m_centralWidget);
     setMinimumSize(600, 400);
@@ -65,6 +72,7 @@ void MainWindow::createWidgets() {
 
     m_centralWidget = new QWidget();
 }
+
 
 void MainWindow::createLayouts() {
     m_mainLayout = new QVBoxLayout();

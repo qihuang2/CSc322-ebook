@@ -8,6 +8,7 @@ class QLabel;
 class QVBoxLayout;
 class QPushButton;
 class BaseUser;
+class DocumentsDB;
 
 class MainWindow : public QMainWindow
 {
@@ -19,6 +20,7 @@ public:
 
 private:
     BaseUser*       m_user;             //Keeps track of user info
+    DocumentsDB*    m_docDB;            //DB for uploaded documents
     QWidget*        m_centralWidget;    /* Main widget. */
     QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
     QLabel*         m_loginLabel;       /* Displays login status. */

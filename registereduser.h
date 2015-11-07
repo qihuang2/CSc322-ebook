@@ -23,9 +23,6 @@ public:
     void incrementComplaintsBy(int complaints);
     void incrementNumOfUploads();
 
-    //When we add a logout feature, we need to close this DB before we create a new User object
-    void closeDB();
-
 protected:
     UserInfoDB* m_userInfoDB;
 };
