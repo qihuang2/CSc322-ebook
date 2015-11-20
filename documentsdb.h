@@ -20,6 +20,10 @@ class QSqlQuery;
 //9     approved:             document has been approved by SU
 
 
+
+// TODO : add KEY: book_summary
+
+
 class DocumentsDB : public MainDB
 {
 public:
