@@ -2,17 +2,27 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include "documentsdb.h"
 
 // Values for books in table
 enum {TITLE, AUTHOR, GENRE, RATING};
 
 LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
 {
+    m_db = new DocumentsDB();
     m_numBooks = 10;    // this will be set to the number of books in the library
 
     createWidgets();
     createLayouts();
     createActions();
+}
+
+LibraryWidget::~LibraryWidget() {
+
+}
+
+void LibraryWidget::populateTable() {
+
 }
 
 void LibraryWidget::createWidgets() {
@@ -34,3 +44,4 @@ void LibraryWidget::createLayouts() {
 void LibraryWidget::createActions() {
 
 }
+

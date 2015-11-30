@@ -66,7 +66,6 @@ public:
     //add new rating
     void addRatingToDocWithUID(int id, float newRating);
 
-
     //return a QString with path to document
     QString getPathToDocWithUID(int id);
 
