@@ -35,7 +35,3 @@ void RegisteredUser::incrementCreditsBy(int credits){
 void RegisteredUser::incrementNumOfUploads(){
     m_userInfoDB->setIntForKey(m_username, "uploads", getNumOfUploads() + 1);
 }
-
-void RegisteredUser::closeDB(){
-    m_userInfoDB->closeDB();
-}

@@ -3,10 +3,14 @@
 #include <QDebug>
 #include <QString>
 
+
+QSqlDatabase* MainDB::st_mainDB;
+
 MainDB::MainDB()
 {
     /*
-     * MYSQL CODE
+     * MySQL code to connect to DB.
+     *
      * this->loginDB = QSqlDatabase::addDatabase("QMYSQL");
      * loginDB.setHostName("sql5.freesqldatabase.com");
      * loginDB.setDatabaseName("sql594107");
@@ -15,32 +19,93 @@ MainDB::MainDB()
      * loginDB.setPort(3306);
     */
 
+    //If our static DB hasn't been initialized yet, then set DB. This way, we only connect to
+    //DB once
     //Creates a sqlite file that is hidden
+    if(MainDB::st_mainDB == NULL){
 
-    this->m_mainDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-    m_mainDB->setDatabaseName("ebookDB.db");
+        MainDB::st_mainDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
+        MainDB::st_mainDB->setDatabaseName("ebookDB.db");
 
-    if(!m_mainDB->open()){
-        qDebug()<<"Something went wrong connecting to DB.";
+        if(!MainDB::st_mainDB->open()){
+            qDebug()<<"Something went wrong connecting to DB.";
+        }
+
+        QSqlQuery qry;
+
+        //creates the table 'users' if it doesn't exist
+        //
+        //CONTAINS-
+        //username: username of user
+        //password: password of user
+        //account_type: 0 for visitor, 1 for RU, 2 for SU
+        //is_banned: determine if user is banned
+        qry.prepare( "CREATE TABLE IF NOT EXISTS users ("
+                                                        "username VARCHAR(12) PRIMARY KEY, "
+                                                        "password VARCHAR(14) NOT NULL, "
+                                                        "account_type TINYINT NOT NULL, "
+                                                        "is_banned TINYINT NOT NULL"
+                                                        ");" );
+        if( !qry.exec() )
+            qDebug() << qry.lastError();
+
+        //creates the table 'user_info' if it does't exist
+        //
+        //CONTAINS-
+        //username: username of user
+        //credits: number of credits user has
+        //complaints: total number of complaints
+        //uploads: total number of uploads
+        //created: when account was created
+        qry.prepare( "CREATE TABLE IF NOT EXISTS user_info ("
+                                                            "username VARCHAR(12) PRIMARY KEY, "
+                                                            "credits INT NOT NULL, "
+                                                            "complaints TINYINT NOT NULL, "
+                                                            "uploads INT NOT NULL, "
+                                                            "created TEXT NOT NULL, "
+                                                            "FOREIGN KEY (username) REFERENCES users(username)"
+                                                            ");" );
+        if( !qry.exec() )
+           qDebug() << qry.lastError();
+
+
+        //creates the table 'doc_info' if it does't exist
+        //doc_info keeps track of documents that have been uploaded
+        //
+        //CONTAINS -
+        //u_id: unique book id. The value is automatically incremented so we don't have to worry about that
+        //title: title of the book. Limited to 25 characters
+        //posted_by: username of user who posted document
+        //genre: genre of book. saved as an int
+        //upload_date: date document was uploaded
+        //rating: average rating of book. stored as a float
+        //num_of_ratings: total number of people who rated the book
+        //views: total number of people that read the document
+        //num_of_complaints: number of users who complained about the book
+        //approved: document has been approved by SU
+        qry.prepare( "CREATE TABLE IF NOT EXISTS doc_info ("
+                                                           "u_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                           "title VARCHAR(25) NOT NULL, "
+                                                           "posted_by VARCHAR(12) NOT NULL, "
+                                                           "genre INT NOT NULL, "
+                                                           "upload_date TEXT NOT NULL, "
+                                                           "rating REAL NOT NULL, "
+                                                           "num_of_ratings INT NOT NULL, "
+                                                           "views INT NOT NULL,"
+                                                           "num_of_complaints INT NOT NULL, "
+                                                            "approved TINYINT NOT NULL, "
+                                                            "FOREIGN KEY (posted_by) REFERENCES user_info(username)"
+                                                            ");");
+        if( !qry.exec() ){
+            qDebug()<<"erer";
+           qDebug() << qry.lastError();
+        }
     }
-
-    QSqlQuery qry;
-    //creates the table 'users' if it doesn't exist
-
-    qry.prepare( "CREATE TABLE IF NOT EXISTS users (username VARCHAR(12), password VARCHAR(14), account_type TINYINT, is_banned TINYINT)" );
-    if( !qry.exec() )
-      qDebug() << qry.lastError();
-
-    //creates the table 'user_info' if it does't exist
-    //So far the DB has username, num of credits, num of complaints, num of uploads, date account created
-    qry.prepare( "CREATE TABLE IF NOT EXISTS user_info (username VARCHAR(12), credits INT, complaints TINYINT, uploads INT, created TEXT)" );
-    if( !qry.exec() )
-      qDebug() << qry.lastError();
 }
 
 
 bool MainDB::isConnected(){
-    return (m_mainDB->open());
+    return (MainDB::st_mainDB->open());
 }
 
 
@@ -60,7 +125,7 @@ bool MainDB::userExists(QString username){
 
 
 void MainDB::printTables(){
-    QStringList tables = m_mainDB->tables();
+    QStringList tables = MainDB::st_mainDB->tables();
     //gets list of tables in DB
     //prints table names
     for (QStringList::iterator it = tables.begin();
@@ -122,13 +187,13 @@ int MainDB::getAccountType(QString username){
 
 //removes connection to DB
 void MainDB::closeDB(){
-    if (m_mainDB->open()){
-        QString c = m_mainDB->connectionName();
-        m_mainDB->close();
+    if (MainDB::st_mainDB->open()){
+        QString c = MainDB::st_mainDB->connectionName();
+        MainDB::st_mainDB->close();
 
         // Don't take this out. The DB won't close if this is taken out for
         // some reason. You can try playing around with it if you want.
-        delete m_mainDB;
+        delete MainDB::st_mainDB;
 
         QSqlDatabase::removeDatabase(c);
     }
