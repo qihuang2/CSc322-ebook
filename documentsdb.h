@@ -48,7 +48,6 @@ public:
     //get QSQLQuery of all documents
     QSqlQuery getAllDocs();
 
-
     //add document to doc_info
     void addDocument(QString title, QString posted_by, int genre);
 
@@ -70,6 +69,10 @@ public:
 
     //return a QString with path to document
     QString getPathToDocWithUID(int id);
+
+    //returns next UID we will use
+    //returns -1 if error occurs
+    int getNextUID();
 };
 
 #endif // DOCUMENTSDB_H

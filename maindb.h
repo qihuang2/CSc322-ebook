@@ -32,12 +32,6 @@ public:
 
      //MAKE SURE YOU CLOSE THE DB WHEN YOU FINISH USING IT
     static void closeDB();
-
-private:
-    //our user info database. I made it static so there aren't multiple connections
-    //to the same DB.
-    //(subclasses of this class might try connecting to the DB when a connection already exists)
-    static QSqlDatabase* st_mainDB;
 };
 
 #endif // MAINDB_H
