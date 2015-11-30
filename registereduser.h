@@ -18,8 +18,7 @@ public:
     int getNumOfUploads();
 
     //setters
-    void decrementCreditsBy(int credits);
-    void incrementCreditsBy(int credits);
+    void changeCreditsBy(int credits);
     void incrementComplaintsBy(int complaints);
     void incrementNumOfUploads();
 

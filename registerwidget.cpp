@@ -67,7 +67,6 @@ void RegisterWidget::createActions(){
     connect(m_registerButton, SIGNAL(clicked()), this, SLOT(s_onRegister()));
 }
 
-
 void RegisterWidget::s_onRegister(){
     QString username = m_userLineEdit->text();
     username = username.toLower();

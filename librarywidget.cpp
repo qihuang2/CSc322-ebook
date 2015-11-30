@@ -9,7 +9,13 @@ enum {TITLE, AUTHOR, GENRE, RATING};
 LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
 {
     m_numBooks = 10;    // this will be set to the number of books in the library
-    m_mainLayout = new QVBoxLayout();
+
+    createWidgets();
+    createLayouts();
+    createActions();
+}
+
+void LibraryWidget::createWidgets() {
     m_tableWidget = new QTableWidget(m_numBooks, RATING+1);
     // Set titles for columns
     m_tableWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
@@ -17,7 +23,14 @@ LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // Make cells read only
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
 
+void LibraryWidget::createLayouts() {
+    m_mainLayout = new QVBoxLayout();
     m_mainLayout->addWidget(m_tableWidget);
     setLayout(m_mainLayout);
+}
+
+void LibraryWidget::createActions() {
+
 }

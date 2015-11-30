@@ -12,7 +12,7 @@
 
 MainWindow::MainWindow(QString loginUsername, int userType)
 {
-    //if is visitiing user
+    //if is visiting user
     if (userType == 0) m_user = new VisitingUser();
 
     //if is registered user

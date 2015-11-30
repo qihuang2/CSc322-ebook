@@ -18,6 +18,10 @@ private:
 
     // Number of books in library to be used as number of rows
     int                 m_numBooks;
+
+    void createWidgets();
+    void createLayouts();
+    void createActions();
 };
 
 #endif // LIBRARYWIDGET_H

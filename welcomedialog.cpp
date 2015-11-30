@@ -36,7 +36,6 @@ void WelcomeDialog::createWidgets() {
     m_visit->setMaximumSize(buttonSize);
     m_exit = new QPushButton(tr("Exit"));
     m_exit->setMaximumSize(buttonSize);
-
 }
 
 void WelcomeDialog::createLayouts() {

@@ -32,10 +32,6 @@ void RegisteredUser::incrementCreditsBy(int credits){
     m_userInfoDB->setIntForKey(m_username, "credits", getNumOfCredits() + credits);
 }
 
-void RegisteredUser::decrementCreditsBy(int credits){
-    m_userInfoDB->setIntForKey(m_username, "credits", getNumOfCredits() - credits);
-}
-
 void RegisteredUser::incrementNumOfUploads(){
     m_userInfoDB->setIntForKey(m_username, "uploads", getNumOfUploads() + 1);
 }
