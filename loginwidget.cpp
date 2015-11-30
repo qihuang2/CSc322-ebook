@@ -15,6 +15,7 @@ LoginWidget::LoginWidget(LoginDB* db, QString* username, int* userType, QWidget*
     m_username = username;
     m_userType = userType;
 
+
     setFixedSize(320, 150);
     setModal(true);
     setAttribute(Qt::WA_DeleteOnClose);

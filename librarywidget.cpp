@@ -3,6 +3,8 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include "documentsdb.h"
+#include <QDebug>
+#include <QtSql>
 
 // Values for books in table
 enum {TITLE, AUTHOR, GENRE, RATING};
@@ -10,7 +12,9 @@ enum {TITLE, AUTHOR, GENRE, RATING};
 LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
 {
     m_db = new DocumentsDB();
-    m_numBooks = 10;    // this will be set to the number of books in the library
+
+
+    m_numBooks = m_db->getNumDocs();    // this will be set to the number of books in the library
 
     createWidgets();
     createLayouts();

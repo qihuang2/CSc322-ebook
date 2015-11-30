@@ -32,6 +32,10 @@ public:
 
      //MAKE SURE YOU CLOSE THE DB WHEN YOU FINISH USING IT
     static void closeDB();
+
+private:
+    static QSqlDatabase* st_mainDB;
+
 };
 
 #endif // MAINDB_H

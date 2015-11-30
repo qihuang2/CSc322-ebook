@@ -71,7 +71,9 @@ public:
 
     //returns next UID we will use
     //returns -1 if error occurs
-    int getNextUID();
+    int getNumDocs();
+
+
 };
 
 #endif // DOCUMENTSDB_H

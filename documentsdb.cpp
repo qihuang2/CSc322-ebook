@@ -119,10 +119,11 @@ QString DocumentsDB::getPathToDocWithUID(int id){
     return "/books/"+QString::number(id)+".txt";
 }
 
-int DocumentsDB::getNextUID(){
+int DocumentsDB::getNumDocs() {
     QSqlQuery q;
-    if(q.exec("SELECT last_insert_rowid() AS rowid FROM doc_info")){
-        return q.first().toInt()+1 ? q.value(0) : -1;
+    if(q.exec("SELECT COUNT(*) FROM doc_info")){
+        int out = q.first() ? q.value(0).toInt() : -1;
+        return out;
     }
     else {
         qDebug()<<q.lastError();
