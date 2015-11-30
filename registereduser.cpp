@@ -28,7 +28,7 @@ void RegisteredUser::incrementComplaintsBy(int complaints){
     m_userInfoDB->setIntForKey(m_username, "complaints", getNumOfComplaints() + complaints);
 }
 
-void RegisteredUser::incrementCreditsBy(int credits){
+void RegisteredUser::changeCreditsBy(int credits){
     m_userInfoDB->setIntForKey(m_username, "credits", getNumOfCredits() + credits);
 }
 
