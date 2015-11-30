@@ -108,17 +108,13 @@ void DocumentsDB::addRatingToDocWithUID(int id, float newRating){
     }
 }
 
-
 //return the new average rating
 float getNewAverageRating(float newRating, float avgRating, int totalNumOfRatings){
     float currentTotal = avgRating * totalNumOfRatings + newRating;
     return currentTotal / (totalNumOfRatings +1);
 }
 
-
 //change this if we move the "books" folder somewhere else
 QString DocumentsDB::getPathToDocWithUID(int id){
     return "/books/"+QString::number(id)+".txt";
 }
-
-

@@ -103,6 +103,7 @@ MainDB::MainDB()
     }
 }
 
+MainDB::~MainDB() {}
 
 bool MainDB::isConnected(){
     return (MainDB::st_mainDB->open());

@@ -48,7 +48,6 @@ public:
     //get QSQLQuery of all documents
     QSqlQuery getAllDocs();
 
-
     //add document to doc_info
     void addDocument(QString title, QString posted_by, int genre);
 
@@ -66,7 +65,6 @@ public:
 
     //add new rating
     void addRatingToDocWithUID(int id, float newRating);
-
 
     //return a QString with path to document
     QString getPathToDocWithUID(int id);
