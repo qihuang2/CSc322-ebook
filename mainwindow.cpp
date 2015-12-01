@@ -12,6 +12,7 @@
 #include<QDebug>
 #include <QtSql>
 
+enum {LIB, UP, DOC};
 
 MainWindow::MainWindow(QString loginUsername, int userType)
 {
@@ -73,7 +74,6 @@ void MainWindow::createWidgets() {
     m_centralWidget = new QWidget();
 }
 
-
 void MainWindow::createLayouts() {
     m_mainLayout = new QVBoxLayout();
     m_mainLayout->addWidget(m_loginLabel);
@@ -86,6 +86,15 @@ void MainWindow::createLayouts() {
 void MainWindow::createActions() {
     connect(m_exitButton, SIGNAL(clicked()),
             this, SLOT(close()));
+    connect(m_tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(s_refreshTable(int)));
+}
+
+void MainWindow::s_refreshTable(int current) {
+    if(current == LIB) {
+        LibraryWidget* w = (LibraryWidget*)m_tabWidget->widget(LIB);
+        w->s_refresh();
+    }
 }
 
 MainWindow::~MainWindow() {}

@@ -6,7 +6,21 @@ class QString;
 
 class MainDB
 {
-public:
+public: 
+    enum documentKeys {
+        UID,
+        TITLE,
+        POSTEDBY,
+        GENRE,
+        UPLOADDATE,
+        RATING,
+        NUMRATINGS,
+        VIEWS,
+        NUMCOMPLAINTS,
+        APPROVED,
+        SUMMARY
+    };
+
     MainDB();
     ~MainDB();
 

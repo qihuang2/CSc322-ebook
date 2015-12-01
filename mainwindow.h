@@ -30,6 +30,9 @@ private:
     void createWidgets();
     void createLayouts();
     void createActions();
+
+private slots:
+    void s_refreshTable(int current);
 };
 
 #endif // MAINWINDOW_H

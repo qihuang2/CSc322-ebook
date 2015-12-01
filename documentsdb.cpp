@@ -7,19 +7,18 @@
 //returns new average rating of book
 float getNewAverageRating(float newRating, float avgRating, int totalNumOfRatings);
 
-
 DocumentsDB::DocumentsDB() : MainDB()
 {
 }
 
-
 QSqlQuery DocumentsDB::getDocInfoForUID(int id){
     QSqlQuery query;
     //if command runs
-    query.exec("SELECT * FROM doc_info WHERE u_id = "+QString::number(id));
+    if(!query.exec("SELECT * FROM doc_info WHERE u_id = "+QString::number(id))) {
+        qDebug() << "DOCSDB: doc info query for id " << id << " failed.";
+    }
     return query;
 }
-
 
 QSqlQuery DocumentsDB::getDocsUploadedByUser(QString username){
     QSqlQuery query;
@@ -41,7 +40,7 @@ void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QStri
     if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, summary) "
                    "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0,'" + summary + "')"))
         qDebug()<<"Document added";
-    else qDebug()<<query.lastError();
+    else qDebug() <<"DOCSDB: " << query.lastError();
 }
 
 void DocumentsDB::approveDocumentWithUID(int id){
