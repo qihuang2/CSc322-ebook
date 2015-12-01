@@ -83,6 +83,7 @@ MainDB::MainDB()
         //views: total number of people that read the document
         //num_of_complaints: number of users who complained about the book
         //approved: document has been approved by SU
+        //summary: document summary. Limited to 250 characters
         qry.prepare( "CREATE TABLE IF NOT EXISTS doc_info ("
                                                            "u_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                                            "title VARCHAR(25) NOT NULL, "
@@ -93,11 +94,12 @@ MainDB::MainDB()
                                                            "num_of_ratings INT NOT NULL, "
                                                            "views INT NOT NULL,"
                                                            "num_of_complaints INT NOT NULL, "
-                                                            "approved TINYINT NOT NULL, "
-                                                            "FOREIGN KEY (posted_by) REFERENCES user_info(username)"
-                                                            ");");
+                                                           "approved TINYINT NOT NULL, "
+                                                           "summary VARCHAR(250),"
+                                                           "FOREIGN KEY (posted_by) REFERENCES user_info(username)"
+                                                        ");");
         if( !qry.exec() ){
-            qDebug()<<"erer";
+            qDebug()<<"failed to create doc_info";
            qDebug() << qry.lastError();
         }
     }

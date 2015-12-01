@@ -18,10 +18,8 @@ class QSqlQuery;
 //7     views:                total number of people that read the document
 //8     num_of_complaints:    number of users who complained about the book
 //9     approved:             document has been approved by SU
+//10    summary               document summary. LIMITED TO 250 CHARACTERS
 
-
-
-// TODO : add KEY: book_summary
 
 
 class DocumentsDB : public MainDB
@@ -49,7 +47,8 @@ public:
     QSqlQuery getAllDocs();
 
     //add document to doc_info
-    void addDocument(QString title, QString posted_by, int genre);
+    //NOTE: summary has to be limited to 250 characters
+    void addDocument(QString title, QString posted_by, int genre, QString summary);
 
     //approve uploaded document
     void approveDocumentWithUID(int id);
@@ -73,7 +72,14 @@ public:
     //returns -1 if error occurs
     int getNumDocs();
 
-
+    //returns the last inserted row's UID
+    //returns 0 if nothing in table
+    /*
+     *  NOTE: can use this to rename files :
+     *  first add the document to doc_info using addDocument(title, posted_by, genre, summary)
+     *  then rename file to getLastInsertRowID() + ".txt"
+     */
+    int getLastInsertRowUID();
 };
 
 #endif // DOCUMENTSDB_H

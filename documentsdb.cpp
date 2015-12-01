@@ -35,11 +35,11 @@ QSqlQuery DocumentsDB::getAllDocs(){
     return q;
 }
 
-void DocumentsDB::addDocument(QString title, QString posted_by, int genre){
+void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QString summary){
     QSqlQuery query;
     //add document into doc_info DB with some initial values
-    if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved) "
-                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0)"))
+    if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, summary) "
+                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0,'" + summary + "')"))
         qDebug()<<"Document added";
     else qDebug()<<query.lastError();
 }
@@ -119,11 +119,11 @@ QString DocumentsDB::getPathToDocWithUID(int id){
     return "/books/"+QString::number(id)+".txt";
 }
 
+//returns -1 if error
 int DocumentsDB::getNumDocs() {
     QSqlQuery q;
     if(q.exec("SELECT COUNT(*) FROM doc_info")){
-        int out = q.first() ? q.value(0).toInt() : -1;
-        return out;
+        return q.first() ? q.value(0).toInt() : -1;
     }
     else {
         qDebug()<<q.lastError();
@@ -131,3 +131,14 @@ int DocumentsDB::getNumDocs() {
     }
 }
 
+//returns 0 if nothing in table
+int DocumentsDB::getLastInsertRowUID(){
+    QSqlQuery q;
+    if(q.exec("SELECT last_insert_rowid() AS rowid FROM doc_info")){
+        return q.first() ? q.value(0).toInt() : 0;
+    }
+   else {
+        qDebug() << q.lastError();
+        return 0;
+    }
+}
