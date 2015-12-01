@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     visitinguser.cpp \
     registereduser.cpp \
     documentwidget.cpp \
-    documentsdb.cpp
+    documentsdb.cpp \
+    constants.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     visitinguser.h \
     registereduser.h \
     documentwidget.h \
-    documentsdb.h
+    documentsdb.h \
+    constants.h
 
 FORMS    +=
 
