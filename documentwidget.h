@@ -24,20 +24,29 @@ signals:
 
 public slots:
     void s_counter();
+    void closeFile();
+    void clearReview();
+    void showReview();
+
 private:
+    void createLayouts();
+    void createActions();
+
+    void readFile();
+    void writeReview();
+
     QTextEdit *m_txt;
+    QTextEdit *m_reviewText;
     QVBoxLayout *m_mainLayout;
+    QVBoxLayout *m_reviewLayout;
     QHBoxLayout *m_buttonLayout;
     QHBoxLayout *m_creditLayout;
-    void createLayouts();
-
-    void closeFile();
-    void readFile();
 
     QLabel*			m_time;
     QLabel*			m_credits;
 
     QPushButton* m_closeButton;
+    QPushButton* m_clearReview;
     QPushButton* m_reviewButton;
     QPushButton* m_reportButton;
 

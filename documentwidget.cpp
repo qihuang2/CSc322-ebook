@@ -11,6 +11,7 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
     m_time=new QLabel("Time:0:00");
     m_credits=new QLabel("Credits:0");
     createLayouts(); //Create layout within Document Tab
+    createActions();
     if (open == true)
     {
         closeFile();
@@ -25,6 +26,8 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
         m_timer->start(1000);
 
     }
+
+    writeReview();
 }
 
 //Layout for the Document Tab
@@ -32,6 +35,7 @@ void DocumentWidget::createLayouts()
 {
     QWidget* widget = new QWidget();
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
+    m_reviewText = new QTextEdit(widget);
 
     //Create the buttons
     m_reviewButton = new QPushButton("Review Document");
@@ -40,10 +44,14 @@ void DocumentWidget::createLayouts()
     m_reportButton->setMaximumSize(QSize(150, 50));
     m_closeButton = new QPushButton("Close Document");
     m_closeButton->setMaximumSize(QSize(150, 50));
+    m_clearReview = new QPushButton("Clear Review");
+    m_clearReview->setMaximumSize(QSize(150, 50));
 
     //Set the Layout
     m_buttonLayout = new QHBoxLayout();
     m_creditLayout = new QHBoxLayout();
+    m_reviewLayout = new QVBoxLayout();
+
     m_mainLayout = new QVBoxLayout(widget);
     m_creditLayout->addWidget(m_time);
     m_creditLayout->addWidget(m_credits);
@@ -53,7 +61,20 @@ void DocumentWidget::createLayouts()
     m_buttonLayout->addWidget(m_reportButton);
     m_buttonLayout->addWidget(m_closeButton);
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
+    m_reviewLayout->addWidget(m_reviewText);
+    m_reviewLayout->addWidget(m_clearReview);
+    m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
+    m_reviewText->hide();
+    m_clearReview->hide();
     setLayout(m_mainLayout);
+}
+
+//Actions for the buttons
+void DocumentWidget::createActions()
+{
+    connect(m_closeButton, SIGNAL(clicked()), this, SLOT(closeFile()));
+    connect(m_reviewButton, SIGNAL(clicked()), this, SLOT(showReview()));
+    connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
 }
 
 // Counter Function
@@ -106,13 +127,28 @@ void DocumentWidget::readFile()
         m_txt->append(line);
     }
     file.close(); //close the file
-    m_txt->setVerticalScrollBar(0);
 }
 
 //close the (current) file
 void DocumentWidget::closeFile()
 {
-    qDebug() << "Closing the current file";
     m_txt->clear();
     open = false;
+}
+
+void DocumentWidget::writeReview()
+{
+    QString initialLine = "Hello, write your review here!";
+    m_reviewText->append(initialLine);
+}
+
+void DocumentWidget::clearReview()
+{
+    m_reviewText->clear();
+}
+
+void DocumentWidget::showReview()
+{
+    m_reviewText->show();
+    m_clearReview->show();
 }
