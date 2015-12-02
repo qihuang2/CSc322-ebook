@@ -41,11 +41,13 @@ private:
     QVBoxLayout *m_reviewLayout;
     QHBoxLayout *m_buttonLayout;
     QHBoxLayout *m_creditLayout;
+    QHBoxLayout *m_reviewButtonLayout;
 
     QLabel*			m_time;
     QLabel*			m_credits;
 
     QPushButton* m_closeButton;
+    QPushButton* m_submitReview;
     QPushButton* m_clearReview;
     QPushButton* m_reviewButton;
     QPushButton* m_reportButton;

@@ -46,11 +46,14 @@ void DocumentWidget::createLayouts()
     m_closeButton->setMaximumSize(QSize(150, 50));
     m_clearReview = new QPushButton("Clear Review");
     m_clearReview->setMaximumSize(QSize(150, 50));
+    m_submitReview = new QPushButton("Submit Review");
+    m_submitReview->setMaximumSize(QSize(150, 50));
 
     //Set the Layout
     m_buttonLayout = new QHBoxLayout();
     m_creditLayout = new QHBoxLayout();
     m_reviewLayout = new QVBoxLayout();
+    m_reviewButtonLayout = new QHBoxLayout();
 
     m_mainLayout = new QVBoxLayout(widget);
     m_creditLayout->addWidget(m_time);
@@ -62,10 +65,13 @@ void DocumentWidget::createLayouts()
     m_buttonLayout->addWidget(m_closeButton);
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     m_reviewLayout->addWidget(m_reviewText);
-    m_reviewLayout->addWidget(m_clearReview);
+    m_reviewButtonLayout->addWidget(m_clearReview);
+    m_reviewButtonLayout->addWidget(m_submitReview);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
+    m_mainLayout->addLayout(m_reviewButtonLayout);
     m_reviewText->hide();
     m_clearReview->hide();
+    m_submitReview->hide();
     setLayout(m_mainLayout);
 }
 
@@ -151,4 +157,5 @@ void DocumentWidget::showReview()
 {
     m_reviewText->show();
     m_clearReview->show();
+    m_submitReview->show();
 }
