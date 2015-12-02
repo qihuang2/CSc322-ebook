@@ -26,7 +26,7 @@ RegisterWidget::RegisterWidget(LoginDB* db, QString* username, int* userType, QW
 void RegisterWidget::createWidgets(){
     m_userLabel = new QLabel("Username:");
     m_passLabel = new QLabel("Password:");
-    m_confirmLabel = new QLabel("Confrm:");
+    m_confirmLabel = new QLabel("Confirm:");
     m_userLineEdit = new QLineEdit();
     m_userLineEdit->setMaxLength(12);
     m_passLineEdit = new QLineEdit();
