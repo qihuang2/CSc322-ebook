@@ -34,8 +34,10 @@ void DocumentWidget::createLayouts()
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
 
     //Create the buttons
-    m_ReportButton = new QPushButton("Report Document");
-    m_ReportButton->setMaximumSize(QSize(150, 50));
+    m_reviewButton = new QPushButton("Review Document");
+    m_reviewButton->setMaximumSize(QSize(150,50));
+    m_reportButton = new QPushButton("Report Document");
+    m_reportButton->setMaximumSize(QSize(150, 50));
     m_closeButton = new QPushButton("Close Document");
     m_closeButton->setMaximumSize(QSize(150, 50));
 
@@ -47,8 +49,9 @@ void DocumentWidget::createLayouts()
     m_creditLayout->addWidget(m_credits);
     m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
     m_mainLayout->addWidget(m_txt); //Place the Text Box Widget into the main layout
+    m_buttonLayout->addWidget(m_reviewButton);
+    m_buttonLayout->addWidget(m_reportButton);
     m_buttonLayout->addWidget(m_closeButton);
-    m_buttonLayout->addWidget(m_ReportButton);
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     setLayout(m_mainLayout);
 }
@@ -103,6 +106,7 @@ void DocumentWidget::readFile()
         m_txt->append(line);
     }
     file.close(); //close the file
+    m_txt->setVerticalScrollBar(0);
 }
 
 //close the (current) file

@@ -38,7 +38,8 @@ private:
     QLabel*			m_credits;
 
     QPushButton* m_closeButton;
-    QPushButton* m_ReportButton;
+    QPushButton* m_reviewButton;
+    QPushButton* m_reportButton;
 
     int				m_timevalue;
     QTimer*			m_timer;
