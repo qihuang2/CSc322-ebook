@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QFile>
@@ -11,6 +12,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QLabel>
+#include <QPushButton>
 #include "baseuser.h"
 class DocumentWidget : public QWidget
 {
@@ -23,8 +25,10 @@ signals:
 public slots:
     void s_counter();
 private:
-    QTextEdit *txt;
+    QTextEdit *m_txt;
     QVBoxLayout *m_mainLayout;
+    QHBoxLayout *m_buttonLayout;
+    QHBoxLayout *m_creditLayout;
     void createLayouts();
 
     void closeFile();
@@ -32,6 +36,10 @@ private:
 
     QLabel*			m_time;
     QLabel*			m_credits;
+
+    QPushButton* m_closeButton;
+    QPushButton* m_ReportButton;
+
     int				m_timevalue;
     QTimer*			m_timer;
     int				m_currentCredits;

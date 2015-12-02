@@ -31,11 +31,25 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 void DocumentWidget::createLayouts()
 {
     QWidget* widget = new QWidget();
+    m_txt = new QTextEdit(widget); //Create a Text Box Widget
+
+    //Create the buttons
+    m_ReportButton = new QPushButton("Report Document");
+    m_ReportButton->setMaximumSize(QSize(150, 50));
+    m_closeButton = new QPushButton("Close Document");
+    m_closeButton->setMaximumSize(QSize(150, 50));
+
+    //Set the Layout
+    m_buttonLayout = new QHBoxLayout();
+    m_creditLayout = new QHBoxLayout();
     m_mainLayout = new QVBoxLayout(widget);
-    m_mainLayout->addWidget(m_time);
-    m_mainLayout->addWidget(m_credits);
-    txt = new QTextEdit(widget); //Create a Text Box Widget
-    m_mainLayout->addWidget(txt); //Place the Text Box Widget into the main layout
+    m_creditLayout->addWidget(m_time);
+    m_creditLayout->addWidget(m_credits);
+    m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
+    m_mainLayout->addWidget(m_txt); //Place the Text Box Widget into the main layout
+    m_buttonLayout->addWidget(m_closeButton);
+    m_buttonLayout->addWidget(m_ReportButton);
+    m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     setLayout(m_mainLayout);
 }
 
@@ -70,9 +84,10 @@ void DocumentWidget::s_counter()
 //read the file
 void DocumentWidget::readFile()
 {
-    qDebug() << "Reading try.txt";
+    m_txt->setReadOnly(true);//text box is read only
     open = true; //indicate there a file currently open
-    QFile file("/Users/youshenghua/Desktop/1.txt");
+
+    QFile file("/home/vfung000/Desktop/try.txt"); //open file
     QString line;
 
     //handle error
@@ -85,7 +100,7 @@ void DocumentWidget::readFile()
     while(!in.atEnd())
     {
         line = in.readLine();
-        txt->append(line);
+        m_txt->append(line);
     }
     file.close(); //close the file
 }
@@ -94,6 +109,6 @@ void DocumentWidget::readFile()
 void DocumentWidget::closeFile()
 {
     qDebug() << "Closing the current file";
-    txt->clear();
+    m_txt->clear();
     open = false;
 }
