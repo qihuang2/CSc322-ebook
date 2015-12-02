@@ -44,7 +44,7 @@ void MainWindow::createWidgets() {
     // create the widgets to be added to the tabs
     LibraryWidget* lib = new LibraryWidget(m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
-    DocumentWidget* doc = new DocumentWidget(m_tabWidget);
+    DocumentWidget* doc = new DocumentWidget(m_tabWidget,m_user);
 
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");

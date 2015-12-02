@@ -22,7 +22,7 @@ int UserInfoDB::getIntForKey(QString username, QString key){
 
 void UserInfoDB::setIntForKey(QString username, QString key, int value){
     QSqlQuery q;
-    if(q.exec("UPDATE user_info SET "+key+ " = "+value+" WHERE username = '"+username+"'")){
+    if(q.exec("UPDATE user_info SET "+key+ " = "+QString::number(value)+" WHERE username = '"+username+"'")){
         qDebug()<< key + " updated.";
     }else {
         qDebug()<<q.lastError();
