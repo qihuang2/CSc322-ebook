@@ -28,12 +28,13 @@ public slots:
     void clearReview();
     void showReview();
     void hideReview();
+    void submitReview();
 
 private:
     void createLayouts();
     void createActions();
 
-    void readFile();
+    void readFile(QString);
     void writeReview();
 
     QTextEdit *m_txt;

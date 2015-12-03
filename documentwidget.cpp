@@ -4,6 +4,7 @@
 
 bool open = false; //Variable to keep track if a document is open
               //false if no document open, true if document is open
+QString path = "/home/vfung000/Desktop/try.txt";
 
 DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 {
@@ -19,7 +20,7 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
     }
     if (open == false)
     {
-        readFile();
+        readFile(path);
         m_timevalue=0;
         m_timer=new QTimer(this);
         connect(m_timer,SIGNAL(timeout()),this,SLOT(s_counter()));
@@ -84,6 +85,7 @@ void DocumentWidget::createActions()
     connect(m_reviewButton, SIGNAL(clicked()), this, SLOT(showReview()));
     connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
     connect(m_hideReview, SIGNAL(clicked()), this, SLOT(hideReview()));
+    connect(m_submitReview, SIGNAL(clicked()), this, SLOT(submitReview()));
 }
 
 // Counter Function
@@ -115,12 +117,12 @@ void DocumentWidget::s_counter()
 
 
 //read the file
-void DocumentWidget::readFile()
+void DocumentWidget::readFile(QString path)
 {
     m_txt->setReadOnly(true);//text box is read only
     open = true; //indicate there a file currently open
 
-    QFile file("/home/vfung000/Desktop/try.txt"); //open file
+    QFile file(path); //open file
     QString line;
 
     //handle error
@@ -145,17 +147,20 @@ void DocumentWidget::closeFile()
     open = false;
 }
 
+//Initial box for review
 void DocumentWidget::writeReview()
 {
     QString initialLine = "Hello, write your review here!";
     m_reviewText->append(initialLine);
 }
 
+//Clear the current stuff written in Review
 void DocumentWidget::clearReview()
 {
     m_reviewText->clear();
 }
 
+//Show the Review Box
 void DocumentWidget::showReview()
 {
     m_reviewText->show();
@@ -164,10 +169,19 @@ void DocumentWidget::showReview()
     m_hideReview->show();
 }
 
+//Hide the Review Box
 void DocumentWidget::hideReview()
 {
     m_reviewText->hide();
     m_clearReview->hide();
     m_submitReview->hide();
     m_hideReview->hide();
+}
+
+//Getting the review
+void DocumentWidget::submitReview()
+{
+    QString review; //Review will hold whatever is currently being held in the Review Text Box
+    review = m_reviewText->toPlainText();
+    qDebug() << "The review for " << path << " is " << review;
 }
