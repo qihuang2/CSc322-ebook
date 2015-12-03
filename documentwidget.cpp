@@ -4,6 +4,7 @@
 
 bool open = false; //Variable to keep track if a document is open
               //false if no document open, true if document is open
+
 DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 {
     //set up Timer
@@ -15,7 +16,6 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
     if (open == true)
     {
         closeFile();
-
     }
     if (open == false)
     {
@@ -26,7 +26,6 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
         m_timer->start(1000);
 
     }
-
     writeReview();
 }
 
@@ -48,7 +47,8 @@ void DocumentWidget::createLayouts()
     m_clearReview->setMaximumSize(QSize(150, 50));
     m_submitReview = new QPushButton("Submit Review");
     m_submitReview->setMaximumSize(QSize(150, 50));
-
+    m_hideReview = new QPushButton("Hide Review Box");
+    m_hideReview->setMaximumSize(QSize(150, 50));
     //Set the Layout
     m_buttonLayout = new QHBoxLayout();
     m_creditLayout = new QHBoxLayout();
@@ -66,12 +66,14 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     m_reviewLayout->addWidget(m_reviewText);
     m_reviewButtonLayout->addWidget(m_clearReview);
+    m_reviewButtonLayout->addWidget(m_hideReview);
     m_reviewButtonLayout->addWidget(m_submitReview);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
     m_mainLayout->addLayout(m_reviewButtonLayout);
     m_reviewText->hide();
     m_clearReview->hide();
     m_submitReview->hide();
+    m_hideReview->hide();
     setLayout(m_mainLayout);
 }
 
@@ -81,6 +83,7 @@ void DocumentWidget::createActions()
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(closeFile()));
     connect(m_reviewButton, SIGNAL(clicked()), this, SLOT(showReview()));
     connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
+    connect(m_hideReview, SIGNAL(clicked()), this, SLOT(hideReview()));
 }
 
 // Counter Function
@@ -158,4 +161,13 @@ void DocumentWidget::showReview()
     m_reviewText->show();
     m_clearReview->show();
     m_submitReview->show();
+    m_hideReview->show();
+}
+
+void DocumentWidget::hideReview()
+{
+    m_reviewText->hide();
+    m_clearReview->hide();
+    m_submitReview->hide();
+    m_hideReview->hide();
 }

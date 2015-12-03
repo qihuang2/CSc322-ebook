@@ -27,6 +27,7 @@ public slots:
     void closeFile();
     void clearReview();
     void showReview();
+    void hideReview();
 
 private:
     void createLayouts();
@@ -51,6 +52,7 @@ private:
     QPushButton* m_clearReview;
     QPushButton* m_reviewButton;
     QPushButton* m_reportButton;
+    QPushButton *m_hideReview;
 
     int				m_timevalue;
     QTimer*			m_timer;
