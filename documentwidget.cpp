@@ -1,10 +1,11 @@
 #include "documentwidget.h"
 #include "mainwindow.h"
 #include "registereduser.h"
+#include "documentsdb.h"
 
 bool open = false; //Variable to keep track if a document is open
               //false if no document open, true if document is open
-QString path = "/home/vfung000/Desktop/try.txt";
+QString path = "/Users/youshenghua/Desktop/1.txt";
 
 DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 {
@@ -195,6 +196,9 @@ void DocumentWidget::closeFile()
 {
     m_txt->clear();
     open = false;
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
+    t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
+    m_timer->stop();
 }
 
 //Initial box for review
@@ -237,11 +241,15 @@ void DocumentWidget::hideReview()
 //Getting the review
 void DocumentWidget::submitReview()
 {
+    //U_ID to get rating
+    DocumentsDB *d =new DocumentsDB();
+    d->addRatingToDocWithUID(4,m_slider->value());
     QString review; //Review will hold whatever is currently being held in the Review Text Box
     review = m_reviewText->toPlainText();
     qDebug() << "The review for " << path << " is " << review << " and is rated " << m_slider->value();
     m_reviewText->clear();
     writeReview();
+
 }
 
 //Get slider value
@@ -289,4 +297,5 @@ void DocumentWidget::writeReport()
 void DocumentWidget::clearReport()
 {
     m_reportText->clear();
+
 }
