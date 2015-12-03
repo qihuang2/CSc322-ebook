@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QLabel>
+#include <QModelIndex>
 
 class QTableWidget;
 class QVBoxLayout;
@@ -28,6 +29,7 @@ private:
     QHBoxLayout*        m_genreLayout;
     QVBoxLayout*        m_previewLayout;
     QHBoxLayout*        m_previewbuttonLayout;
+    QHBoxLayout*        m_ratingLayout;
 
     QPushButton*        m_refresh;
     QPushButton*        m_hidePreview;
@@ -41,8 +43,18 @@ private:
     QLabel*             m_title;
     QLabel*             m_author;
     QLabel*             m_genre;
+    QLabel*             m_rating;
+    QLabel*             m_booktitle;
+    QLabel*             m_bookauthor;
+    QLabel*             m_bookgenre;
+    QLabel*             m_bookrating;
 
     DocumentsDB*        m_db;
+
+    QString             Title;
+    QString             Author;
+    QString             Genre;
+    QString             Rating;
 
     void populateTable();
 
@@ -56,6 +68,7 @@ public slots:
     void s_refresh();
     void showPreview();
     void hidePreview();
+    void selectCell();
 };
 
 #endif // LIBRARYWIDGET_H

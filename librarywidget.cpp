@@ -35,10 +35,15 @@ void LibraryWidget::createWidgets() {
     m_openBook = new QPushButton("Open Book");
     m_openBook->setMaximumSize(QSize(150,50));
 
-
     m_title = new QLabel("Title: ");
     m_author = new QLabel("Author: ");
     m_genre = new QLabel("Genre: ");
+    m_rating = new QLabel("Rating: ");
+    m_booktitle = new QLabel(Title);
+    m_bookauthor = new QLabel(Author);
+    m_bookgenre = new QLabel(Genre);
+    m_bookrating = new QLabel(Rating);
+
 
     m_previewText = new QTextEdit(widget);
 
@@ -64,16 +69,23 @@ void LibraryWidget::createLayouts() {
     m_titleLayout = new QHBoxLayout();
     m_authorLayout = new QHBoxLayout();
     m_genreLayout = new QHBoxLayout();
+    m_ratingLayout = new QHBoxLayout();
     m_previewLayout = new QVBoxLayout();
     m_previewbuttonLayout = new QHBoxLayout();
 
-    m_previewLayout->addWidget(m_previewText); //textbox on top
+    m_previewLayout->addWidget(m_previewText); //Place textbox on top of preview layout
     m_titleLayout->addWidget(m_title);
-    m_previewLayout->addLayout(m_titleLayout); //title
+    m_titleLayout->addWidget(m_booktitle);
+    m_previewLayout->addLayout(m_titleLayout); //Place title into preview layout
     m_authorLayout->addWidget(m_author);
-    m_previewLayout->addLayout(m_authorLayout); //author
+    m_authorLayout->addWidget(m_bookauthor);
+    m_previewLayout->addLayout(m_authorLayout); //author into preview layout
     m_genreLayout->addWidget(m_genre);
-    m_previewLayout->addLayout(m_genreLayout); // genre
+    m_genreLayout->addWidget(m_bookgenre);
+    m_previewLayout->addLayout(m_genreLayout); // Place genre into preview layout
+    m_ratingLayout->addWidget(m_rating);
+    m_ratingLayout->addWidget(m_bookrating);
+    m_previewLayout->addLayout(m_ratingLayout); //Place rating into preview layout
     m_previewLayout->addWidget(m_previewWidget); //reviews + ratings
     m_previewbuttonLayout->addWidget(m_hidePreview);
     m_previewbuttonLayout->addWidget(m_openBook);
@@ -88,9 +100,14 @@ void LibraryWidget::createLayouts() {
     m_title->hide();
     m_author->hide();
     m_genre->hide();
+    m_rating->hide();
     m_previewWidget->hide();
     m_hidePreview->hide();
     m_openBook->hide();
+    m_booktitle->hide();
+    m_bookauthor->hide();
+    m_bookgenre->hide();
+    m_bookrating->hide();
 
     setLayout(m_mainLayout);
 }
@@ -130,16 +147,20 @@ void LibraryWidget::removeFileWithID(int id) {
     QDir().remove(docDir + "/" + QString::number(id) + ".txt");
 }
 
+//Refresh the table
 void LibraryWidget::refreshTable() {
     s_refresh();
 }
 
+//Triggers for each button or (double) click on table
 void LibraryWidget::createActions() {
     connect(m_refresh, SIGNAL(clicked()), this, SLOT(s_refresh()));
     connect(m_tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
+    connect(m_tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectCell()));
     connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));
 }
 
+//Show the Preview
 void LibraryWidget::showPreview()
 {
     m_previewText->show();
@@ -149,8 +170,14 @@ void LibraryWidget::showPreview()
     m_previewWidget->show();
     m_hidePreview->show();
     m_openBook->show();
+    m_booktitle->show();
+    m_bookauthor->show();
+    m_bookgenre->show();
+    m_rating->show();
+    m_bookrating->show();
 }
 
+//Hide the Preview
 void LibraryWidget::hidePreview()
 {
     m_previewText->hide();
@@ -160,4 +187,29 @@ void LibraryWidget::hidePreview()
     m_previewWidget->hide();
     m_hidePreview->hide();
     m_openBook->hide();
+    m_booktitle->hide();
+    m_bookauthor->hide();
+    m_bookgenre->hide();
+    m_rating->hide();
+    m_bookrating->hide();
+}
+
+//Get data of selected row and display in Preview
+void LibraryWidget::selectCell()
+{
+    //Get the row
+    QModelIndex currentIndex = m_tableWidget->currentIndex();
+    int row = currentIndex.row();
+
+    //Get the data in each column for that row
+    Title = m_tableWidget->item(row,0)->text();
+    Author = m_tableWidget->item(row,1)->text();
+    Genre = m_tableWidget->item(row,2)->text();
+    Rating = m_tableWidget->item(row,3)->text();
+
+    //Set the Strings
+    m_booktitle->setText(Title);
+    m_bookauthor->setText(Author);
+    m_bookgenre->setText(Genre);
+    m_bookrating->setText(Rating);
 }
