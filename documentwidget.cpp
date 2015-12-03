@@ -27,14 +27,17 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
         m_timer->start(1000);
     }
     writeReview();
+    writeReport();
 }
 
 //Layout for the Document Tab
 void DocumentWidget::createLayouts()
 {
     QWidget* widget = new QWidget();
+
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
-    m_reviewText = new QTextEdit(widget);
+    m_reviewText = new QTextEdit(widget); //Create a Review Box Widget
+    m_reportText = new QTextEdit(widget); //Create a Report Box Widget
 
     //Create Labels
     m_rating = new QLabel("Rate this book:");
@@ -52,6 +55,12 @@ void DocumentWidget::createLayouts()
     m_submitReview->setMaximumSize(QSize(150, 50));
     m_hideReview = new QPushButton("Hide Review Box");
     m_hideReview->setMaximumSize(QSize(150, 50));
+    m_hideReport = new QPushButton("Hide Report Box");
+    m_hideReport->setMaximumSize(QSize(150, 50));
+    m_submitReport = new QPushButton("Submit Report");
+    m_submitReport->setMaximumSize(QSize(150, 50));
+    m_clearReport = new QPushButton("Clear Report");
+    m_clearReport->setMaximumSize(QSize(150, 50));
 
     //Create the Slider with initial values
     m_slider = new QSlider(Qt::Horizontal);
@@ -68,6 +77,7 @@ void DocumentWidget::createLayouts()
     m_reviewLayout = new QVBoxLayout();
     m_reviewButtonLayout = new QHBoxLayout();
     m_ratingLayout = new QHBoxLayout();
+    m_reportLayout = new QHBoxLayout();
 
     m_mainLayout = new QVBoxLayout(widget);
     m_creditLayout->addWidget(m_time);
@@ -88,6 +98,15 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addWidget(m_rating);
     m_mainLayout->addLayout(m_ratingLayout);//Place the rating layout into main layout
     m_mainLayout->addLayout(m_reviewButtonLayout);//Place the review button layout into main layout
+    m_mainLayout->addWidget(m_reportText);
+    m_reportLayout->addWidget(m_clearReport);
+    m_reportLayout->addWidget(m_hideReport);
+    m_reportLayout->addWidget(m_submitReport);
+    m_mainLayout->addLayout(m_reportLayout);//Place the Report Layout into main layout
+    m_hideReport->hide();
+    m_reportText->hide();
+    m_clearReport->hide();
+    m_submitReport->hide();
     m_rating->hide();
     m_box->hide();
     m_slider->hide();
@@ -109,6 +128,10 @@ void DocumentWidget::createActions()
     connect(m_slider, SIGNAL(valueChanged(int)), m_box, SLOT(setValue(int)));
     connect(m_box, SIGNAL(valueChanged(int)), m_slider, SLOT(setValue(int)));
     connect(m_slider, SIGNAL(sliderReleased()), SLOT(getSliderValueandQuit));
+    connect(m_reportButton, SIGNAL(clicked()), this, SLOT(showReport()));
+    connect(m_clearReport, SIGNAL(clicked()), this, SLOT(clearReport()));
+    connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));
+    connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
 }
 
 // Counter Function
@@ -224,4 +247,44 @@ void DocumentWidget::getSliderValueandQuit()
 {
     if (m_slider->value() == m_slider->maximum())
         close();
+}
+
+//Show the Report Box
+void DocumentWidget::showReport()
+{
+    m_reportText->show();
+    m_clearReport->show();
+    m_hideReport->show();
+    m_submitReport->show();
+}
+
+//Hide the Report Box
+void DocumentWidget::hideReport()
+{
+    m_reportText->hide();
+    m_clearReport->hide();
+    m_hideReport->hide();
+    m_submitReport->hide();
+}
+
+//Submit the Report
+void DocumentWidget::submitReport()
+{
+    QString report;
+    report = m_reportText->toPlainText();
+    qDebug() << "The review for " << path << " is " << report;
+    m_reportText->clear();
+    writeReport();
+}
+
+//Initial line in the Report Box
+void DocumentWidget::writeReport()
+{
+    QString initialLine = "Hello, write your report here!";
+    m_reportText->append(initialLine);
+}
+
+void DocumentWidget::clearReport()
+{
+    m_reportText->clear();
 }
