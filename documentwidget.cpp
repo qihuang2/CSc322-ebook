@@ -25,7 +25,6 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
         m_timer=new QTimer(this);
         connect(m_timer,SIGNAL(timeout()),this,SLOT(s_counter()));
         m_timer->start(1000);
-
     }
     writeReview();
 }
@@ -36,6 +35,9 @@ void DocumentWidget::createLayouts()
     QWidget* widget = new QWidget();
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
     m_reviewText = new QTextEdit(widget);
+
+    //Create Labels
+    m_rating = new QLabel("Rate this book:");
 
     //Create the buttons
     m_reviewButton = new QPushButton("Review Document");
@@ -83,8 +85,10 @@ void DocumentWidget::createLayouts()
     m_reviewButtonLayout->addWidget(m_hideReview);
     m_reviewButtonLayout->addWidget(m_submitReview);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
+    m_mainLayout->addWidget(m_rating);
     m_mainLayout->addLayout(m_ratingLayout);//Place the rating layout into main layout
     m_mainLayout->addLayout(m_reviewButtonLayout);//Place the review button layout into main layout
+    m_rating->hide();
     m_box->hide();
     m_slider->hide();
     m_reviewText->hide();
@@ -157,6 +161,8 @@ void DocumentWidget::readFile(QString path)
         m_txt->append(line);
     }
     file.close(); //close the file
+    m_txt->moveCursor(QTextCursor::Start);//move the cursor to the top of the document
+    m_txt->ensureCursorVisible();
 }
 
 //close the (current) file
@@ -182,6 +188,7 @@ void DocumentWidget::clearReview()
 //Show the Review Box
 void DocumentWidget::showReview()
 {
+    m_rating->show();
     m_box->show();
     m_slider->show();
     m_reviewText->show();
@@ -193,6 +200,7 @@ void DocumentWidget::showReview()
 //Hide the Review Box
 void DocumentWidget::hideReview()
 {
+    m_rating->hide();
     m_box->hide();
     m_slider->hide();
     m_reviewText->hide();
@@ -207,6 +215,8 @@ void DocumentWidget::submitReview()
     QString review; //Review will hold whatever is currently being held in the Review Text Box
     review = m_reviewText->toPlainText();
     qDebug() << "The review for " << path << " is " << review << " and is rated " << m_slider->value();
+    m_reviewText->clear();
+    writeReview();
 }
 
 //Get slider value

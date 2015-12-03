@@ -15,6 +15,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QScrollBar>
 #include "baseuser.h"
 class DocumentWidget : public QWidget
 {
