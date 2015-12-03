@@ -2,6 +2,9 @@
 #define LIBRARYWIDGET_H
 
 #include <QWidget>
+#include <QHBoxLayout>
+#include <QTextEdit>
+#include <QLabel>
 
 class QTableWidget;
 class QVBoxLayout;
@@ -19,8 +22,26 @@ public:
 
 private:
     QVBoxLayout*        m_mainLayout;
+    QHBoxLayout*        m_tablewithpreviewLayout;
+    QHBoxLayout*        m_titleLayout;
+    QHBoxLayout*        m_authorLayout;
+    QHBoxLayout*        m_genreLayout;
+    QVBoxLayout*        m_previewLayout;
+    QHBoxLayout*        m_previewbuttonLayout;
+
     QPushButton*        m_refresh;
+    QPushButton*        m_hidePreview;
+    QPushButton*        m_openBook;
+
     QTableWidget*       m_tableWidget;
+    QTableWidget*       m_previewWidget;
+
+    QTextEdit*          m_previewText;
+
+    QLabel*             m_title;
+    QLabel*             m_author;
+    QLabel*             m_genre;
+
     DocumentsDB*        m_db;
 
     void populateTable();
@@ -33,6 +54,8 @@ private:
 
 public slots:
     void s_refresh();
+    void showPreview();
+    void hidePreview();
 };
 
 #endif // LIBRARYWIDGET_H

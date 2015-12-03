@@ -27,6 +27,21 @@ LibraryWidget::~LibraryWidget() {
 }
 
 void LibraryWidget::createWidgets() {
+
+    QWidget* widget = new QWidget();
+
+    m_hidePreview = new QPushButton("Return to table");
+    m_hidePreview->setMaximumSize(QSize(150,50));
+    m_openBook = new QPushButton("Open Book");
+    m_openBook->setMaximumSize(QSize(150,50));
+
+
+    m_title = new QLabel("Title: ");
+    m_author = new QLabel("Author: ");
+    m_genre = new QLabel("Genre: ");
+
+    m_previewText = new QTextEdit(widget);
+
     m_refresh = new QPushButton(tr("Refresh"));
     m_refresh->setFixedSize(QSize(100,50));
 
@@ -34,12 +49,49 @@ void LibraryWidget::createWidgets() {
     m_tableWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    m_previewWidget = new QTableWidget(); //Change this later to getRateDocs
+    m_previewWidget->setHorizontalHeaderLabels(QStringList() << "Ratings");
+    m_previewWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_previewWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void LibraryWidget::createLayouts() {
+
+    //Create the layout
     m_mainLayout = new QVBoxLayout();
-    m_mainLayout->addWidget(m_tableWidget);
+    m_tablewithpreviewLayout = new QHBoxLayout();
+    m_titleLayout = new QHBoxLayout();
+    m_authorLayout = new QHBoxLayout();
+    m_genreLayout = new QHBoxLayout();
+    m_previewLayout = new QVBoxLayout();
+    m_previewbuttonLayout = new QHBoxLayout();
+
+    m_previewLayout->addWidget(m_previewText); //textbox on top
+    m_titleLayout->addWidget(m_title);
+    m_previewLayout->addLayout(m_titleLayout); //title
+    m_authorLayout->addWidget(m_author);
+    m_previewLayout->addLayout(m_authorLayout); //author
+    m_genreLayout->addWidget(m_genre);
+    m_previewLayout->addLayout(m_genreLayout); // genre
+    m_previewLayout->addWidget(m_previewWidget); //reviews + ratings
+    m_previewbuttonLayout->addWidget(m_hidePreview);
+    m_previewbuttonLayout->addWidget(m_openBook);
+    m_previewLayout->addLayout(m_previewbuttonLayout); //Place the button layout into the Preview Layout
+    m_tablewithpreviewLayout->addWidget(m_tableWidget); //Place the Table Widget into the Preview Layout, will take up left side
+    m_tablewithpreviewLayout->addLayout(m_previewLayout); //Place the Preview Layout onto the right side.
+    m_mainLayout->addLayout(m_tablewithpreviewLayout); //Place the table and preview widgets into the mainlayout
     //m_mainLayout->addWidget(m_refresh);
+
+    //Hide the preview buttons and tables initially
+    m_previewText->hide();
+    m_title->hide();
+    m_author->hide();
+    m_genre->hide();
+    m_previewWidget->hide();
+    m_hidePreview->hide();
+    m_openBook->hide();
+
     setLayout(m_mainLayout);
 }
 
@@ -83,6 +135,29 @@ void LibraryWidget::refreshTable() {
 }
 
 void LibraryWidget::createActions() {
-    connect(m_refresh, SIGNAL(clicked()),
-            this, SLOT(s_refresh()));
+    connect(m_refresh, SIGNAL(clicked()), this, SLOT(s_refresh()));
+    connect(m_tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
+    connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));
+}
+
+void LibraryWidget::showPreview()
+{
+    m_previewText->show();
+    m_title->show();
+    m_author->show();
+    m_genre->show();
+    m_previewWidget->show();
+    m_hidePreview->show();
+    m_openBook->show();
+}
+
+void LibraryWidget::hidePreview()
+{
+    m_previewText->hide();
+    m_title->hide();
+    m_author->hide();
+    m_genre->hide();
+    m_previewWidget->hide();
+    m_hidePreview->hide();
+    m_openBook->hide();
 }

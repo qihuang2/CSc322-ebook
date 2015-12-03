@@ -103,6 +103,8 @@ void DocumentWidget::createLayouts()
     m_reportLayout->addWidget(m_hideReport);
     m_reportLayout->addWidget(m_submitReport);
     m_mainLayout->addLayout(m_reportLayout);//Place the Report Layout into main layout
+
+    //Hide the Report and Review Sections initially
     m_hideReport->hide();
     m_reportText->hide();
     m_clearReport->hide();
