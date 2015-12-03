@@ -13,6 +13,8 @@
 #include <QTimer>
 #include <QLabel>
 #include <QPushButton>
+#include <QSlider>
+#include <QSpinBox>
 #include "baseuser.h"
 class DocumentWidget : public QWidget
 {
@@ -29,6 +31,7 @@ public slots:
     void showReview();
     void hideReview();
     void submitReview();
+    void getSliderValueandQuit();
 
 private:
     void createLayouts();
@@ -44,9 +47,11 @@ private:
     QHBoxLayout *m_buttonLayout;
     QHBoxLayout *m_creditLayout;
     QHBoxLayout *m_reviewButtonLayout;
+    QHBoxLayout *m_ratingLayout;
 
     QLabel*			m_time;
     QLabel*			m_credits;
+    QLabel* m_rating;
 
     QPushButton* m_closeButton;
     QPushButton* m_submitReview;
@@ -55,10 +60,17 @@ private:
     QPushButton* m_reportButton;
     QPushButton *m_hideReview;
 
-    int				m_timevalue;
     QTimer*			m_timer;
-    int				m_currentCredits;
+
     BaseUser*		m_baseUser;
+
+    QSlider *m_slider;
+
+    QSpinBox *m_box;
+
+    int				m_timevalue;
+    int				m_currentCredits;
+
 };
 
 #endif // DOCUMENTWIDGET_H

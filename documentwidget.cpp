@@ -50,11 +50,22 @@ void DocumentWidget::createLayouts()
     m_submitReview->setMaximumSize(QSize(150, 50));
     m_hideReview = new QPushButton("Hide Review Box");
     m_hideReview->setMaximumSize(QSize(150, 50));
+
+    //Create the Slider with initial values
+    m_slider = new QSlider(Qt::Horizontal);
+    m_slider->setRange(0, 5);
+    m_slider->setValue(4);
+
+    //Create the Spin box
+    m_box = new QSpinBox;
+    m_box->setRange(0, 5);
+
     //Set the Layout
     m_buttonLayout = new QHBoxLayout();
     m_creditLayout = new QHBoxLayout();
     m_reviewLayout = new QVBoxLayout();
     m_reviewButtonLayout = new QHBoxLayout();
+    m_ratingLayout = new QHBoxLayout();
 
     m_mainLayout = new QVBoxLayout(widget);
     m_creditLayout->addWidget(m_time);
@@ -66,11 +77,16 @@ void DocumentWidget::createLayouts()
     m_buttonLayout->addWidget(m_closeButton);
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     m_reviewLayout->addWidget(m_reviewText);
+    m_ratingLayout->addWidget(m_slider);
+    m_ratingLayout->addWidget(m_box);
     m_reviewButtonLayout->addWidget(m_clearReview);
     m_reviewButtonLayout->addWidget(m_hideReview);
     m_reviewButtonLayout->addWidget(m_submitReview);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
-    m_mainLayout->addLayout(m_reviewButtonLayout);
+    m_mainLayout->addLayout(m_ratingLayout);//Place the rating layout into main layout
+    m_mainLayout->addLayout(m_reviewButtonLayout);//Place the review button layout into main layout
+    m_box->hide();
+    m_slider->hide();
     m_reviewText->hide();
     m_clearReview->hide();
     m_submitReview->hide();
@@ -86,6 +102,9 @@ void DocumentWidget::createActions()
     connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
     connect(m_hideReview, SIGNAL(clicked()), this, SLOT(hideReview()));
     connect(m_submitReview, SIGNAL(clicked()), this, SLOT(submitReview()));
+    connect(m_slider, SIGNAL(valueChanged(int)), m_box, SLOT(setValue(int)));
+    connect(m_box, SIGNAL(valueChanged(int)), m_slider, SLOT(setValue(int)));
+    connect(m_slider, SIGNAL(sliderReleased()), SLOT(getSliderValueandQuit));
 }
 
 // Counter Function
@@ -163,6 +182,8 @@ void DocumentWidget::clearReview()
 //Show the Review Box
 void DocumentWidget::showReview()
 {
+    m_box->show();
+    m_slider->show();
     m_reviewText->show();
     m_clearReview->show();
     m_submitReview->show();
@@ -172,6 +193,8 @@ void DocumentWidget::showReview()
 //Hide the Review Box
 void DocumentWidget::hideReview()
 {
+    m_box->hide();
+    m_slider->hide();
     m_reviewText->hide();
     m_clearReview->hide();
     m_submitReview->hide();
@@ -183,5 +206,12 @@ void DocumentWidget::submitReview()
 {
     QString review; //Review will hold whatever is currently being held in the Review Text Box
     review = m_reviewText->toPlainText();
-    qDebug() << "The review for " << path << " is " << review;
+    qDebug() << "The review for " << path << " is " << review << " and is rated " << m_slider->value();
+}
+
+//Get slider value
+void DocumentWidget::getSliderValueandQuit()
+{
+    if (m_slider->value() == m_slider->maximum())
+        close();
 }
