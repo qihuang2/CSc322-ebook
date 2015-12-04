@@ -22,6 +22,22 @@ public:
     void incrementComplaintsBy(int complaints);
     void incrementNumOfUploads();
 
+
+    //this returns documents currently in state 0, 1 or 2
+    //0 meaning SU still needs to approve or deny
+    //1 - SU denied and gave counter offer
+    //2 - SU accepted and no counter offer
+    QSqlQuery getPendingDocuments();
+
+    //SU can counter offer or not counter offer
+    //this function takes both into acount
+    //if SU counter offers, user gets counter offered credits
+    //else SU didn't counter offer so we get asking price
+    void approveSuperUserCounterForBook(int uid);
+
+    //RU rejects SU counter offer. document gets deleted
+    void rejectSuperUserCounterOffer(int uid);
+
 protected:
     UserInfoDB* m_userInfoDB;
 };

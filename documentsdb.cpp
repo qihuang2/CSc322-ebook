@@ -34,11 +34,13 @@ QSqlQuery DocumentsDB::getAllDocs(){
     return q;
 }
 
+
+//FIX ME: DON't AUTOAPPROVE
 void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QString summary, QString askingPrice){
     QSqlQuery query;
     //add document into doc_info DB with some initial values
     if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, asking_price, counter_offer, summary, is_deleted) "
-                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0,"+askingPrice+",null," + "'" + summary + "',0)"))
+                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 3,"+askingPrice+",null," + "'" + summary + "',0)"))
         qDebug()<<"Document added";
     else qDebug() <<"DOCSDB: " << query.lastError();
 }
