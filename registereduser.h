@@ -4,6 +4,7 @@
 #include "baseuser.h"
 class QString;
 class UserInfoDB;
+class QSqlQuery;
 
 class RegisteredUser:public BaseUser
 {

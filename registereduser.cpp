@@ -1,6 +1,7 @@
 #include "registereduser.h"
 #include <QString>
 #include "userinfodb.h"
+#include <QtSql>
 
 
 RegisteredUser::RegisteredUser(QString username, int userType) : BaseUser(username, userType)
