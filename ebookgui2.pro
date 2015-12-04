@@ -7,6 +7,8 @@
 QT       += core gui
 QT       += core gui sql
 
+CONFIG += rtti
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ebookgui2

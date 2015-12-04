@@ -1,6 +1,7 @@
 #ifndef DOCUMENTWIDGET_H
 #define DOCUMENTWIDGET_H
 
+#include <QCoreApplication>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -18,11 +19,15 @@
 #include <QScrollBar>
 #include <QLineEdit>
 #include "baseuser.h"
+#include <QPlainTextEdit>
+
 class DocumentWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit DocumentWidget(QWidget *parent = 0,BaseUser *m_baseuser=0);
+
+    void readFile(QString);
 
 signals:
 
@@ -43,11 +48,8 @@ private:
     void createLayouts();
     void createActions();
 
-    void readFile(QString);
-    void writeReview();
-    void writeReport();
+    void writeBook();
 
-    QTextEdit *m_txt;
     QTextEdit *m_reviewText;
     QTextEdit *m_reportText;
     QLineEdit *m_searchLine;
@@ -77,9 +79,9 @@ private:
     QPushButton *m_clearReport;
     QPushButton *m_searchButton;
 
-    QTimer*			m_timer;
+    QTimer*	m_timer;
 
-    BaseUser*		m_baseUser;
+    BaseUser* m_baseUser;
 
     QSlider *m_slider;
 

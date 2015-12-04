@@ -11,6 +11,8 @@ WelcomeDialog::WelcomeDialog(QString *username, int *userType)
     m_userType = userType;
     m_loginDB = new LoginDB();
 
+    //m_loginDB->deleteTable("doc_info");
+
     // Create and configure buttons
     createWidgets();
     // Add buttons to the layout

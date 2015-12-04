@@ -32,7 +32,6 @@ MainWindow::MainWindow(QString loginUsername, int userType)
     createLayouts();
     createActions();
 
-
     setCentralWidget(m_centralWidget);
     setMinimumSize(600, 400);
     setWindowTitle("图书馆");
@@ -42,10 +41,9 @@ void MainWindow::createWidgets() {
     m_tabWidget = new QTabWidget();
 
     // create the widgets to be added to the tabs
-    LibraryWidget* lib = new LibraryWidget(m_tabWidget);
+    lib = new LibraryWidget(this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
-    DocumentWidget* doc = new DocumentWidget(m_tabWidget,m_user);
-
+    doc = new DocumentWidget(m_tabWidget,m_user);
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
     m_tabWidget->addTab(doc, "Document");
@@ -88,6 +86,7 @@ void MainWindow::createActions() {
             this, SLOT(close()));
     connect(m_tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(s_refreshTable(int)));
+    //connect(lib->m_openBook, SIGNAL(clicked()),this,SLOT(s_openBook()));
 }
 
 void MainWindow::s_refreshTable(int current) {
@@ -95,6 +94,12 @@ void MainWindow::s_refreshTable(int current) {
         LibraryWidget* w = (LibraryWidget*)m_tabWidget->widget(LIB);
         w->s_refresh();
     }
+}
+void MainWindow::s_openBook()
+{
+    QString p = lib->getPath();
+    qDebug()<< "The path in main window: " << p;
+    doc->readFile(p);
 }
 
 MainWindow::~MainWindow() {}

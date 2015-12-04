@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QModelIndex>
 
+class MainWindow;
 class QTableWidget;
 class QVBoxLayout;
 class QPushButton;
@@ -16,12 +17,13 @@ class LibraryWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LibraryWidget(QWidget *parent = 0);
+    LibraryWidget(MainWindow* mw, QWidget *parent = 0);
     ~LibraryWidget();
 
     void refreshTable();
 
 private:
+    MainWindow*         m_parent;
     QVBoxLayout*        m_mainLayout;
     QHBoxLayout*        m_tablewithpreviewLayout;
     QHBoxLayout*        m_titleLayout;
@@ -64,11 +66,15 @@ private:
 
     void removeFileWithID(int id);
 
+    int current_row;
+
 public slots:
     void s_refresh();
     void showPreview();
     void hidePreview();
     void selectCell();
+    void openBook();
+    QString getPath();
 };
 
 #endif // LIBRARYWIDGET_H

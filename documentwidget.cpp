@@ -3,32 +3,15 @@
 #include "registereduser.h"
 #include "documentsdb.h"
 
-bool open = false; //Variable to keep track if a document is open
-              //false if no document open, true if document is open
-QString path = "/Users/youshenghua/Desktop/1.txt";
+QString g_path;
+QTextEdit *m_txt;
 
 DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 {
     //set up Timer
     m_baseUser=bu;
-    m_time=new QLabel("Time:0:00");
-    m_credits=new QLabel("Credits:0");
     createLayouts(); //Create layout within Document Tab
     createActions();
-    if (open == true)
-    {
-        closeFile();
-    }
-    if (open == false)
-    {
-        readFile(path);
-        m_timevalue=0;
-        m_timer=new QTimer(this);
-        connect(m_timer,SIGNAL(timeout()),this,SLOT(s_counter()));
-        m_timer->start(1000);
-    }
-    writeReview();
-    writeReport();
 }
 
 //Layout for the Document Tab
@@ -44,6 +27,18 @@ void DocumentWidget::createLayouts()
     //Create Labels
     m_rating = new QLabel("Rate this book:");
     m_searchLabel=new QLabel("Search:");
+
+    m_txt->setText("Open a book, its text goes here!");
+    m_txt->setReadOnly(true);//text box is read only
+
+    m_reviewText->append("Write your review here.");
+
+    m_reportText->append("Write your report here.");
+
+    //Create Labels
+    m_rating = new QLabel("Rate this book:");
+    m_time = new QLabel("Time: 0:00");
+    m_credits = new QLabel("Credits: 0");
 
     //Create the buttons
     m_reviewButton = new QPushButton("Review Document");
@@ -74,6 +69,11 @@ void DocumentWidget::createLayouts()
     //Create the Spin box
     m_box = new QSpinBox;
     m_box->setRange(0, 5);
+    m_box->setValue(4);
+
+    //Create the timer
+    m_timer = new QTimer(this);
+    m_timevalue = 0;
 
     //Set the Layout
     m_buttonLayout = new QHBoxLayout();
@@ -144,6 +144,7 @@ void DocumentWidget::createActions()
     connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));
     connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
     connect(m_searchButton, SIGNAL(clicked()), this, SLOT(s_search()));
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(s_counter()));
 }
 
 // Counter Function
@@ -213,13 +214,12 @@ void DocumentWidget::s_search()
                       }
                   }
 }
+#include <QLineEdit>
 
 //read the file
 void DocumentWidget::readFile(QString path)
 {
-    m_txt->setReadOnly(true);//text box is read only
-    open = true; //indicate there a file currently open
-
+    m_txt->clear();
     QFile file(path); //open file
     QString line;
 
@@ -233,28 +233,22 @@ void DocumentWidget::readFile(QString path)
     while(!in.atEnd())
     {
         line = in.readLine();
+        qDebug() << "The line is " << line;
         m_txt->append(line);
     }
     file.close(); //close the file
     m_txt->moveCursor(QTextCursor::Start);//move the cursor to the top of the document
-    m_txt->ensureCursorVisible();
+    qDebug() << "At the top";
+    m_timer->start(1000);
 }
 
 //close the (current) file
 void DocumentWidget::closeFile()
 {
     m_txt->clear();
-    open = false;
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
     m_timer->stop();
-}
-
-//Initial box for review
-void DocumentWidget::writeReview()
-{
-    QString initialLine = "Hello, write your review here!";
-    m_reviewText->append(initialLine);
 }
 
 //Clear the current stuff written in Review
@@ -295,9 +289,8 @@ void DocumentWidget::submitReview()
     d->addRatingToDocWithUID(4,m_slider->value());
     QString review; //Review will hold whatever is currently being held in the Review Text Box
     review = m_reviewText->toPlainText();
-    qDebug() << "The review for " << path << " is " << review << " and is rated " << m_slider->value();
+    qDebug() << "The review for " << g_path << ": " << review << " and is rated " << m_slider->value();
     m_reviewText->clear();
-    writeReview();
 
 }
 
@@ -331,20 +324,11 @@ void DocumentWidget::submitReport()
 {
     QString report;
     report = m_reportText->toPlainText();
-    qDebug() << "The review for " << path << " is " << report;
+    qDebug() << "The review for " << g_path << ": " << report;
     m_reportText->clear();
-    writeReport();
-}
-
-//Initial line in the Report Box
-void DocumentWidget::writeReport()
-{
-    QString initialLine = "Hello, write your report here!";
-    m_reportText->append(initialLine);
 }
 
 void DocumentWidget::clearReport()
 {
     m_reportText->clear();
-
 }

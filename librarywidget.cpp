@@ -1,19 +1,24 @@
 #include "librarywidget.h"
 #include "constants.h"
+#include "mainwindow.h"
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QHeaderView>
 #include "documentsdb.h"
+#include "documentwidget.h"
 #include <QDebug>
 #include <QtSql>
 
 // Values for books in table
 enum {TITLE, AUTHOR, GENRE, RATING};
 
-LibraryWidget::LibraryWidget(QWidget *parent) : QWidget(parent)
+LibraryWidget::LibraryWidget(MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
+    m_parent = mw;
     m_db = new DocumentsDB();
+
+    current_row = 0;
 
     createWidgets();
     createLayouts();
@@ -158,6 +163,7 @@ void LibraryWidget::createActions() {
     connect(m_tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectCell()));
     connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));
+    connect(m_openBook, SIGNAL(clicked()), m_parent, SLOT(s_openBook()));
 }
 
 //Show the Preview
@@ -200,6 +206,7 @@ void LibraryWidget::selectCell()
     //Get the row
     QModelIndex currentIndex = m_tableWidget->currentIndex();
     int row = currentIndex.row();
+    current_row = row;
 
     //Get the data in each column for that row
     Title = m_tableWidget->item(row,0)->text();
@@ -212,4 +219,15 @@ void LibraryWidget::selectCell()
     m_bookauthor->setText(Author);
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
+}
+
+QString LibraryWidget::getPath()
+{
+    QString path = docDir + "/" + QString::number(current_row+1) + ".txt";
+    return path;
+}
+
+void LibraryWidget::openBook()
+{
+
 }

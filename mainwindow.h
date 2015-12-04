@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include "documentwidget.h"
+#include "librarywidget.h"
 class QWidget;
 class QLabel;
 class QVBoxLayout;
@@ -26,6 +27,8 @@ private:
     QLabel*         m_loginLabel;       /* Displays login status. */
     QTabWidget*     m_tabWidget;        /* Central widget to hold Library and Upload tabs. */
     QPushButton*    m_exitButton;
+    DocumentWidget* doc;
+    LibraryWidget* lib;
 
     void createWidgets();
     void createLayouts();
@@ -33,6 +36,7 @@ private:
 
 private slots:
     void s_refreshTable(int current);
+    void s_openBook();
 };
 
 #endif // MAINWINDOW_H
