@@ -24,21 +24,21 @@ QSqlQuery DocumentsDB::getDocsUploadedByUser(QString username){
     QSqlQuery query;
     //there is no check to see if this command is run
     //I did it this way so it is easier to iterate through using : while (query.next())
-    query.exec("SELECT * FROM doc_info WHERE posted_by = '"+username+"'");
+    query.exec("SELECT * FROM doc_info WHERE posted_by = '"+username+"' AND is_deleted = 0");
     return query;
 }
 
 QSqlQuery DocumentsDB::getAllDocs(){
     QSqlQuery q;
-    q.exec("SELECT * FROM doc_info");
+    q.exec("SELECT * FROM doc_info WHERE approved = 3 AND is_deleted = 0");
     return q;
 }
 
-void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QString summary){
+void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QString summary, QString askingPrice){
     QSqlQuery query;
     //add document into doc_info DB with some initial values
-    if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, summary) "
-                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0,'" + summary + "')"))
+    if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, summary, is_deleted) "
+                   "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 0,"+askingPrice+",null," + "'" + summary + "',0)"))
         qDebug()<<"Document added";
     else qDebug() <<"DOCSDB: " << query.lastError();
 }
@@ -54,7 +54,7 @@ void DocumentsDB::approveDocumentWithUID(int id){
 void DocumentsDB::deleteDocumentWithUID(int id){
     QSqlQuery q;
     //delete row where u_id == id
-    if(q.exec("DELETE FROM doc_info WHERE u_id = "+QString::number(id)))
+    if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(id)))
         qDebug()<< "Document has been deleted.";
     else qDebug()<<q.lastError();
 }
@@ -121,7 +121,7 @@ QString DocumentsDB::getPathToDocWithUID(int id){
 //returns -1 if error
 int DocumentsDB::getNumDocs() {
     QSqlQuery q;
-    if(q.exec("SELECT COUNT(*) FROM doc_info")){
+    if(q.exec("SELECT COUNT(*) FROM doc_info WHERE approved = 3 AND is_deleted = 0")){
         return q.first() ? q.value(0).toInt() : -1;
     }
     else {

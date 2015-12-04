@@ -17,8 +17,20 @@ class QSqlQuery;
 //6     num_of_ratings:       total number of people who rated the book
 //7     views:                total number of people that read the document
 //8     num_of_complaints:    number of users who complained about the book
-//9     approved:             document has been approved by SU
-//10    summary               document summary. LIMITED TO 250 CHARACTERS
+//9     approved:             0 - pening SU approval, 1 - SU denied with counter offer,
+//                              2 - SU approved without counter offer, 3 - user approves / approves counter
+//10    asking_price          how much the user wants for uplaoding document
+//11    counter_offer         SU counter offer for document
+//12    summary               document summary. LIMITED TO 250 CHARACTERS
+//13    is_deleted            document has been deleted
+
+
+
+//the column "approved" has 3 states:
+//0 : user just uploaded it. Still need a superUSer to approve it
+//1 : super user denied document and has presented a counter offer
+//2 : super user approved without a counter offer
+//3 : document has been approved by superuser and user confirms the counter offer if counter offer was present
 
 
 

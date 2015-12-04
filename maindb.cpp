@@ -83,7 +83,10 @@ MainDB::MainDB()
         //views: total number of people that read the document
         //num_of_complaints: number of users who complained about the book
         //approved: document has been approved by SU
+        //asking_price: how much user asks for uploud
+        //counter_offer: super user presents a counter offer
         //summary: document summary. Limited to 250 characters
+        //is_deleted: document has been deleted
         qry.prepare( "CREATE TABLE IF NOT EXISTS doc_info ("
                                                            "u_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                                            "title VARCHAR(25) NOT NULL, "
@@ -95,7 +98,10 @@ MainDB::MainDB()
                                                            "views INT NOT NULL,"
                                                            "num_of_complaints INT NOT NULL, "
                                                            "approved TINYINT NOT NULL, "
+                                                           "asking_price INT NOT NULL,"
+                                                           "counter_offer INT,"
                                                            "summary VARCHAR(250),"
+                                                           "is_deleted INT NOT NULL,"
                                                            "FOREIGN KEY (posted_by) REFERENCES user_info(username)"
                                                         ");");
         if( !qry.exec() ){
