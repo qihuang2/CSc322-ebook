@@ -138,7 +138,7 @@ void DocumentWidget::createActions()
     connect(m_submitReview, SIGNAL(clicked()), this, SLOT(submitReview()));
     connect(m_slider, SIGNAL(valueChanged(int)), m_box, SLOT(setValue(int)));
     connect(m_box, SIGNAL(valueChanged(int)), m_slider, SLOT(setValue(int)));
-    connect(m_slider, SIGNAL(sliderReleased()), SLOT(getSliderValueandQuit));
+    connect(m_slider, SIGNAL(sliderReleased()), this, SLOT(getSliderValueandQuit()));
     connect(m_reportButton, SIGNAL(clicked()), this, SLOT(showReport()));
     connect(m_clearReport, SIGNAL(clicked()), this, SLOT(clearReport()));
     connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));

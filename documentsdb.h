@@ -60,7 +60,7 @@ public:
 
     //add document to doc_info
     //NOTE: summary has to be limited to 250 characters
-    void addDocument(QString title, QString posted_by, int genre, QString summary);
+    void addDocument(QString title, QString posted_by, int genre, QString summary, QString askingPrice);
 
     //approve uploaded document
     void approveDocumentWithUID(int id);

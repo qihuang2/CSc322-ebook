@@ -93,7 +93,7 @@ void UploadWidget::s_upload() {
         QFile::copy(m_fileLabel->text(), newPath);
         // add to database
         // no genre or summaries for now
-        m_db->addDocument(m_titleField->text().trimmed(), m_authorField->text().trimmed(), 0, "hello");
+        m_db->addDocument(m_titleField->text().trimmed(), m_authorField->text().trimmed(), 0, "hello", "55");
 
         m_titleField->clear();
         m_authorField->clear();
