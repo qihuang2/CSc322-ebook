@@ -39,9 +39,11 @@ void DocumentWidget::createLayouts()
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
     m_reviewText = new QTextEdit(widget); //Create a Review Box Widget
     m_reportText = new QTextEdit(widget); //Create a Report Box Widget
+    m_searchLine = new QLineEdit(widget);
 
     //Create Labels
     m_rating = new QLabel("Rate this book:");
+    m_searchLabel=new QLabel("Search:");
 
     //Create the buttons
     m_reviewButton = new QPushButton("Review Document");
@@ -62,6 +64,7 @@ void DocumentWidget::createLayouts()
     m_submitReport->setMaximumSize(QSize(150, 50));
     m_clearReport = new QPushButton("Clear Report");
     m_clearReport->setMaximumSize(QSize(150, 50));
+    m_searchButton= new QPushButton("Find");
 
     //Create the Slider with initial values
     m_slider = new QSlider(Qt::Horizontal);
@@ -79,11 +82,16 @@ void DocumentWidget::createLayouts()
     m_reviewButtonLayout = new QHBoxLayout();
     m_ratingLayout = new QHBoxLayout();
     m_reportLayout = new QHBoxLayout();
+    m_searchLayout = new QHBoxLayout();
 
     m_mainLayout = new QVBoxLayout(widget);
     m_creditLayout->addWidget(m_time);
     m_creditLayout->addWidget(m_credits);
     m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
+    m_searchLayout->addWidget(m_searchLabel);
+    m_searchLayout->addWidget(m_searchLine);
+    m_searchLayout->addWidget(m_searchButton);
+    m_mainLayout->addLayout(m_searchLayout);
     m_mainLayout->addWidget(m_txt); //Place the Text Box Widget into the main layout
     m_buttonLayout->addWidget(m_reviewButton);
     m_buttonLayout->addWidget(m_reportButton);
@@ -135,6 +143,7 @@ void DocumentWidget::createActions()
     connect(m_clearReport, SIGNAL(clicked()), this, SLOT(clearReport()));
     connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));
     connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
+    connect(m_searchButton, SIGNAL(clicked()), this, SLOT(s_search()));
 }
 
 // Counter Function
@@ -164,6 +173,46 @@ void DocumentWidget::s_counter()
 
 }
 
+//search function
+void DocumentWidget::s_search()
+{
+    QString searchString=m_searchLine->text();
+    QTextDocument *document=m_txt->document();
+
+    bool found = false;
+
+         if (isFirstTime == false)
+             document->undo();
+         if (searchString.isEmpty())
+         {
+             QMessageBox::information(this, tr("Empty Search Field"),
+                     "Please enter a word.");
+         }
+         else
+         {
+             QTextCursor highlightCursor(document);
+             QTextCursor cursor(document);
+             cursor.beginEditBlock();
+             QTextCharFormat plainFormat(highlightCursor.charFormat());
+             QTextCharFormat colorFormat = plainFormat;
+             colorFormat.setForeground(Qt::red);
+             while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
+                 highlightCursor = document->find(searchString, highlightCursor, QTextDocument::FindWholeWords);
+                 if (!highlightCursor.isNull()) {
+                     found = true;
+                     highlightCursor.movePosition(QTextCursor::WordRight,
+                                            QTextCursor::KeepAnchor);
+                     highlightCursor.mergeCharFormat(colorFormat);
+                 }
+             }
+             cursor.endEditBlock();
+             isFirstTime = false;
+                      if (found == false) {
+                          QMessageBox::information(this, tr("Word Not Found"),
+                              "Sorry, the word cannot be found.");
+                      }
+                  }
+}
 
 //read the file
 void DocumentWidget::readFile(QString path)

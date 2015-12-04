@@ -16,6 +16,7 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QScrollBar>
+#include <QLineEdit>
 #include "baseuser.h"
 class DocumentWidget : public QWidget
 {
@@ -37,7 +38,7 @@ public slots:
     void showReport();
     void hideReport();
     void submitReport();
-
+    void s_search();
 private:
     void createLayouts();
     void createActions();
@@ -49,6 +50,7 @@ private:
     QTextEdit *m_txt;
     QTextEdit *m_reviewText;
     QTextEdit *m_reportText;
+    QLineEdit *m_searchLine;
 
     QVBoxLayout *m_mainLayout;
     QVBoxLayout *m_reviewLayout;
@@ -57,10 +59,12 @@ private:
     QHBoxLayout *m_reviewButtonLayout;
     QHBoxLayout *m_ratingLayout;
     QHBoxLayout *m_reportLayout;
+    QHBoxLayout *m_searchLayout;
 
     QLabel*	m_time;
     QLabel* m_credits;
     QLabel* m_rating;
+    QLabel* m_searchLabel;
 
     QPushButton* m_closeButton;
     QPushButton* m_submitReview;
@@ -71,6 +75,7 @@ private:
     QPushButton *m_hideReport;
     QPushButton *m_submitReport;
     QPushButton *m_clearReport;
+    QPushButton *m_searchButton;
 
     QTimer*			m_timer;
 
@@ -82,6 +87,7 @@ private:
 
     int				m_timevalue;
     int				m_currentCredits;
+    bool isFirstTime;
 
 };
 
