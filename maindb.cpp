@@ -25,7 +25,7 @@ MainDB::MainDB()
     if(MainDB::st_mainDB == NULL){
 
         MainDB::st_mainDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-        MainDB::st_mainDB->setDatabaseName("ebookDB.db");
+        MainDB::st_mainDB->setDatabaseName("/Users/youshenghua/Desktop/ebookDB.db");
 
         if(!MainDB::st_mainDB->open()){
             qDebug()<<"Something went wrong connecting to DB.";
@@ -108,6 +108,14 @@ MainDB::MainDB()
             qDebug()<<"failed to create doc_info";
            qDebug() << qry.lastError();
         }
+          qry.prepare( "CREATE TABLE IF NOT EXISTS History ("
+                                                              "username VARCHAR(12), "
+                                                              "bookname VARCHAR(25), "
+                                                              "author VARCHAR(25) NOT NULL,   PRIMARY KEY(username,bookname) "
+                                                              ");" );
+           if( !qry.exec() )
+              qDebug() << qry.lastError();
+
     }
 }
 

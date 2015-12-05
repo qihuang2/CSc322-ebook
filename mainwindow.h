@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "documentwidget.h"
 #include "librarywidget.h"
+#include "historydb.h"
+#include <QTextEdit>
 class QWidget;
 class QLabel;
 class QVBoxLayout;
@@ -29,7 +31,8 @@ private:
     QPushButton*    m_exitButton;
     DocumentWidget* doc;
     LibraryWidget* lib;
-
+    QString	m_LoginUserName;
+    QTextEdit*			m_historyText;
     void createWidgets();
     void createLayouts();
     void createActions();

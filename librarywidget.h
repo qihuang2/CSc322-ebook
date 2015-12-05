@@ -6,7 +6,7 @@
 #include <QTextEdit>
 #include <QLabel>
 #include <QModelIndex>
-
+#include "historydb.h"
 class MainWindow;
 class QTableWidget;
 class QVBoxLayout;
@@ -17,7 +17,7 @@ class LibraryWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LibraryWidget(MainWindow* mw, QWidget *parent = 0);
+    LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent = 0);
     ~LibraryWidget();
 
     void refreshTable();
@@ -57,7 +57,7 @@ private:
     QString             Author;
     QString             Genre;
     QString             Rating;
-
+    QString				m_loginName;
     void populateTable();
 
     void createWidgets();
@@ -73,7 +73,7 @@ public slots:
     void showPreview();
     void hidePreview();
     void selectCell();
-    void openBook();
+    void s_addHistory();
     QString getPath();
 };
 

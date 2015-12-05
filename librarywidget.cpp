@@ -13,9 +13,10 @@
 // Values for books in table
 enum {TITLE, AUTHOR, GENRE, RATING};
 
-LibraryWidget::LibraryWidget(MainWindow* mw, QWidget *parent) : QWidget(parent)
+LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
     m_parent = mw;
+    m_loginName=loginUesrName;
     m_db = new DocumentsDB();
 
     current_row = 0;
@@ -163,6 +164,7 @@ void LibraryWidget::createActions() {
     connect(m_tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectCell()));
     connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));
+    connect(m_openBook, SIGNAL(clicked()), this, SLOT(s_addHistory()));
     connect(m_openBook, SIGNAL(clicked()), m_parent, SLOT(s_openBook()));
 }
 
@@ -227,7 +229,8 @@ QString LibraryWidget::getPath()
     return path;
 }
 
-void LibraryWidget::openBook()
+void LibraryWidget::s_addHistory()
 {
-
+    HistoryDB *h =new HistoryDB();
+    h->addHistory(m_loginName,m_booktitle->text(),m_bookauthor->text());
 }
