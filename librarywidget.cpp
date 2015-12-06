@@ -228,10 +228,12 @@ void LibraryWidget::selectCell()
     }
 
     QTextStream in(&file); //read into file
-    while(!in.atEnd())
+    int i = 0;
+    while(!in.atEnd() and i < 10)
     {
-        line = in.readLine();
+        line = in.readLine(i);
         m_previewText->append(line);
+        i++;
     }
     file.close(); //close the file
 

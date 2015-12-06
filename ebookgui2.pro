@@ -26,13 +26,13 @@ SOURCES += main.cpp\
     logindb.cpp \
     userinfodb.cpp \
     baseuser.cpp \
-    visitinguser.cpp \
     registereduser.cpp \
     documentwidget.cpp \
     documentsdb.cpp \
     constants.cpp \
     profilewidget.cpp \
-    historydb.cpp
+    historydb.cpp \
+    superuser.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
@@ -44,13 +44,13 @@ HEADERS  += mainwindow.h \
     logindb.h \
     userinfodb.h \
     baseuser.h \
-    visitinguser.h \
     registereduser.h \
     documentwidget.h \
     documentsdb.h \
     constants.h \
     profilewidget.h \
-    historydb.h
+    historydb.h \
+    superuser.h
 
 FORMS    +=
 

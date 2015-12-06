@@ -34,6 +34,18 @@ class QSqlQuery;
 
 
 
+
+//rating_info has the following columns
+//0         username        name of the user
+//1         book_id         u_id of the book
+
+//report_info has the following columns:
+//0         username        name of user
+//1         book_id         book id
+//2         reason          reason for report
+
+
+
 class DocumentsDB : public MainDB
 {
 public:
@@ -69,13 +81,13 @@ public:
     void deleteDocumentWithUID(int id);
 
     //adds 1 complaint to document
-    void addComplaintToDocumentWithUID(int id);
+    void addComplaintToDocumentWithUID(QString username, int book_id, QString reason);
 
     //increment view count of document with u_id == id
     void addViewToDocWithUID(int id);
 
     //add new rating
-    void addRatingToDocWithUID(int id, float newRating);
+    void addRatingToDocWithUID(QString username, int id, float newRating);
 
     //return a QString with path to document
     QString getPathToDocWithUID(int id);
@@ -96,6 +108,21 @@ public:
     int getnumSumm(QString);
 
     QString getSummary(QString);
+
+
+    //check if user has reported book already
+    bool userHasReportedBook(QString username, int book_id);
+
+
+    //checks if user has rated book
+    bool userHasRatedBook(QString username, int book_id);
+
+    //list of documents that have complaints
+    //NOTE: The documents only have the following information:
+    //username : name of user who reported the book
+    //book_id : book id of the book
+    //reason : reason for reporting the book
+    QSqlQuery getAllDocumentsWithComplaints();
 };
 
 #endif // DOCUMENTSDB_H

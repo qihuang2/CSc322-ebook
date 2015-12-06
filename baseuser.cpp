@@ -1,15 +1,15 @@
 #include "baseuser.h"
 
-BaseUser::BaseUser(QString username, int userType)
+BaseUser::BaseUser()
 {
-    m_username = username;
-    m_userType = userType;
+    m_username = "Visiting User";
+    m_userType = VISITING;
 }
 
 QString BaseUser::getUsername(){
     return m_username;
 }
 
-int BaseUser::getUserType(){
+BaseUser::UserType BaseUser::getUserType(){
     return m_userType;
 }

@@ -108,6 +108,8 @@ MainDB::MainDB()
             qDebug()<<"failed to create doc_info";
            qDebug() << qry.lastError();
         }
+
+
           qry.prepare( "CREATE TABLE IF NOT EXISTS History ("
                                                               "username VARCHAR(12), "
                                                               "bookname VARCHAR(25), "
@@ -115,6 +117,40 @@ MainDB::MainDB()
                                                               ");" );
            if( !qry.exec() )
               qDebug() << qry.lastError();
+
+           //creates the table 'rating_info' if it doesn't exist
+           //
+           //List of user and the books they rated
+           //CONTAINS-
+           //username: username of user
+           //book_id: id of book
+           qry.prepare( "CREATE TABLE IF NOT EXISTS rating_info ("
+                                                           "username VARCHAR(12) NOT NULL, "
+                                                           "book_id INTEGER NOT NULL, "
+                                                           "PRIMARY KEY (username, book_id)"
+                                                           ");" );
+           if( !qry.exec() ){
+               qDebug() << qry.lastError();
+               qDebug()<<"Book rating wasn't created";
+           }
+
+           //creates the table 'report_info' if it doesn't exist
+           //
+           //List of user and the books the reason for reporting
+           //CONTAINS-
+           //username: username of user
+           //book_id: id of book
+           //reason: reason for reporting
+           qry.prepare( "CREATE TABLE IF NOT EXISTS report_info ("
+                                                                 "username VARCHAR(12) NOT NULL, "
+                                                                 "book_id INTEGER NOT NULL, "
+                                                                 "reason VARCHAR(100) NOT NULL,"
+                                                                 "PRIMARY KEY (username, book_id)"
+                                                                 ");");
+           if( !qry.exec() ){
+                qDebug() << qry.lastError();
+                qDebug()<<"Book reporting wasn't created";
+           }
 
     }
 }
@@ -190,15 +226,14 @@ bool MainDB::isBanned(QString username){
     }
 }
 
-int MainDB::getAccountType(QString username){
+QSqlQuery MainDB::getAccount(QString username){
     username = username.toLower();
     QSqlQuery q;
-    if(q.exec("SELECT account_type FROM users WHERE username = '"+username+"'")){
-        q.next();
-        return (q.value(0).toInt()) ;
+    if(q.exec("SELECT * FROM users WHERE username = '"+username+"'")){
+        return (q) ;
     }else {
         qDebug() << q.lastError();
-        return 0;
+        return q;
     }
 }
 

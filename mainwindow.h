@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QString loginUsername, int userType);
+    MainWindow(QString loginUsername);
     ~MainWindow();
 
 private:

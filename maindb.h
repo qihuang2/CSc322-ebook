@@ -41,8 +41,8 @@ public:
     //check if user is banned
     bool isBanned(QString username);
 
-    //get account type
-    int getAccountType(QString username);
+    //get account
+    int getAccount(QString username);
 
      //MAKE SURE YOU CLOSE THE DB WHEN YOU FINISH USING IT
     static void closeDB();

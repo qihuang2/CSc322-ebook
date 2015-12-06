@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "librarywidget.h"
 #include "registereduser.h"
-#include "visitinguser.h"
 #include "uploadwidget.h"
 #include "documentwidget.h"
 #include "profilewidget.h"
@@ -16,16 +15,16 @@
 
 enum {LIB, UP, DOC};
 
-MainWindow::MainWindow(QString loginUsername, int userType)
+MainWindow::MainWindow(QString loginUsername)
 {
     //if is visiting user
-    if (userType == 0) m_user = new VisitingUser();
+    //if (userType == 0) m_user = new VisitingUser();
 
     //if is registered user
-    else if (userType == 1) m_user = new RegisteredUser(loginUsername);
+    //else if (userType == 1) m_user = new RegisteredUser(loginUsername);
 
     //need a superuser class. using registed user for the moment
-    else m_user = new RegisteredUser(loginUsername);
+    //else m_user = new RegisteredUser(loginUsername);
 
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();

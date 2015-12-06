@@ -9,11 +9,10 @@
 #include <QMessageBox>
 
 
-LoginWidget::LoginWidget(LoginDB* db, QString* username, int* userType, QWidget* parent) : QDialog(parent)
+LoginWidget::LoginWidget(LoginDB* db, QString* username, QWidget* parent) : QDialog(parent)
 {
     m_loginDB = db;
     m_username = username;
-    m_userType = userType;
 
     setFixedSize(320, 150);
     setModal(true);
@@ -75,7 +74,6 @@ void LoginWidget::s_onLogin(){
         QMessageBox::information(this, tr("Warning"), "Account is banned.");
     }else {
         *m_username = username;
-        *m_userType = m_loginDB->getAccountType(username);
         accept();
     }
 }
