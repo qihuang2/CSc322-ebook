@@ -61,16 +61,28 @@ void DocumentsDB::deleteDocumentWithUID(int id){
     else qDebug()<<q.lastError();
 }
 
-void DocumentsDB::addComplaintToDocumentWithUID(int id){
+void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, QString reason){
     QSqlQuery q = this->getDocInfoForUID(id);
     //if doc was found
     if(q.first()){
         //get current number of complaints
         int currentComplaints = q.value(8).toInt();
         //add complaint and update database value
-        if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints+1)+" WHERE u_id = "+QString::number(id)))
-            qDebug()<< "Complaint recorded.";
-        else qDebug()<<q.lastError();
+        if(++currentComplaints >= 3){ //delete book if reached complaint limit
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(id)))
+                qDebug()<< "Complaint recorded.";
+            else qDebug()<<q.lastError();
+        }
+        else {//didn't reach complaint limit
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(id)))
+                qDebug()<< "Complaint recorded.";
+            else qDebug()<<q.lastError();
+        }
+        //add to report_info
+        if(!q.exec("INSERT INTO report_info VALUES ('"+username+ "',"+QString::number(book_id)+",'" + reason +"')")){
+            qDebug()<<q.lastError();
+            qDebug()<<"didn't add commplaint to report_info";
+        }
     }
 }
 
@@ -89,7 +101,7 @@ void DocumentsDB::addViewToDocWithUID(int id){
 }
 
 
-void DocumentsDB::addRatingToDocWithUID(int id, float newRating){
+void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRating){
     QSqlQuery q = this->getDocInfoForUID(id);
     //if q exists
     if (q.first()){
@@ -106,6 +118,12 @@ void DocumentsDB::addRatingToDocWithUID(int id, float newRating){
         if(q.exec("UPDATE doc_info SET num_of_ratings = "+QString::number(totalNumOfRatings+1)+" WHERE u_id = "+QString::number(id)))
             qDebug()<< "Total number of ratings updated.";
         else qDebug()<<q.lastError();
+
+        //add user to user rated_info
+        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(book_id)+")")){
+            qDebug()<<q.lastError();
+            qDebug()<<"entry wasn't added to rating_info";
+        }
     }
 }
 
@@ -180,3 +198,46 @@ QString DocumentsDB::getSummary(QString book_Name)
         return blank;
     }
 }
+
+bool DocumentsDB::userHasReportedBook(QString username, int book_id){
+    QSqlQuery query;
+    if(query.exec("SELECT * FROM report_info  WHERE username = '"+username+"' AND book_id = " + QString::number(book_id) )){
+        if(query.next()){ //got something so user reported book already
+            return true;
+        }else return false; //no entry so user hasn't reported book yet
+    }else {
+        qDebug()<<"didn't get userHasReportedBook properly";
+        qDebug()<<query.lastError();
+       return false;
+    }
+}
+
+
+bool DocumentsDB::userHasRatedBook(QString username, int book_id){
+    QSqlQuery query;
+    if(query.exec("SELECT * FROM rating_info  WHERE username = '"+username+"' AND book_id = " + QString::number(book_id) )){
+        if(query.next()){ //got something so user rated book already
+            return true;
+        }else return false; //no entry so user hasn't rated book yet
+    }else {
+        qDebug()<<"didn't get userHasRatedBook properly";
+        qDebug()<<query.lastError();
+       return false;
+    }
+}
+
+//NOTE: only returns follwing information
+//username of person who reported the book
+//book_id of reported book
+//reason for report
+QSqlQuery DocumentsDB::getAllDocumentsWithComplaints(){
+    QSqlQuery query;
+    if(query.exec("SELECT * FROM report_info"))
+        return query;
+    else {
+        qDebug()<<"Problem getting list of reported books";
+        return query;
+    }
+
+}
+
