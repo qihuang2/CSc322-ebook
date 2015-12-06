@@ -62,19 +62,19 @@ void DocumentsDB::deleteDocumentWithUID(int id){
 }
 
 void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, QString reason){
-    QSqlQuery q = this->getDocInfoForUID(id);
+    QSqlQuery q = this->getDocInfoForUID(book_id);
     //if doc was found
     if(q.first()){
         //get current number of complaints
         int currentComplaints = q.value(8).toInt();
         //add complaint and update database value
         if(++currentComplaints >= 3){ //delete book if reached complaint limit
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(id)))
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(book_id)))
                 qDebug()<< "Complaint recorded.";
             else qDebug()<<q.lastError();
         }
         else {//didn't reach complaint limit
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(id)))
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
                 qDebug()<< "Complaint recorded.";
             else qDebug()<<q.lastError();
         }
@@ -120,7 +120,7 @@ void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRatin
         else qDebug()<<q.lastError();
 
         //add user to user rated_info
-        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(book_id)+")")){
+        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(id)+")")){
             qDebug()<<q.lastError();
             qDebug()<<"entry wasn't added to rating_info";
         }

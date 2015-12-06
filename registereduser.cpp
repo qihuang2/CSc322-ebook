@@ -1,4 +1,5 @@
 #include "registereduser.h"
+#include "documentsdb.h"
 #include <QString>
 #include "userinfodb.h"
 #include <QtSql>
@@ -7,6 +8,7 @@
 RegisteredUser::RegisteredUser(QString username) : BaseUser()
 {
     m_userInfoDB = new UserInfoDB();
+    m_docDB = new DocumentsDB();
     m_username = username;
     m_userType = REGISTERED;
 }
@@ -52,32 +54,36 @@ QSqlQuery RegisteredUser::getPendingDocuments(){
     return query;
 }
 
-void RegisteredUser::approveSuperUserCounterForBook(int uid){
-    QSqlQuery q;
-    q.exec("SELECT * FROM doc_info WHERE u_id = "+ QString::number(uid));
-    if(q.next()){
-        int credits;
-        if (q.value(9) == 2 ? true : false) { //has counter offer
-            credits = q.value(11).toInt();
-        }else{
-            credits = q.value(10).toInt();
+void RegisteredUser::uploadDocument(QString title, QString author, int genre, QString summary, int suggestedCredits) {
+    m_docDB->addDocument(title, author, genre, summary, QString::number(suggestedCredits));
+}
+
+void RegisteredUser::approveSuperUserCounterForBook(int uid, bool approve){
+    if(approve) {
+        QSqlQuery q;
+        q.exec("SELECT * FROM doc_info WHERE u_id = "+ QString::number(uid));
+        if(q.next()){
+            int credits;
+            if (q.value(9) == 2 ? true : false) { //has counter offer
+                credits = q.value(11).toInt();
+            }else{
+                credits = q.value(10).toInt();
+            }
+            changeCreditsBy(credits);
+            if(q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(uid))){
+                qDebug()<<"Document approved by RegisterUser";
+            }else {
+                qDebug()<<"ERROR changing approval state by RU";
+            }
+        }else {
+            qDebug()<<"ERROR approving doc by registered user";
         }
-        changeCreditsBy(credits);
-        if(q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(uid))){
-            qDebug()<<"Document approved by RegisterUser";
+    }else {
+        QSqlQuery q;
+        if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(uid))){
+            qDebug()<<"Document rejected by Registered User";
         }else {
             qDebug()<<"ERROR changing approval state by RU";
         }
-    }else {
-        qDebug()<<"ERROR approving doc by registered user";
-    }
-}
-
-void RegisteredUser::rejectSuperUserCounterOffer(int uid){
-    QSqlQuery q;
-    if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(uid))){
-        qDebug()<<"Document rejected by Registered User";
-    }else {
-        qDebug()<<"ERROR changing approval state by RU";
     }
 }

@@ -5,31 +5,22 @@
 #include "documentwidget.h"
 #include "profilewidget.h"
 #include "historydb.h"
-#include<documentsdb.h>
+#include <documentsdb.h>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-
-#include<QDebug>
+#include <QDebug>
 #include <QtSql>
 
 enum {LIB, UP, DOC};
 
-MainWindow::MainWindow(QString loginUsername)
+MainWindow::MainWindow(BaseUser *user)
 {
-    //if is visiting user
-    //if (userType == 0) m_user = new VisitingUser();
-
-    //if is registered user
-    //else if (userType == 1) m_user = new RegisteredUser(loginUsername);
-
-    //need a superuser class. using registed user for the moment
-    //else m_user = new RegisteredUser(loginUsername);
+    m_user = user;
 
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
 
-    m_LoginUserName=loginUsername;
     m_historyText=new QTextEdit();
     HistoryDB *db=new HistoryDB();
     QString q=db->getHistory(m_LoginUserName);
@@ -106,6 +97,7 @@ void MainWindow::s_refreshTable(int current) {
         w->s_refresh();
     }
 }
+
 void MainWindow::s_openBook()
 {
     HistoryDB *db=new HistoryDB();

@@ -2,6 +2,7 @@
 #define MAINDB_H
 
 class QSqlDatabase;
+class QSqlQuery;
 class QString;
 
 class MainDB
@@ -42,7 +43,7 @@ public:
     bool isBanned(QString username);
 
     //get account
-    int getAccount(QString username);
+    QSqlQuery getAccount(QString username);
 
      //MAKE SURE YOU CLOSE THE DB WHEN YOU FINISH USING IT
     static void closeDB();

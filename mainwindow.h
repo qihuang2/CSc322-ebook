@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QString loginUsername);
+    MainWindow(BaseUser* user);
     ~MainWindow();
 
 private:
@@ -31,7 +31,6 @@ private:
     QPushButton*    m_exitButton;
     DocumentWidget* doc;
     LibraryWidget* lib;
-    QString	m_LoginUserName;
     QTextEdit*			m_historyText;
     void createWidgets();
     void createLayouts();
