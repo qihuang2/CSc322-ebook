@@ -71,7 +71,7 @@ void MainWindow::createWidgets() {
         RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user
         
         qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
-        qDebug()<<"Complaints: "<<t->getNumOfComplaints()<<"   Date Created: "<< t->getDateCreated();
+        qDebug()<<"Complaints: "<<t->getNumOfDeletedBooks()<<"   Date Created: "<< t->getDateCreated();
         qDebug()<<"Uploads: "<<t->getNumOfUploads();
         
 

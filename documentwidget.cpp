@@ -265,7 +265,7 @@ void DocumentWidget::submitReview()
 {
     //U_ID to get rating
     DocumentsDB *d =new DocumentsDB();
-    d->addRatingToDocWithUID(4,m_slider->value());
+    d->addRatingToDocWithUID(m_baseUser->getUsername(),4,m_slider->value());
     qDebug() << "The review for " << g_path << ": " << " is rated " << m_slider->value();
 }
 

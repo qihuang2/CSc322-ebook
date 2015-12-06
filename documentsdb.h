@@ -74,9 +74,6 @@ public:
     //NOTE: summary has to be limited to 250 characters
     void addDocument(QString title, QString posted_by, int genre, QString summary, QString askingPrice);
 
-    //approve uploaded document
-    void approveDocumentWithUID(int id);
-
     //delete document with uid
     void deleteDocumentWithUID(int id);
 
@@ -117,12 +114,8 @@ public:
     //checks if user has rated book
     bool userHasRatedBook(QString username, int book_id);
 
-    //list of documents that have complaints
-    //NOTE: The documents only have the following information:
-    //username : name of user who reported the book
-    //book_id : book id of the book
-    //reason : reason for reporting the book
-    QSqlQuery getAllDocumentsWithComplaints();
+    //get top 5 most views documents
+    QSqlQuery getFiveMostViewed();
 };
 
 #endif // DOCUMENTSDB_H

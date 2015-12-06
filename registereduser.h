@@ -9,18 +9,18 @@ class QSqlQuery;
 class RegisteredUser : public BaseUser
 {
 public:
-    RegisteredUser(QString username);
+    RegisteredUser(QString);
     ~RegisteredUser();
 
     //getters
     int getNumOfCredits();
-    int getNumOfComplaints();
+    int getNumOfDeletedBooks();
     QString getDateCreated();
     int getNumOfUploads();
 
     //setters
-    void changeCreditsBy(int credits);
-    void incrementComplaintsBy(int complaints);
+    void changeCreditsBy(int);
+    void incrementBooksDeletedBy(int);
     void incrementNumOfUploads();
 
     //this returns documents currently in state 0, 1 or 2
@@ -33,10 +33,16 @@ public:
     //this function takes both into acount
     //if SU counter offers, user gets counter offered credits
     //else SU didn't counter offer so we get asking price
-    void approveSuperUserCounterForBook(int uid);
+    void approveSuperUserCounterForBook(int);
 
     //RU rejects SU counter offer. document gets deleted
-    void rejectSuperUserCounterOffer(int uid);
+    void rejectSuperUserCounterOffer(int);
+
+    //gift credits
+    void giftCreditsToUser(int, QString);
+
+    //get list of all users
+    QSqlQuery getAllUsers();
 
 protected:
     UserInfoDB* m_userInfoDB;

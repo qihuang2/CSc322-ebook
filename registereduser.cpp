@@ -15,7 +15,7 @@ QString RegisteredUser::getDateCreated(){
     return m_userInfoDB->getStringForKey(m_username, "created");
 }
 
-int RegisteredUser::getNumOfComplaints(){
+int RegisteredUser::getNumOfDeletedBooks(){
     return m_userInfoDB->getIntForKey(m_username, "complaints");
 }
 
@@ -27,8 +27,9 @@ int RegisteredUser::getNumOfUploads(){
     return m_userInfoDB->getIntForKey(m_username, "uploads");
 }
 
-void RegisteredUser::incrementComplaintsBy(int complaints){
-    m_userInfoDB->setIntForKey(m_username, "complaints", getNumOfComplaints() + complaints);
+//num of deleted books user has
+void RegisteredUser::incrementBooksDeletedBy(int books){
+    m_userInfoDB->setIntForKey(m_username, "complaints", getNumOfDeletedBooks() + books);
 }
 
 void RegisteredUser::changeCreditsBy(int credits){
@@ -63,7 +64,7 @@ void RegisteredUser::approveSuperUserCounterForBook(int uid){
             credits = q.value(10).toInt();
         }
         changeCreditsBy(credits);
-        if(q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(uid))){
+        if(q.exec("UPDATE doc_info SET approved = 3, asking_price = counter_offer WHERE u_id = "+QString::number(uid))){
             qDebug()<<"Document approved by RegisterUser";
         }else {
             qDebug()<<"ERROR changing approval state by RU";
@@ -80,4 +81,19 @@ void RegisteredUser::rejectSuperUserCounterOffer(int uid){
     }else {
         qDebug()<<"ERROR changing approval state by RU";
     }
+}
+
+void RegisteredUser::giftCreditsToUser(int credits, QString recipient){
+    changeCreditsBy(-credits);
+    RegisteredUser reciptUser = RegisteredUser(recipient);
+    reciptUser.changeCreditsBy(credits);
+}
+
+QSqlQuery RegisteredUser::getAllUsers(){
+    QSqlQuery q;
+    if(!q.exec("SELECT username FROM users WHERE is_banned = 0")){
+        qDebug()<<"Couldn't get list of usernames";
+        qDebug()<<q.lastError();
+    }
+    return q;
 }

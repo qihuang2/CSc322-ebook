@@ -2,6 +2,7 @@
 #include <QString>
 #include <QDebug>
 #include <QtSql>
+#include "registereduser.h"
 
 
 //returns new average rating of book
@@ -45,14 +46,6 @@ void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QStri
     else qDebug() <<"DOCSDB: " << query.lastError();
 }
 
-void DocumentsDB::approveDocumentWithUID(int id){
-    QSqlQuery q;
-    //update approved to true
-    if(q.exec("UPDATE doc_info SET approved = 1 WHERE u_id = "+QString::number(id)))
-        qDebug()<< "Document has been approved.";
-    else qDebug()<<q.lastError();
-}
-
 void DocumentsDB::deleteDocumentWithUID(int id){
     QSqlQuery q;
     //delete row where u_id == id
@@ -62,22 +55,32 @@ void DocumentsDB::deleteDocumentWithUID(int id){
 }
 
 void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, QString reason){
-    QSqlQuery q = this->getDocInfoForUID(id);
+    QSqlQuery q = this->getDocInfoForUID(book_id);
     //if doc was found
     if(q.first()){
         //get current number of complaints
         int currentComplaints = q.value(8).toInt();
+
+        QString uploaderName = q.value(2).toString();
+        RegisteredUser uploader = RegisteredUser(uploaderName);
+
         //add complaint and update database value
         if(++currentComplaints >= 3){ //delete book if reached complaint limit
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(id)))
-                qDebug()<< "Complaint recorded.";
-            else qDebug()<<q.lastError();
+            deleteDocumentWithUID(book_id);
+            int creditPenalty = q.value(10).toInt() + 100;
+            uploader.changeCreditsBy(-creditPenalty); //decrement credits
+
+            uploader.incrementBooksDeletedBy(1);
+            if(uploader.getNumOfDeletedBooks() >= 2){
+                if(!q.exec("UPDATE users SET is_banned = 1 WHERE username = '"+uploader.getUsername()+"'")){
+                    qDebug() << "Error autobanning user";
+                }
+            }
         }
-        else {//didn't reach complaint limit
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(id)))
-                qDebug()<< "Complaint recorded.";
-            else qDebug()<<q.lastError();
-        }
+        if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
+            qDebug()<< "Complaint recorded.";
+        else qDebug()<<q.lastError();
+
         //add to report_info
         if(!q.exec("INSERT INTO report_info VALUES ('"+username+ "',"+QString::number(book_id)+",'" + reason +"')")){
             qDebug()<<q.lastError();
@@ -86,7 +89,7 @@ void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, Q
     }
 }
 
-
+//VICTOR LOOK HERE. after openning document, add a view to the doc
 void DocumentsDB::addViewToDocWithUID(int id){
     QSqlQuery q = this->getDocInfoForUID(id);
     //if doc exists
@@ -120,7 +123,7 @@ void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRatin
         else qDebug()<<q.lastError();
 
         //add user to user rated_info
-        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(book_id)+")")){
+        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(id)+")")){
             qDebug()<<q.lastError();
             qDebug()<<"entry wasn't added to rating_info";
         }
@@ -226,18 +229,12 @@ bool DocumentsDB::userHasRatedBook(QString username, int book_id){
     }
 }
 
-//NOTE: only returns follwing information
-//username of person who reported the book
-//book_id of reported book
-//reason for report
-QSqlQuery DocumentsDB::getAllDocumentsWithComplaints(){
-    QSqlQuery query;
-    if(query.exec("SELECT * FROM report_info"))
-        return query;
-    else {
-        qDebug()<<"Problem getting list of reported books";
-        return query;
-    }
-
+QSqlQuery DocumentsDB::getFiveMostViewed(){
+    QSqlQuery q;
+    if(!q.exec("SELECT * FROM doc_info ORDER BY views DESC LIMIT 5")){
+        qDebug()<<"Unable to get top views docs";
+        qDebug()<<q.lastError();
+      }
+    return q;
 }
 
