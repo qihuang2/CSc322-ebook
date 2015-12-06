@@ -43,6 +43,7 @@ private:
     QTextEdit*          m_previewText;
 
     QLabel*             m_title;
+    QLabel*             m_preview;
     QLabel*             m_author;
     QLabel*             m_genre;
     QLabel*             m_rating;
@@ -58,6 +59,7 @@ private:
     QString             Genre;
     QString             Rating;
     QString				m_loginName;
+
     void populateTable();
 
     void createWidgets();
@@ -67,6 +69,7 @@ private:
     void removeFileWithID(int id);
 
     int current_row;
+    int number_ofSummary;
 
 public slots:
     void s_refresh();

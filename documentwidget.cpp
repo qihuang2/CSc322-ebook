@@ -20,7 +20,6 @@ void DocumentWidget::createLayouts()
     QWidget* widget = new QWidget();
 
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
-    m_reviewText = new QTextEdit(widget); //Create a Review Box Widget
     m_reportText = new QTextEdit(widget); //Create a Report Box Widget
     m_searchLine = new QLineEdit(widget);
 
@@ -31,7 +30,6 @@ void DocumentWidget::createLayouts()
     m_txt->setText("Open a book, its text goes here!");
     m_txt->setReadOnly(true);//text box is read only
 
-    m_reviewText->append("Write your review here.");
 
     m_reportText->append("Write your report here.");
 
@@ -47,8 +45,6 @@ void DocumentWidget::createLayouts()
     m_reportButton->setMaximumSize(QSize(150, 50));
     m_closeButton = new QPushButton("Close Document");
     m_closeButton->setMaximumSize(QSize(150, 50));
-    m_clearReview = new QPushButton("Clear Review");
-    m_clearReview->setMaximumSize(QSize(150, 50));
     m_submitReview = new QPushButton("Submit Review");
     m_submitReview->setMaximumSize(QSize(150, 50));
     m_hideReview = new QPushButton("Hide Review Box");
@@ -97,10 +93,8 @@ void DocumentWidget::createLayouts()
     m_buttonLayout->addWidget(m_reportButton);
     m_buttonLayout->addWidget(m_closeButton);
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
-    m_reviewLayout->addWidget(m_reviewText);
     m_ratingLayout->addWidget(m_slider);
     m_ratingLayout->addWidget(m_box);
-    m_reviewButtonLayout->addWidget(m_clearReview);
     m_reviewButtonLayout->addWidget(m_hideReview);
     m_reviewButtonLayout->addWidget(m_submitReview);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
@@ -116,15 +110,13 @@ void DocumentWidget::createLayouts()
     //Hide the Report and Review Sections initially
     m_hideReport->hide();
     m_reportText->hide();
-    m_clearReport->hide();
     m_submitReport->hide();
     m_rating->hide();
     m_box->hide();
     m_slider->hide();
-    m_reviewText->hide();
-    m_clearReview->hide();
     m_submitReview->hide();
     m_hideReview->hide();
+    m_clearReport->hide();
     setLayout(m_mainLayout);
 }
 
@@ -133,7 +125,6 @@ void DocumentWidget::createActions()
 {
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(closeFile()));
     connect(m_reviewButton, SIGNAL(clicked()), this, SLOT(showReview()));
-    connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
     connect(m_hideReview, SIGNAL(clicked()), this, SLOT(hideReview()));
     connect(m_submitReview, SIGNAL(clicked()), this, SLOT(submitReview()));
     connect(m_slider, SIGNAL(valueChanged(int)), m_box, SLOT(setValue(int)));
@@ -233,12 +224,10 @@ void DocumentWidget::readFile(QString path)
     while(!in.atEnd())
     {
         line = in.readLine();
-        qDebug() << "The line is " << line;
         m_txt->append(line);
     }
     file.close(); //close the file
     m_txt->moveCursor(QTextCursor::Start);//move the cursor to the top of the document
-    qDebug() << "At the top";
     m_timer->start(1000);
 }
 
@@ -251,22 +240,14 @@ void DocumentWidget::closeFile()
     m_timer->stop();
 }
 
-//Clear the current stuff written in Review
-void DocumentWidget::clearReview()
-{
-    m_reviewText->clear();
-}
-
 //Show the Review Box
 void DocumentWidget::showReview()
 {
     m_rating->show();
     m_box->show();
     m_slider->show();
-    m_reviewText->show();
-    m_clearReview->show();
-    m_submitReview->show();
     m_hideReview->show();
+    m_submitReview->show();
 }
 
 //Hide the Review Box
@@ -275,10 +256,8 @@ void DocumentWidget::hideReview()
     m_rating->hide();
     m_box->hide();
     m_slider->hide();
-    m_reviewText->hide();
-    m_clearReview->hide();
-    m_submitReview->hide();
     m_hideReview->hide();
+    m_submitReview->hide();
 }
 
 //Getting the review
@@ -287,11 +266,7 @@ void DocumentWidget::submitReview()
     //U_ID to get rating
     DocumentsDB *d =new DocumentsDB();
     d->addRatingToDocWithUID(4,m_slider->value());
-    QString review; //Review will hold whatever is currently being held in the Review Text Box
-    review = m_reviewText->toPlainText();
-    qDebug() << "The review for " << g_path << ": " << review << " and is rated " << m_slider->value();
-    m_reviewText->clear();
-
+    qDebug() << "The review for " << g_path << ": " << " is rated " << m_slider->value();
 }
 
 //Get slider value

@@ -8,10 +8,11 @@
 #include "documentsdb.h"
 #include "documentwidget.h"
 #include <QDebug>
+#include <QTextCursor>
 #include <QtSql>
 
 // Values for books in table
-enum {TITLE, AUTHOR, GENRE, RATING};
+enum {TITLE, AUTHOR, GENRE, RATING, SUMMARY};
 
 LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
@@ -45,6 +46,7 @@ void LibraryWidget::createWidgets() {
     m_author = new QLabel("Author: ");
     m_genre = new QLabel("Genre: ");
     m_rating = new QLabel("Rating: ");
+    m_preview = new QLabel("Preview: ");
     m_booktitle = new QLabel(Title);
     m_bookauthor = new QLabel(Author);
     m_bookgenre = new QLabel(Genre);
@@ -61,10 +63,7 @@ void LibraryWidget::createWidgets() {
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    m_previewWidget = new QTableWidget(); //Change this later to getRateDocs
-    m_previewWidget->setHorizontalHeaderLabels(QStringList() << "Ratings");
-    m_previewWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    m_previewWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_previewWidget = new QTableWidget();
 }
 
 void LibraryWidget::createLayouts() {
@@ -79,6 +78,7 @@ void LibraryWidget::createLayouts() {
     m_previewLayout = new QVBoxLayout();
     m_previewbuttonLayout = new QHBoxLayout();
 
+    m_previewLayout->addWidget(m_preview);
     m_previewLayout->addWidget(m_previewText); //Place textbox on top of preview layout
     m_titleLayout->addWidget(m_title);
     m_titleLayout->addWidget(m_booktitle);
@@ -102,6 +102,7 @@ void LibraryWidget::createLayouts() {
     //m_mainLayout->addWidget(m_refresh);
 
     //Hide the preview buttons and tables initially
+    m_preview->hide();
     m_previewText->hide();
     m_title->hide();
     m_author->hide();
@@ -171,6 +172,7 @@ void LibraryWidget::createActions() {
 //Show the Preview
 void LibraryWidget::showPreview()
 {
+    m_preview->show();
     m_previewText->show();
     m_title->show();
     m_author->show();
@@ -188,6 +190,7 @@ void LibraryWidget::showPreview()
 //Hide the Preview
 void LibraryWidget::hidePreview()
 {
+    m_preview->hide();
     m_previewText->hide();
     m_title->hide();
     m_author->hide();
@@ -210,6 +213,38 @@ void LibraryWidget::selectCell()
     int row = currentIndex.row();
     current_row = row;
 
+    //Clear the preview box first
+    m_previewText->clear();
+
+    //Setting up the preview
+    QString path = docDir + "/" + QString::number(current_row+1) + ".txt";
+    QFile file(path); //open file
+    QString line;
+
+    //handle error
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::information(0, "error", file.errorString());
+    }
+
+    QTextStream in(&file); //read into file
+    while(!in.atEnd())
+    {
+        line = in.readLine();
+        m_previewText->append(line);
+    }
+    file.close(); //close the file
+
+    //Set read only and gray it out
+    m_previewText->setReadOnly(true);
+    m_previewText->setEnabled(true);
+    m_previewText->moveCursor(QTextCursor::Start);
+    m_previewText->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    QPalette bg_color = m_previewText->palette();
+    bg_color.setColor(QPalette::Active, QPalette::Base, Qt::gray);
+    bg_color.setColor(QPalette::Inactive, QPalette::Base, Qt::gray);
+    m_previewText->setPalette(bg_color);
+
     //Get the data in each column for that row
     Title = m_tableWidget->item(row,0)->text();
     Author = m_tableWidget->item(row,1)->text();
@@ -221,6 +256,29 @@ void LibraryWidget::selectCell()
     m_bookauthor->setText(Author);
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
+
+    //Set up the Comment Table
+    number_ofSummary = m_db->getnumSumm(Title);
+    qDebug() << "Number of Summary: " << number_ofSummary << " where it has the title " << Title;
+    m_previewWidget->clear();
+    m_previewWidget->setColumnCount(1);
+    m_previewWidget->setRowCount(number_ofSummary+2);
+    m_previewWidget->setHorizontalHeaderLabels(QStringList() << "Summary");
+    m_previewWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_previewWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    //Get the summary
+    QString current = m_db->getSummary(Title);
+    qDebug() << "For the book " << Title << " the summary is " << current;
+    for(int i = 1; i <= number_ofSummary; ++i)
+    {
+        m_previewWidget->setRowHidden(0, true);
+        m_previewWidget->setRowHidden(1, true);
+        m_previewWidget->verticalHeader()->setVisible(false);
+        m_previewWidget->setItem(i, 1, new QTableWidgetItem(current));
+        qDebug() << "The summary is set at position (" << i << ", 1)";
+        m_previewWidget->update();
+    }
 }
 
 QString LibraryWidget::getPath()

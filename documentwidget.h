@@ -34,7 +34,6 @@ signals:
 public slots:
     void s_counter();
     void closeFile();
-    void clearReview();
     void showReview();
     void hideReview();
     void submitReview();
@@ -50,7 +49,6 @@ private:
 
     void writeBook();
 
-    QTextEdit *m_reviewText;
     QTextEdit *m_reportText;
     QLineEdit *m_searchLine;
 
@@ -70,7 +68,6 @@ private:
 
     QPushButton* m_closeButton;
     QPushButton* m_submitReview;
-    QPushButton* m_clearReview;
     QPushButton* m_reviewButton;
     QPushButton* m_reportButton;
     QPushButton *m_hideReview;

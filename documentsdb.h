@@ -92,6 +92,10 @@ public:
      *  then rename file to getLastInsertRowID() + ".txt"
      */
     int getLastInsertRowUID();
+
+    int getnumSumm(QString);
+
+    QString getSummary(QString);
 };
 
 #endif // DOCUMENTSDB_H

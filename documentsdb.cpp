@@ -143,3 +143,40 @@ int DocumentsDB::getLastInsertRowUID(){
         return 0;
     }
 }
+
+//Get the number of summaries for all books
+int DocumentsDB::getnumSumm(QString book_Name)
+{
+    QSqlQuery q;
+    QString char_quot = "'";
+    if(q.exec("select count(summary) from doc_info where approved = 3 and is_deleted = 0 and title = "+char_quot+book_Name+char_quot))
+    {
+        return q.first() ? q.value(0).toInt() : -1;
+    }
+    else
+    {
+        qDebug() << q.lastError();
+        return -1;
+    }
+}
+
+QString DocumentsDB::getSummary(QString book_Name)
+{
+    QSqlQuery query;
+    QString char_quot = "'";
+    if(query.exec("select summary from doc_info where title = "+char_quot+book_Name+char_quot))
+    {
+        QString summary;
+        while(query.next())
+        {
+            summary = query.value(0).toString();
+        }
+        return summary;
+    }
+    else
+    {
+        QString blank = "";
+        qDebug() << query.lastError();
+        return blank;
+    }
+}
