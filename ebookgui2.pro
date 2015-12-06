@@ -26,7 +26,6 @@ SOURCES += main.cpp\
     logindb.cpp \
     userinfodb.cpp \
     baseuser.cpp \
-    visitinguser.cpp \
     registereduser.cpp \
     documentwidget.cpp \
     documentsdb.cpp \
@@ -44,7 +43,6 @@ HEADERS  += mainwindow.h \
     logindb.h \
     userinfodb.h \
     baseuser.h \
-    visitinguser.h \
     registereduser.h \
     documentwidget.h \
     documentsdb.h \

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     if(initialDialog.exec() == QDialog::Accepted) {
         // if dialog was accepted, show main window
-        MainWindow w(loginUsername, userType);
+        MainWindow w(loginUsername);
         w.show();
         return a.exec();
     }else {
