@@ -21,10 +21,6 @@ MainWindow::MainWindow(BaseUser *user)
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
 
-    m_historyText=new QTextEdit();
-    HistoryDB *db=new HistoryDB();
-    QString q=db->getHistory(m_LoginUserName);
-    m_historyText->setText(q);
     createWidgets();
     createLayouts();
     createActions();
@@ -38,10 +34,26 @@ void MainWindow::createWidgets() {
     m_tabWidget = new QTabWidget();
 
     // create the widgets to be added to the tabs
-    ProfileWidget *pf=new ProfileWidget(m_tabWidget,m_user);
-    lib = new LibraryWidget(m_LoginUserName,this, m_tabWidget);
+    ProfileWidget *pf=new ProfileWidget(m_tabWidget);
+    lib = new LibraryWidget(m_user->getUsername(),this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
     doc = new DocumentWidget(m_tabWidget,m_user);
+    m_historyText = new QTableWidget();
+    HistoryDB *db=new HistoryDB();
+    int row = db->getHistoryRow(m_user->getUsername());
+    m_historyText->setRowCount(row+2);
+    m_historyText->setColumnCount(1);
+    m_historyText->setHorizontalHeaderLabels(QStringList() << "History Table");
+    m_historyText->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_historyText->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    for(int i = 1; i <= row; ++i)
+    {
+        m_historyText->setRowHidden(0, true);
+        m_historyText->setRowHidden(1, true);
+        m_historyText->verticalHeader()->setVisible(false);
+        QString s = db->getHistory(m_user->getUsername(),i-1);
+        m_historyText->setItem(i, 1, new QTableWidgetItem(s));
+    }
     QVBoxLayout *QV=new QVBoxLayout();
     QV->addWidget(m_historyText);
     pf->setLayout(QV);
@@ -49,7 +61,7 @@ void MainWindow::createWidgets() {
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
     m_tabWidget->addTab(doc, "Document");
-   m_tabWidget->addTab(pf,"History");
+    m_tabWidget->addTab(pf,"History");
     m_loginLabel = new QLabel();
 
     //Set username
@@ -100,12 +112,24 @@ void MainWindow::s_refreshTable(int current) {
 
 void MainWindow::s_openBook()
 {
-    HistoryDB *db=new HistoryDB();
-    QString q=db->getHistory(m_LoginUserName);
-    m_historyText->setText(q);
     QString p = lib->getPath();
     qDebug()<< "The path in main window: " << p;
     doc->readFile(p);
+    HistoryDB *db=new HistoryDB();
+    int row = db->getHistoryRow(m_user->getUsername());
+    m_historyText->setRowCount(row+2);
+    m_historyText->setColumnCount(1);
+    m_historyText->setHorizontalHeaderLabels(QStringList() << "History Table");
+    m_historyText->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_historyText->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    for(int i = 1; i <= row; ++i)
+    {
+        m_historyText->setRowHidden(0, true);
+        m_historyText->setRowHidden(1, true);
+        m_historyText->verticalHeader()->setVisible(false);
+        QString s = db->getHistory(m_user->getUsername(),i-1);
+        m_historyText->setItem(i, 1, new QTableWidgetItem(s));
+    }
 }
 
 MainWindow::~MainWindow() {}

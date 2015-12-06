@@ -10,6 +10,8 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 {
     //set up Timer
     m_baseUser=bu;
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
+    m_currentCredits=t->getNumOfCredits();
     createLayouts(); //Create layout within Document Tab
     createActions();
 }
@@ -18,6 +20,7 @@ DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
 void DocumentWidget::createLayouts()
 {
     QWidget* widget = new QWidget();
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
 
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
     m_reportText = new QTextEdit(widget); //Create a Report Box Widget
@@ -36,7 +39,7 @@ void DocumentWidget::createLayouts()
     //Create Labels
     m_rating = new QLabel("Rate this book:");
     m_time = new QLabel("Time: 0:00");
-    m_credits = new QLabel("Credits: 0");
+    m_credits = new QLabel("Credits:"+QString::number(t->getNumOfCredits()));
 
     //Create the buttons
     m_reviewButton = new QPushButton("Review Document");
@@ -210,10 +213,13 @@ void DocumentWidget::s_search()
 //read the file
 void DocumentWidget::readFile(QString path)
 {
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
+    t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
+    t->changeCreditsBy(-15);
     m_txt->clear();
     QFile file(path); //open file
     QString line;
-
+    m_timevalue=0;
     //handle error
     if(!file.open(QIODevice::ReadOnly))
     {

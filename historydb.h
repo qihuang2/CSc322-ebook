@@ -10,7 +10,8 @@ public:
     HistoryDB();
     ~HistoryDB();
     void addHistory(QString Username,QString bookName,QString Author);
-    QString getHistory(QString Username);
+    QString getHistory(QString Username, int row);
+    int getHistoryRow(QString);
 private:
 
 };

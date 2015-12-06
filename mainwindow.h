@@ -6,6 +6,8 @@
 #include "librarywidget.h"
 #include "historydb.h"
 #include <QTextEdit>
+#include <QTableWidget>
+#include <QHeaderView>
 class QWidget;
 class QLabel;
 class QVBoxLayout;
@@ -31,7 +33,8 @@ private:
     QPushButton*    m_exitButton;
     DocumentWidget* doc;
     LibraryWidget* lib;
-    QTextEdit*			m_historyText;
+    QTableWidget*			m_historyText;
+
     void createWidgets();
     void createLayouts();
     void createActions();
