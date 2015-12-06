@@ -44,7 +44,7 @@ void MainWindow::createWidgets() {
     m_tabWidget = new QTabWidget();
 
     // create the widgets to be added to the tabs
-    ProfileWidget *pf=new ProfileWidget(m_tabWidget,m_user);
+    ProfileWidget *pf=new ProfileWidget(m_tabWidget);
     lib = new LibraryWidget(m_LoginUserName,this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
     doc = new DocumentWidget(m_tabWidget,m_user);
