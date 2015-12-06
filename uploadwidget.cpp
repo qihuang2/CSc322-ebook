@@ -9,6 +9,7 @@
 #include <QDebug>
 #include "constants.h"
 #include "documentsdb.h"
+#include "mainwindow.h"
 
 UploadWidget::UploadWidget(QWidget *parent) : QWidget(parent)
 {
@@ -93,7 +94,8 @@ void UploadWidget::s_upload() {
         QFile::copy(m_fileLabel->text(), newPath);
         // add to database
         // no genre or summaries for now
-        m_db->addDocument(m_titleField->text().trimmed(), m_authorField->text().trimmed(), 0, "This is the summary", "55");
+
+        m_db->addDocument(m_titleField->text(), m_authorField->text(), 0, "summary", QString::number(55));
 
         m_titleField->clear();
         m_authorField->clear();

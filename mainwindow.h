@@ -6,7 +6,13 @@
 #include "librarywidget.h"
 #include "historydb.h"
 #include <QTextEdit>
+#include <QTableWidget>
+#include <QHeaderView>
+#include "profilewidget.h"
+#include "uploadwidget.h"
+
 class QWidget;
+class SuperWidget;
 class QLabel;
 class QVBoxLayout;
 class QPushButton;
@@ -18,7 +24,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QString loginUsername);
+    MainWindow(BaseUser* user);
     ~MainWindow();
 
 private:
@@ -28,11 +34,15 @@ private:
     QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
     QLabel*         m_loginLabel;       /* Displays login status. */
     QTabWidget*     m_tabWidget;        /* Central widget to hold Library and Upload tabs. */
+
     QPushButton*    m_exitButton;
-    DocumentWidget* doc;
-    LibraryWidget* lib;
-    QString	m_LoginUserName;
-    QTextEdit*			m_historyText;
+
+    QLabel* m_username;
+    QLabel* m_usercredits;
+
+    QString m_name;
+    QString m_credit;
+
     void createWidgets();
     void createLayouts();
     void createActions();

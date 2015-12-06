@@ -3,7 +3,7 @@
 
 class QSqlQuery;
 
-SuperUser::SuperUser(QString username) : BaseUser()
+SuperUser::SuperUser(QString username) : RegisteredUser(username)
 {
     m_username = username;
     m_userType = SUPER;
@@ -65,3 +65,6 @@ QSqlQuery SuperUser::getAllDocumentsWithComplaints(){
     }
 }
 
+void SuperUser::changeCreditsBy(int credits) {
+    credits = 0;   // to silence warning
+}

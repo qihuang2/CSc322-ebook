@@ -66,6 +66,7 @@ void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, Q
 
         //add complaint and update database value
         if(++currentComplaints >= 3){ //delete book if reached complaint limit
+
             deleteDocumentWithUID(book_id);
             int creditPenalty = q.value(10).toInt() + 100;
             uploader.changeCreditsBy(-creditPenalty); //decrement credits
@@ -76,6 +77,15 @@ void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, Q
                     qDebug() << "Error autobanning user";
                 }
             }
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(book_id)))
+                qDebug()<< "Complaint recorded.";
+            else qDebug()<<q.lastError();
+        }
+        else {//didn't reach complaint limit
+            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
+                qDebug()<< "Complaint recorded.";
+            else qDebug()<<q.lastError();
+
         }
         if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
             qDebug()<< "Complaint recorded.";

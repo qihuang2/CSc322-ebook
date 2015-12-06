@@ -5,12 +5,12 @@
 class QString;
 class UserInfoDB;
 class QSqlQuery;
+class DocumentsDB;
 
 class RegisteredUser : public BaseUser
 {
 public:
-    RegisteredUser(QString);
-    ~RegisteredUser();
+    RegisteredUser(QString username);
 
     //getters
     int getNumOfCredits();
@@ -29,11 +29,13 @@ public:
     //2 - SU accepted and no counter offer
     QSqlQuery getPendingDocuments();
 
+    void uploadDocument(QString title, QString author, int genre, QString summary, int suggestedCredits);
+
     //SU can counter offer or not counter offer
     //this function takes both into acount
     //if SU counter offers, user gets counter offered credits
     //else SU didn't counter offer so we get asking price
-    void approveSuperUserCounterForBook(int);
+    void approveSuperUserCounterForBook(int uid, bool approve);
 
     //RU rejects SU counter offer. document gets deleted
     void rejectSuperUserCounterOffer(int);
@@ -46,6 +48,7 @@ public:
 
 protected:
     UserInfoDB* m_userInfoDB;
+    DocumentsDB* m_docDB;
 };
 
 #endif // REGISTEREDUSER_H

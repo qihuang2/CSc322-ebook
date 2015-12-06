@@ -1,11 +1,11 @@
 #ifndef SUPERUSER_H
 #define SUPERUSER_H
 
-#include "baseuser.h"
 class QSqlQuery;
 class QString;
+#include "registereduser.h"
 
-class SuperUser : BaseUser
+class SuperUser : public RegisteredUser
 {
 public:
     SuperUser(QString username);
@@ -13,11 +13,9 @@ public:
     //Returns list of documents that need a Superusers Approval
     QSqlQuery getSupersPendingDocuments();
 
-    //accept the book without a counter offer
     void acceptDocumentWithUID(int bookID);
-
-    //decline book and offer counter offer
     void declineDocumentWithUID(int bookID, int counterOffer);
+    void approveSuperUserCounterForBook(int uid, bool approve);
 
     //ban user
     void banUser(QString username);
@@ -32,7 +30,7 @@ public:
     //reason : reason for reporting the book
     QSqlQuery getAllDocumentsWithComplaints();
 
-
+    void changeCreditsBy(int credits);
 };
 
 #endif // SUPERUSER_H

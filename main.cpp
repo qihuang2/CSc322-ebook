@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "welcomedialog.h"
 #include "constants.h"
-#include "baseuser.h"
-#include "userinfodb.h"
+#include "superuser.h"
+#include "maindb.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -24,9 +24,17 @@ int main(int argc, char *argv[])
 
     if(initialDialog.exec() == QDialog::Accepted) {
         // if dialog was accepted, show main window
-        UserInfoDB udb();
-        //BaseUser* user = udb
-        MainWindow w(loginUsername);
+        MainDB db;
+        BaseUser* user;
+        QSqlQuery userQuery = db.getAccount(loginUsername);
+        if(userQuery.value(2) == BaseUser::VISITING) {
+            user = new BaseUser();
+        }else if(userQuery.value(2) == BaseUser::REGISTERED) {
+            user = new RegisteredUser(loginUsername);
+        }else{
+            user = new SuperUser(loginUsername);
+        }
+        MainWindow w(user);
         w.show();
         return a.exec();
     }else {

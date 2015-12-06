@@ -2,6 +2,7 @@
 #define MAINDB_H
 
 class QSqlDatabase;
+class QSqlQuery;
 class QString;
 class QSqlQuery;
 

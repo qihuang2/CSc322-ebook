@@ -16,6 +16,7 @@ int UserInfoDB::getIntForKey(QString username, QString key){
     }
     else {
         qDebug()<<q.lastError();
+        qDebug()<<"unable to get key: " + key+ " in getintKEY";
         return 0;
     }
 }
@@ -26,6 +27,7 @@ void UserInfoDB::setIntForKey(QString username, QString key, int value){
         qDebug()<< key + " updated.";
     }else {
         qDebug()<<q.lastError();
+        qDebug()<<"unable to set key: " + key+ " in setIntKey";
     }
 }
 
