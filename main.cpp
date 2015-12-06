@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "welcomedialog.h"
 #include "constants.h"
+#include "baseuser.h"
+#include "userinfodb.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -8,7 +10,6 @@
 int main(int argc, char *argv[])
 {   
     QApplication a(argc, argv);
-    QString loginUsername = QString();              // will hold username after executing dialogs
 
     // if application directory doesn't already exist, create it
     if(!QDir(appDir).exists()) {
@@ -18,14 +19,14 @@ int main(int argc, char *argv[])
         QDir().mkdir(docDir); // folder to hold documents
     }
 
-   //Visiter = 0, User = 1, or Superuser = 2; Change to Enums? -> yup
-    int userType = 0;
-
-    WelcomeDialog initialDialog(&loginUsername, &userType);
+    QString loginUsername = QString();              // will hold username after executing dialogs
+    WelcomeDialog initialDialog(&loginUsername);
 
     if(initialDialog.exec() == QDialog::Accepted) {
         // if dialog was accepted, show main window
-        MainWindow w(loginUsername, userType);
+        UserInfoDB udb();
+        //BaseUser* user = udb
+        MainWindow w(loginUsername);
         w.show();
         return a.exec();
     }else {

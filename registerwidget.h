@@ -15,7 +15,7 @@ class RegisterWidget : public QDialog
     Q_OBJECT
 
 public:
-    explicit RegisterWidget(LoginDB* db, QString* username, int* userType, QWidget* parent = 0);
+    explicit RegisterWidget(LoginDB* db, QString* username, QWidget* parent = 0);
     ~RegisterWidget();
 
 private slots:
@@ -31,7 +31,6 @@ private:
     
     LoginDB* m_loginDB;
     QString* m_username;
-    int* m_userType;  // registered = 1 , super = 2
 
     QLabel* m_userLabel;
     QLabel* m_passLabel;

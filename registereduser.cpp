@@ -4,9 +4,11 @@
 #include <QtSql>
 
 
-RegisteredUser::RegisteredUser(QString username, int userType) : BaseUser(username, userType)
+RegisteredUser::RegisteredUser(QString username) : BaseUser()
 {
     m_userInfoDB = new UserInfoDB();
+    m_username = username;
+    m_userType = REGISTERED;
 }
 
 QString RegisteredUser::getDateCreated(){

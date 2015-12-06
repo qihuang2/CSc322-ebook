@@ -15,7 +15,7 @@ class LoginWidget : public QDialog
 {
     Q_OBJECT
 public:
-    explicit LoginWidget(LoginDB* db, QString* username, int* userType,QWidget* parent = 0);
+    explicit LoginWidget(LoginDB* db, QString* username,QWidget* parent = 0);
     ~LoginWidget();
 
 private slots:
@@ -24,7 +24,7 @@ private slots:
 private:
     LoginDB* m_loginDB;
     QString* m_username;
-    int* m_userType;
+
     QLabel*         m_userLabel;
     QLabel*         m_passLabel;
     QLineEdit*      m_userLineEdit;
