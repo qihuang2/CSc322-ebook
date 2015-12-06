@@ -9,6 +9,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 class QWidget;
+class SuperWidget;
 class QLabel;
 class QVBoxLayout;
 class QPushButton;
@@ -31,9 +32,7 @@ private:
     QLabel*         m_loginLabel;       /* Displays login status. */
     QTabWidget*     m_tabWidget;        /* Central widget to hold Library and Upload tabs. */
     QPushButton*    m_exitButton;
-    DocumentWidget* doc;
-    LibraryWidget* lib;
-    QTableWidget*			m_historyText;
+    QTableWidget*	m_historyText;
 
     void createWidgets();
     void createLayouts();

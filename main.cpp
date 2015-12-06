@@ -28,8 +28,10 @@ int main(int argc, char *argv[])
         BaseUser* user;
         QSqlQuery userQuery = db.getAccount(loginUsername);
         if(userQuery.value(2) == BaseUser::VISITING) {
+            user = new BaseUser();
+        }else if(userQuery.value(2) == BaseUser::REGISTERED) {
             user = new RegisteredUser(loginUsername);
-        }else {
+        }else{
             user = new SuperUser(loginUsername);
         }
         MainWindow w(user);

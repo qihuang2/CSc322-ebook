@@ -4,6 +4,7 @@
 #include "uploadwidget.h"
 #include "documentwidget.h"
 #include "profilewidget.h"
+#include "superwidget.h"
 #include "historydb.h"
 #include <documentsdb.h>
 #include <QVBoxLayout>
@@ -12,7 +13,7 @@
 #include <QDebug>
 #include <QtSql>
 
-enum {LIB, UP, DOC};
+enum {LIB, UP, DOC, HISTORY, SUPER};
 
 MainWindow::MainWindow(BaseUser *user)
 {
@@ -25,6 +26,8 @@ MainWindow::MainWindow(BaseUser *user)
     createLayouts();
     createActions();
 
+    if(m_user->getUserType() == BaseUser::SUPER) m_tabWidget->removeTab(SUPER);
+
     setCentralWidget(m_centralWidget);
     setMinimumSize(600, 400);
     setWindowTitle("图书馆");
@@ -35,9 +38,11 @@ void MainWindow::createWidgets() {
 
     // create the widgets to be added to the tabs
     ProfileWidget *pf=new ProfileWidget(m_tabWidget);
-    lib = new LibraryWidget(m_user->getUsername(),this, m_tabWidget);
+    LibraryWidget* lib = new LibraryWidget(m_user->getUsername(),this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
-    doc = new DocumentWidget(m_tabWidget,m_user);
+    DocumentWidget* doc = new DocumentWidget(m_tabWidget,m_user);
+    SuperWidget* sup = new SuperWidget(m_tabWidget);
+
     m_historyText = new QTableWidget();
     HistoryDB *db=new HistoryDB();
     int row = db->getHistoryRow(m_user->getUsername());
@@ -62,6 +67,7 @@ void MainWindow::createWidgets() {
     m_tabWidget->addTab(up, "Upload");
     m_tabWidget->addTab(doc, "Document");
     m_tabWidget->addTab(pf,"History");
+    m_tabWidget->addTab(sup, "Super User");
     m_loginLabel = new QLabel();
 
     //Set username
@@ -112,6 +118,8 @@ void MainWindow::s_refreshTable(int current) {
 
 void MainWindow::s_openBook()
 {
+    LibraryWidget* lib = (LibraryWidget*)m_tabWidget->widget(LIB);
+    DocumentWidget* doc = (DocumentWidget*)m_tabWidget->widget(DOC);
     QString p = lib->getPath();
     qDebug()<< "The path in main window: " << p;
     doc->readFile(p);
