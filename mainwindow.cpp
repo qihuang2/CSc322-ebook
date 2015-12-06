@@ -34,16 +34,18 @@ void MainWindow::createWidgets() {
     m_tabWidget = new QTabWidget();
 
     // create the widgets to be added to the tabs
-    ProfileWidget *pf=new ProfileWidget(m_tabWidget);
+    pf=new ProfileWidget(m_tabWidget);
     lib = new LibraryWidget(m_user->getUsername(),this, m_tabWidget);
-    UploadWidget* up = new UploadWidget(m_tabWidget);
+    up = new UploadWidget(m_tabWidget);
     doc = new DocumentWidget(m_tabWidget,m_user);
+
+    //Create the history table
     m_historyText = new QTableWidget();
     HistoryDB *db=new HistoryDB();
     int row = db->getHistoryRow(m_user->getUsername());
     m_historyText->setRowCount(row+2);
     m_historyText->setColumnCount(1);
-    m_historyText->setHorizontalHeaderLabels(QStringList() << "History Table");
+    m_historyText->setHorizontalHeaderLabels(QStringList() << "Recently Viewed");
     m_historyText->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_historyText->setEditTriggers(QAbstractItemView::NoEditTriggers);
     for(int i = 1; i <= row; ++i)
@@ -54,14 +56,22 @@ void MainWindow::createWidgets() {
         QString s = db->getHistory(m_user->getUsername(),i-1);
         m_historyText->setItem(i, 1, new QTableWidgetItem(s));
     }
-    QVBoxLayout *QV=new QVBoxLayout();
-    QV->addWidget(m_historyText);
-    pf->setLayout(QV);
+
+    //Create the strings to match the labels
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_user);
+    m_name = m_user->getUsername();
+    m_credit = QString::number(t->getNumOfCredits());
+
+    //Create the labels
+    m_username = new QLabel();
+    m_usercredits = new QLabel();
+    m_username->setText("User Name: " + m_name);
+    m_usercredits->setText("Credit(s) Remaining: " + m_credit);
 
     m_tabWidget->addTab(lib, "Library");
     m_tabWidget->addTab(up, "Upload");
     m_tabWidget->addTab(doc, "Document");
-    m_tabWidget->addTab(pf,"History");
+    m_tabWidget->addTab(pf,"My Profile");
     m_loginLabel = new QLabel();
 
     //Set username
@@ -69,19 +79,18 @@ void MainWindow::createWidgets() {
 
     //if it's a registered user or super user, print info
     if (m_user->getUserType() != 0) {
-
         //Test info
-        RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user
-        
+        RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user  
         qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
         qDebug()<<"Complaints: "<<t->getNumOfComplaints()<<"   Date Created: "<< t->getDateCreated();
         qDebug()<<"Uploads: "<<t->getNumOfUploads();
-        
-
     }
 
+    //Create Buttons
     m_exitButton = new QPushButton("Exit");
     m_exitButton->setMaximumSize(QSize(100, 50));
+    m_giftButton = new QPushButton("Gift to a friend");
+    m_giftButton->setMaximumSize(QSize(150, 50));
 
     m_centralWidget = new QWidget();
 }
@@ -91,6 +100,14 @@ void MainWindow::createLayouts() {
     m_mainLayout->addWidget(m_loginLabel);
     m_mainLayout->addWidget(m_tabWidget);
     m_mainLayout->addWidget(m_exitButton);
+
+    //Add the history to the Profile layout
+    QVBoxLayout *QV=new QVBoxLayout();
+    QV->addWidget(m_username);
+    QV->addWidget(m_usercredits);
+    QV->addWidget(m_giftButton);
+    QV->addWidget(m_historyText);
+    pf->setLayout(QV);
 
     m_centralWidget->setLayout(m_mainLayout);
 }

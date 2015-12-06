@@ -8,6 +8,9 @@
 #include <QTextEdit>
 #include <QTableWidget>
 #include <QHeaderView>
+#include "profilewidget.h"
+#include "uploadwidget.h"
+
 class QWidget;
 class QLabel;
 class QVBoxLayout;
@@ -30,10 +33,22 @@ private:
     QVBoxLayout*    m_mainLayout;       /* Main vertical layout. */
     QLabel*         m_loginLabel;       /* Displays login status. */
     QTabWidget*     m_tabWidget;        /* Central widget to hold Library and Upload tabs. */
+
     QPushButton*    m_exitButton;
+    QPushButton*    m_giftButton;
+
     DocumentWidget* doc;
     LibraryWidget* lib;
+    ProfileWidget* pf;
+    UploadWidget* up;
+
     QTableWidget*			m_historyText;
+
+    QLabel* m_username;
+    QLabel* m_usercredits;
+
+    QString m_name;
+    QString m_credit;
 
     void createWidgets();
     void createLayouts();
