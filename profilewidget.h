@@ -14,7 +14,7 @@ class ProfileWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ProfileWidget(QWidget *parent = 0,BaseUser *m_baseuser=0);
+    explicit ProfileWidget(QWidget *parent = 0);
     ~ProfileWidget();
 private:
 
