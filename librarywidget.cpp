@@ -259,7 +259,6 @@ void LibraryWidget::selectCell()
 
     //Set up the Comment Table
     number_ofSummary = m_db->getnumSumm(Title);
-    qDebug() << "Number of Summary: " << number_ofSummary << " where it has the title " << Title;
     m_previewWidget->clear();
     m_previewWidget->setColumnCount(1);
     m_previewWidget->setRowCount(number_ofSummary+2);
@@ -269,14 +268,12 @@ void LibraryWidget::selectCell()
 
     //Get the summary
     QString current = m_db->getSummary(Title);
-    qDebug() << "For the book " << Title << " the summary is " << current;
     for(int i = 1; i <= number_ofSummary; ++i)
     {
         m_previewWidget->setRowHidden(0, true);
         m_previewWidget->setRowHidden(1, true);
         m_previewWidget->verticalHeader()->setVisible(false);
         m_previewWidget->setItem(i, 1, new QTableWidgetItem(current));
-        qDebug() << "The summary is set at position (" << i << ", 1)";
         m_previewWidget->update();
     }
 }
