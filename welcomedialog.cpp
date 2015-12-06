@@ -5,10 +5,9 @@
 #include "registerwidget.h"
 #include "logindb.h"
 
-WelcomeDialog::WelcomeDialog(QString *username, int *userType)
+WelcomeDialog::WelcomeDialog(QString *username)
 {
     m_username = username;
-    m_userType = userType;
     m_loginDB = new LoginDB();
 
     //m_loginDB->deleteTable("doc_info");
@@ -63,7 +62,7 @@ void WelcomeDialog::createActions() {
 
 void WelcomeDialog::s_login() {
     // If login was accepted, show main window
-    LoginWidget* lWidget = new LoginWidget(m_loginDB, m_username, m_userType);
+    LoginWidget* lWidget = new LoginWidget(m_loginDB, m_username);
     if(lWidget->exec() == QDialog::Accepted) {
         //username and usertype will be set by lWidget
         accept();
@@ -72,7 +71,7 @@ void WelcomeDialog::s_login() {
 
 void WelcomeDialog::s_register() {
     // If successfully registered, show main window
-    RegisterWidget* regWidget = new RegisterWidget(m_loginDB, m_username, m_userType);
+    RegisterWidget* regWidget = new RegisterWidget(m_loginDB, m_username);
     if(regWidget->exec() == QDialog::Accepted) {
         // username and usertype will have been set by regWidget
         accept();

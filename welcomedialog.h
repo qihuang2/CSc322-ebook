@@ -12,11 +12,10 @@ class WelcomeDialog : public QDialog
 {
     Q_OBJECT
 public:
-    WelcomeDialog(QString* username, int* userType);
+    WelcomeDialog(QString* username);
 
 private:
     QString*        m_username;     /* Pointer to variable holding username. */
-    int*            m_userType;
     QVBoxLayout*    m_mainLayout;
 
     LoginDB*        m_loginDB;

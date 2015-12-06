@@ -7,10 +7,9 @@
 #include <QMessageBox>
 #include "logindb.h"
 
-RegisterWidget::RegisterWidget(LoginDB* db, QString* username, int* userType, QWidget *parent) : QDialog(parent)
+RegisterWidget::RegisterWidget(LoginDB* db, QString* username, QWidget *parent) : QDialog(parent)
 {
     m_loginDB = db;
-    m_userType = userType;
     m_username = username;
 
     setFixedSize(320, 250);
@@ -85,7 +84,6 @@ void RegisterWidget::s_onRegister(){
     }else {
         m_loginDB->addUser(username,password,"1");
         *m_username = username;
-        *m_userType = m_loginDB->getAccountType(username);
         this->accept();
     }
 }

@@ -6,10 +6,10 @@ class QString;
 class UserInfoDB;
 class QSqlQuery;
 
-class RegisteredUser:public BaseUser
+class RegisteredUser : public BaseUser
 {
 public:
-    RegisteredUser(QString username, int userType = 1);
+    RegisteredUser(QString username);
     ~RegisteredUser();
 
     //getters
@@ -22,7 +22,6 @@ public:
     void changeCreditsBy(int credits);
     void incrementComplaintsBy(int complaints);
     void incrementNumOfUploads();
-
 
     //this returns documents currently in state 0, 1 or 2
     //0 meaning SU still needs to approve or deny

@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     documentsdb.cpp \
     constants.cpp \
     profilewidget.cpp \
-    historydb.cpp
+    historydb.cpp \
+    superuser.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     documentsdb.h \
     constants.h \
     profilewidget.h \
-    historydb.h
+    historydb.h \
+    superuser.h
 
 FORMS    +=
 

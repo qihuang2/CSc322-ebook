@@ -6,15 +6,20 @@
 class BaseUser
 {
 public:
-    BaseUser(QString username, int userType);
+    BaseUser();
+
+    typedef enum _UserType {
+        VISITING,
+        REGISTERED,
+        SUPER
+    } UserType;
 
     QString getUsername();
-    int getUserType();
+    UserType getUserType();
 
 protected:
     QString m_username;
-    int m_userType;
-
+    UserType m_userType;
 };
 
 #endif // BASEUSER_H
