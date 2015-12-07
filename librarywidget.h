@@ -63,6 +63,7 @@ private:
     QString             Genre;
     QString             Rating;
     QString				m_loginName;
+    QString             path;
 
     void populateTable();
 

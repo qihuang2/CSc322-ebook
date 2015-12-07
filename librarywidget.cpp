@@ -275,7 +275,7 @@ void LibraryWidget::selectCell()
     //Setting up the preview
     int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
     QString book = QString::number(book_id);
-    QString path = docDir + "/" + book + ".txt";
+    path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;
     QFile file(path); //open file
     QString line;
@@ -329,7 +329,6 @@ void LibraryWidget::selectCell()
 
 QString LibraryWidget::getPath()
 {
-    QString path = docDir + "/" + QString::number(current_row+1) + ".txt";
     return path;
 }
 
@@ -377,7 +376,7 @@ void LibraryWidget::selectRecommendation()
     //Setting up the preview
     int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
     QString book = QString::number(book_id);
-    QString path = docDir + "/" + book + ".txt";
+    path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;
     QFile file(path); //open file
     QString line;
