@@ -99,7 +99,7 @@ void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, Q
     }
 }
 
-//VICTOR LOOK HERE. after openning document, add a view to the doc
+//after openning document, add a view to the doc
 void DocumentsDB::addViewToDocWithUID(int id){
     QSqlQuery q = this->getDocInfoForUID(id);
     //if doc exists
@@ -239,9 +239,9 @@ bool DocumentsDB::userHasRatedBook(QString username, int book_id){
     }
 }
 
-QSqlQuery DocumentsDB::getFiveMostViewed(){
+QSqlQuery DocumentsDB::getFiveMostViewed(int row){
     QSqlQuery q;
-    if(!q.exec("SELECT * FROM doc_info ORDER BY views DESC LIMIT 5")){
+    if(!q.exec("SELECT * FROM doc_info ORDER BY views DESC LIMIT 5 offset "+QString::number(row))){
         qDebug()<<"Unable to get top views docs";
         qDebug()<<q.lastError();
       }

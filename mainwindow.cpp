@@ -126,8 +126,13 @@ void MainWindow::s_openBook()
 {
     LibraryWidget* lib = (LibraryWidget*)m_tabWidget->widget(LIB);
     DocumentWidget* doc = (DocumentWidget*)m_tabWidget->widget(DOC);
+    //Get the Path
     QString p = lib->getPath();
-    qDebug()<< "The path in main window: " << p;
+
+    //Update the view, match the book id, add one to its row it the view column
+    m_docDB->addViewToDocWithUID(lib->getRow());
+
+    //Open the Book
     doc->readFile(p);
 
 }

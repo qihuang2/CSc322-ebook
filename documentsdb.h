@@ -115,7 +115,7 @@ public:
     bool userHasRatedBook(QString username, int book_id);
 
     //get top 5 most views documents
-    QSqlQuery getFiveMostViewed();
+    QSqlQuery getFiveMostViewed(int);
 };
 
 #endif // DOCUMENTSDB_H

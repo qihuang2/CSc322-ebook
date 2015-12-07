@@ -32,13 +32,16 @@ private:
     QVBoxLayout*        m_previewLayout;
     QHBoxLayout*        m_previewbuttonLayout;
     QHBoxLayout*        m_ratingLayout;
+    QVBoxLayout*        m_recommendLayout;
 
     QPushButton*        m_refresh;
     QPushButton*        m_hidePreview;
     QPushButton*        m_openBook;
+    QPushButton*        m_hideRecommend;
 
     QTableWidget*       m_tableWidget;
     QTableWidget*       m_previewWidget;
+    QTableWidget*       m_recommendWidget;
 
     QTextEdit*          m_previewText;
 
@@ -51,6 +54,7 @@ private:
     QLabel*             m_bookauthor;
     QLabel*             m_bookgenre;
     QLabel*             m_bookrating;
+    QLabel*             m_recommend;
 
     DocumentsDB*        m_db;
 
@@ -77,7 +81,10 @@ public slots:
     void hidePreview();
     void selectCell();
     void s_addHistory();
+    void hideRecommendations();
+    void selectRecommendation();
     QString getPath();
+    int getRow();
 };
 
 #endif // LIBRARYWIDGET_H

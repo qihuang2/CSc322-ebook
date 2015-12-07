@@ -18,6 +18,10 @@ class ProfileWidget : public QWidget
 public:
     explicit ProfileWidget(RegisteredUser* user, QWidget *parent = 0);
     ~ProfileWidget();
+
+public slots:
+    void update_History();
+
 private:
     QTableWidget*	m_historyText;
     QPushButton*    m_giftButton;

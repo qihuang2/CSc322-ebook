@@ -40,9 +40,11 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
     setLayout(QV);
 }
 
-/*
- * HistoryDB *db=new HistoryDB();
-    int row = db->getHistoryRow(m_user->getUsername());
+void ProfileWidget::update_History()
+{
+    /*
+    HistoryDB *db=new HistoryDB();
+    int row = db->getHistoryRow(user->getUsername());
     m_historyText->setRowCount(row+2);
     m_historyText->setColumnCount(1);
     m_historyText->setHorizontalHeaderLabels(QStringList() << "History Table");
@@ -53,9 +55,11 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
         m_historyText->setRowHidden(0, true);
         m_historyText->setRowHidden(1, true);
         m_historyText->verticalHeader()->setVisible(false);
-        QString s = db->getHistory(m_user->getUsername(),i-1);
+        QString s = db->getHistory(user->getUsername(),i-1);
         m_historyText->setItem(i, 1, new QTableWidgetItem(s));
     }
- */
+    */
+}
+
 
 ProfileWidget::~ProfileWidget() {}
