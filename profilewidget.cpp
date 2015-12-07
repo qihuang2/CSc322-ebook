@@ -60,7 +60,9 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     }
 
     //Create the label
-    m_creditLabel=new QLabel("Remaining Credits: " + QString::number(user->getNumOfCredits()));
+    m_creditLabel = new QLabel("Remaining Credits: " + QString::number(user->getNumOfCredits()));
+    m_complaintLabel = new QLabel("Number of Complaint(s): " + user->getNumOfDeletedBooks());
+    m_datecreateLabel = new QLabel("Member Since: " + user->getDateCreated());
 
     //Create the Layout
     QVBoxLayout *QV=new QVBoxLayout();
@@ -70,6 +72,8 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     giftLayout->addWidget(m_submitGift);
     QV->addWidget(new QLabel("Username: " + user->getUsername()));
     QV->addWidget(m_creditLabel);
+    QV->addWidget(m_complaintLabel);
+    QV->addWidget(m_datecreateLabel);
     QV->addWidget(m_giftButton);
     QV->addLayout(giftLayout);
     QV->addWidget(m_showHistory);

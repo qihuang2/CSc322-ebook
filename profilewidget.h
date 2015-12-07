@@ -49,6 +49,8 @@ private:
     QPushButton*    m_submitGift;
 
     QLabel*         m_creditLabel;
+    QLabel*         m_complaintLabel;
+    QLabel*         m_datecreateLabel;
 };
 
 #endif // PROFILEWIDGET_H

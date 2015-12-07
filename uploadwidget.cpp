@@ -100,6 +100,8 @@ void UploadWidget::s_upload() {
         m_titleField->clear();
         m_authorField->clear();
         m_fileLabel->clear();
+        QMessageBox::information(this, tr("Uploaded!"),
+            "Your document has been uploaded!");
     }else {
         // notify user to fill in all fields
         qDebug() << "All fields must be filled in.";
