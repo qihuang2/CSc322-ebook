@@ -51,7 +51,10 @@ QSqlQuery RegisteredUser::getPendingDocuments(){
     QSqlQuery query;
     //there is no check to see if this command is run
     //I did it this way so it is easier to iterate through using : while (query.next())
-    query.exec("SELECT * FROM doc_info WHERE posted_by = '"+m_username+"' AND approved != 3 AND is_deleted = 0");
+    if (!query.exec("SELECT * FROM doc_info WHERE posted_by = '"+m_username+"' AND approved != 3 AND is_deleted = 0")){
+        qDebug()<<"Error in getPendingDocuments";
+        qDebug()<<query.lastError();
+    }
     return query;
 }
 
@@ -60,39 +63,45 @@ void RegisteredUser::uploadDocument(QString title, QString author, int genre, QS
 }
 
 void RegisteredUser::approveSuperUserCounterForBook(int uid, bool approve){
-    if(approve) {
-        QSqlQuery q;
+
+    QSqlQuery q;
+    if(approve) { //user approves
         q.exec("SELECT * FROM doc_info WHERE u_id = "+ QString::number(uid));
-        if(q.next()){
+
+        if(q.next()){ //book was found
             int credits;
-            if (q.value(9) == 2 ? true : false) { //has counter offer
+            if (q.value(9).toInt() == 1 ? true : false) { //has counter offer
                 credits = q.value(11).toInt();
-            }else{
+
+                if(!q.exec("UPDATE doc_info SET approved = 3, asking_price = counter_offer WHERE u_id = "+QString::number(uid))){ //set in DB as approved
+                    qDebug()<<"ERROR changing approval state by RU";
+                    qDebug()<<q.lastError();
+                }
+            }
+            else{ // no counter offer
                 credits = q.value(10).toInt();
+
+                if(!q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(uid))){ //set in DB as approved
+                    qDebug()<<"ERROR changing approval state by RU";
+                    qDebug()<<q.lastError();
+                }
             }
-            changeCreditsBy(credits);
-            if(q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(uid))){
-                qDebug()<<"Document approved by RegisterUser";
-            }else {
-                qDebug()<<"ERROR changing approval state by RU";
-            }
-        }else {
-            qDebug()<<"ERROR approving doc by registered user";
+            changeCreditsBy(credits); //add credits
         }
 
-        if(q.exec("UPDATE doc_info SET approved = 3, asking_price = counter_offer WHERE u_id = "+QString::number(uid))){
-            qDebug()<<"Document approved by RegisterUser";
-
-        }else {
-            QSqlQuery q;
-            if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(uid))){
-                qDebug()<<"Document rejected by Registered User";
-
-            }else {
-                qDebug()<<"ERROR changing approval state by RU";
-            }
+        else { //could't find book (shouldn't happen)
+            qDebug()<<"ERROR approving doc by registered user: doc wasn't found";
+            qDebug()<<q.lastError();
         }
     }
+
+    else { //user doesn't approve
+        if(!q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(uid))){
+            qDebug()<<"ERROR denying offer by RU";
+            qDebug()<<q.lastError();
+        }
+    }
+
 }
 
     void RegisteredUser::giftCreditsToUser(int credits, QString recipient){
@@ -104,7 +113,7 @@ void RegisteredUser::approveSuperUserCounterForBook(int uid, bool approve){
     QSqlQuery RegisteredUser::getAllUsers(){
         QSqlQuery q;
         if(!q.exec("SELECT username FROM users WHERE is_banned = 0")){
-            qDebug()<<"Couldn't get list of usernames";
+            qDebug()<<"Error in getAllUsers";
             qDebug()<<q.lastError();
         }
         return q;

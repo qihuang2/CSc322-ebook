@@ -13,7 +13,7 @@ SuperUser::SuperUser(QString username) : RegisteredUser(username)
 QSqlQuery SuperUser::getSupersPendingDocuments(){
     QSqlQuery query;
     if (!query.exec("SELECT * FROM doc_info WHERE approved = 0 AND is_deleted = 0")){
-        qDebug()<<"Error getting docs that need superuser approval";
+        qDebug()<<"Error in getSuperPendinDocuments";
         qDebug()<<query.lastError();
     }
     return query;
@@ -22,15 +22,15 @@ QSqlQuery SuperUser::getSupersPendingDocuments(){
 void SuperUser::acceptDocumentWithUID(int bookID){
     QSqlQuery q;
     if(!q.exec("UPDATE doc_info SET approved = 2 WHERE u_id = "+QString::number(bookID))){
-        qDebug()<<"Error approving book by superuser";
+        qDebug()<<"Error in acceptDocumentWithUID by superuser";
         qDebug()<<q.lastError();
     }
 }
 
 void SuperUser::declineDocumentWithUID(int bookID, int counterOffer){
     QSqlQuery q;
-    if(!q.exec("UPDATE doc_info SET approved = 2, counter_offer = " + QString::number(counterOffer) + " WHERE u_id = "+QString::number(bookID))){
-        qDebug()<<"Error declining book by superuser";
+    if(!q.exec("UPDATE doc_info SET approved = 1, counter_offer = " + QString::number(counterOffer) + " WHERE u_id = "+QString::number(bookID))){
+        qDebug()<<"Error in declineDocumentWithUID by superuser";
         qDebug()<<q.lastError();
     }
 }
@@ -38,7 +38,7 @@ void SuperUser::declineDocumentWithUID(int bookID, int counterOffer){
 void SuperUser::deleteBookWithUID(int uid){
     QSqlQuery q;
     if(!q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+ QString::number(uid))){
-        qDebug()<<"Error deleting book by superuser";
+        qDebug()<<"Error in deleteBookWithUID by superuser";
         qDebug()<<q.lastError();
     }
 }
@@ -46,7 +46,7 @@ void SuperUser::deleteBookWithUID(int uid){
 void SuperUser::banUser(QString username){
     QSqlQuery q;
     if(!q.exec("UPDATE users SET is_banned = 1 WHERE username = '"+ username + "'")){
-        qDebug()<<"Error banning user by superuser";
+        qDebug()<<"Error in banUser by SU";
         qDebug()<<q.lastError();
     }
 }
@@ -60,7 +60,8 @@ QSqlQuery SuperUser::getAllDocumentsWithComplaints(){
     if(query.exec("SELECT * FROM report_info"))
         return query;
     else {
-        qDebug()<<"Problem getting list of reported books";
+        qDebug()<<"Error in getAllDocumentsWithComplaints by SU";
+        qDebug()<<query.lastError();
         return query;
     }
 }

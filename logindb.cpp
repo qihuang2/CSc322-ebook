@@ -19,6 +19,7 @@ bool LoginDB::checkUserAndPass(QString username, QString password){
         return (q.value(0).toString().compare(password) == 0) ? true : false ;
     }
     else {
+        qDebug()<<"Error in checkUserAndPass: "+username+ " "+password;
         qDebug()<<q.lastError();
         return false;
     }
@@ -31,11 +32,13 @@ void LoginDB::addUser(QString username, QString password, QString account_type){
     if (!userExists(username)) {
         QSqlQuery query;
         //Adds account to the tables 'users' and 'user_info'
-        if (query.exec("INSERT INTO users(username,password,account_type,is_banned) VALUES ('"+username+"','"+password+"',"+account_type+",0)"))
-            qDebug()<<"User added.";
-        else qDebug()<<query.lastError();
-        if (query.exec("INSERT INTO user_info(username,credits,complaints,uploads,created) VALUES ('"+username+"', 0, 0, 0, CURRENT_TIMESTAMP)"))
-            qDebug()<<"Account created.";
-        else qDebug()<<query.lastError();
+        if (!query.exec("INSERT INTO users(username,password,account_type,is_banned) VALUES ('"+username+"','"+password+"',"+account_type+",0)")){
+            qDebug()<<"Error adding into users in addUser: " + username + " " + password + " "+ account_type;
+            qDebug()<<query.lastError();
+        }
+        if (!query.exec("INSERT INTO user_info(username,credits,complaints,uploads,created) VALUES ('"+username+"', 0, 0, 0, CURRENT_TIMESTAMP)")){
+            qDebug()<<"Error adding into user_info in addUser: " + username + " " + password + " "+ account_type;
+            qDebug()<<query.lastError();
+        }
     }
 }

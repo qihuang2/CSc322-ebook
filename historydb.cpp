@@ -1,5 +1,6 @@
 #include "historydb.h"
 
+
 HistoryDB::HistoryDB(): MainDB()
 {
 
@@ -17,6 +18,9 @@ QString HistoryDB::getHistory(QString username,int row)
              q+=" by ";
              q+=query.value(2).toString();
          }
+     }else {
+         qDebug()<<"Error in getHistory :" + username + " "+QString::number(row);
+         qDebug()<<query.lastError();
      }
      return q;
 }
@@ -26,8 +30,10 @@ void HistoryDB::addHistory(QString Username,QString bookName,QString Author)
     QSqlQuery q;
     if(q.exec("INSERT INTO History VALUES('"+Username+"','"+bookName+"','"+Author+"')"))
             qDebug()<<"add History";
-    else
+    else{
+        qDebug()<<"Error in addHistory: "+Username+ " " + bookName + " "+ Author;
         qDebug()<<q.lastError();
+    }
 }
 
 int HistoryDB::getHistoryRow(QString username)
@@ -37,6 +43,7 @@ int HistoryDB::getHistoryRow(QString username)
         return q.first() ? q.value(0).toInt() : -1;
     else
     {
+        qDebug()<< "Error in getHistoryRow: "+username;
         qDebug() << q.lastError();
         return -1;
     }

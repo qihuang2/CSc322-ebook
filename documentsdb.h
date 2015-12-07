@@ -17,7 +17,7 @@ class QSqlQuery;
 //6     num_of_ratings:       total number of people who rated the book
 //7     views:                total number of people that read the document
 //8     num_of_complaints:    number of users who complained about the book
-//9     approved:             0 - pening SU approval, 1 - SU denied with counter offer,
+//9     approved:             0 - pending SU approval, 1 - SU denied with counter offer,
 //                              2 - SU approved without counter offer, 3 - user approves / approves counter
 //10    asking_price          how much the user wants for uplaoding document
 //11    counter_offer         SU counter offer for document
@@ -115,7 +115,7 @@ public:
     bool userHasRatedBook(QString username, int book_id);
 
     //get top 5 most views documents
-    QSqlQuery getFiveMostViewed(int);
+    QSqlQuery getFiveMostViewed();
 };
 
 #endif // DOCUMENTSDB_H

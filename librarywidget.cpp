@@ -167,25 +167,21 @@ void LibraryWidget::s_refresh() {
 
 void LibraryWidget::createRecommend()
 {
-    for(int i = 1; i < 6; i++)
+    QSqlQuery topFive = m_db->getFiveMostViewed();
+    while (topFive.next())
     {
-        QSqlQuery current = m_db->getFiveMostViewed(i-1);
-        if(current.first()) {
-            int rowIndex = m_recommendWidget->rowCount();
-            m_recommendWidget->insertRow(rowIndex);
+        int rowIndex = m_recommendWidget->rowCount();
+        m_recommendWidget->insertRow(rowIndex);
 
-            QString title(current.value(MainDB::TITLE).toString());
-            QString author(current.value(MainDB::POSTEDBY).toString());
-            QString genre(current.value(MainDB::GENRE).toString());
-            QString rating(current.value(MainDB::RATING).toString());
+        QString title(topFive.value(MainDB::TITLE).toString());
+        QString author(topFive.value(MainDB::POSTEDBY).toString());
+        QString genre(topFive.value(MainDB::GENRE).toString());
+        QString rating(topFive.value(MainDB::RATING).toString());
 
-            m_recommendWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
-            m_recommendWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
-            m_recommendWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
-            m_recommendWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
-        }else {
-            qDebug() << "Document with id " << i << " doesn't exist.";
-        }
+        m_recommendWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
+        m_recommendWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
+        m_recommendWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
+        m_recommendWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
     }
 }
 

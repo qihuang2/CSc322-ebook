@@ -46,8 +46,10 @@ MainDB::MainDB()
                                                         "account_type TINYINT NOT NULL, "
                                                         "is_banned TINYINT NOT NULL"
                                                         ");" );
-        if( !qry.exec() )
+        if( !qry.exec() ){
+            qDebug()<<"Error creating users in MainDB()";
             qDebug() << qry.lastError();
+        }
 
         //creates the table 'user_info' if it does't exist
         //
@@ -65,9 +67,10 @@ MainDB::MainDB()
                                                             "created TEXT NOT NULL, "
                                                             "FOREIGN KEY (username) REFERENCES users(username)"
                                                             ");" );
-        if( !qry.exec() )
+        if( !qry.exec() ){
+            qDebug()<<"Error creating user_info in MainDB()";
            qDebug() << qry.lastError();
-
+        }
 
         //creates the table 'doc_info' if it does't exist
         //doc_info keeps track of documents that have been uploaded
@@ -105,7 +108,7 @@ MainDB::MainDB()
                                                            "FOREIGN KEY (posted_by) REFERENCES user_info(username)"
                                                         ");");
         if( !qry.exec() ){
-            qDebug()<<"failed to create doc_info";
+            qDebug()<<"Error creating doc_info in MainDB()";
            qDebug() << qry.lastError();
         }
 
@@ -115,8 +118,10 @@ MainDB::MainDB()
                                                               "bookname VARCHAR(25), "
                                                               "author VARCHAR(25) NOT NULL,   PRIMARY KEY(username,bookname) "
                                                               ");" );
-           if( !qry.exec() )
+           if( !qry.exec() ){
+               qDebug()<<"Error creating History in MainDB()";
               qDebug() << qry.lastError();
+           }
 
            //creates the table 'rating_info' if it doesn't exist
            //
@@ -130,8 +135,8 @@ MainDB::MainDB()
                                                            "PRIMARY KEY (username, book_id)"
                                                            ");" );
            if( !qry.exec() ){
+               qDebug()<<"Error creating rating_info in MainDB()";
                qDebug() << qry.lastError();
-               qDebug()<<"Book rating wasn't created";
            }
 
            //creates the table 'report_info' if it doesn't exist
@@ -148,8 +153,8 @@ MainDB::MainDB()
                                                                  "PRIMARY KEY (username, book_id)"
                                                                  ");");
            if( !qry.exec() ){
+               qDebug()<<"Error creating report_info in MainDB()";
                 qDebug() << qry.lastError();
-                qDebug()<<"Book reporting wasn't created";
            }
 
     }
@@ -172,6 +177,8 @@ bool MainDB::userExists(QString username){
         if(query.next())
             return true;
     }
+    qDebug()<<"Error in userExists: "+username;
+
     //else username not taken
     return false;
 }
@@ -194,6 +201,7 @@ void MainDB::deleteTable(QString tableName){
     if (query.exec("DROP TABLE "+tableName)){
         qDebug()<<"Table Deleted";
     }else {
+        qDebug()<<"Error in deleteTable: "+tableName;
         qDebug()<<query.lastError();
     }
 }
@@ -209,7 +217,8 @@ void MainDB::printUsers(){
             qDebug()<<q.value(0).toString()<<q.value(1).toString();
         }
     }else {
-        qDebug()<<"Unable to get users";
+        qDebug()<<"Error in PrintUsers";
+        qDebug()<<q.lastError();
     }
 }
 
@@ -221,6 +230,7 @@ bool MainDB::isBanned(QString username){
         q.next();
         return (q.value(0).toBool()) ? true : false;
     }else {
+        qDebug()<<"Error isBanned: "+username;
         qDebug() << q.lastError();
         return false;
     }
@@ -232,6 +242,7 @@ QSqlQuery MainDB::getAccount(QString username){
     if(q.exec("SELECT * FROM users WHERE username = '"+username+"'")){
         return (q) ;
     }else {
+        qDebug()<<"Error getAccount: "+username;
         qDebug() << q.lastError();
         return q;
     }

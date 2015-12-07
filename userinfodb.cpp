@@ -15,8 +15,8 @@ int UserInfoDB::getIntForKey(QString username, QString key){
         return q.value(0).toInt();
     }
     else {
+        qDebug()<<"Error in getIntForKey: "+username+" "+key;
         qDebug()<<q.lastError();
-        qDebug()<<"unable to get key: " + key+ " in getintKEY";
         return 0;
     }
 }
@@ -26,8 +26,8 @@ void UserInfoDB::setIntForKey(QString username, QString key, int value){
     if(q.exec("UPDATE user_info SET "+key+ " = "+QString::number(value)+" WHERE username = '"+username+"'")){
         qDebug()<< key + " updated.";
     }else {
+        qDebug()<<"Error in setIntForKey: "+username+" "+key;
         qDebug()<<q.lastError();
-        qDebug()<<"unable to set key: " + key+ " in setIntKey";
     }
 }
 
@@ -39,6 +39,7 @@ QString UserInfoDB::getStringForKey(QString username, QString key){
         return q.value(0).toString();
     }
     else {
+        qDebug()<<"Error in getStringForKey: "+username+" "+key;
         qDebug()<<q.lastError();
         return "";
     }
@@ -49,12 +50,20 @@ void UserInfoDB::banUser(QString username){
     if(q.exec("UPDATE users SET is_banned = 1 WHERE username = '"+username+"'")){
         qDebug() << username + " has been banned.";
     }
+    else{
+        qDebug()<<"Error in banUser: "+username;
+        qDebug()<<q.lastError();
+    }
 }
 
 void UserInfoDB::unbanUser(QString username){
     QSqlQuery q;
     if(q.exec("UPDATE users SET is_banned = 0 WHERE username = '"+username+"'")){
         qDebug() << username + " has been unbanned.";
+    }
+    else{
+        qDebug()<<"Error in unbanUser: "+username;
+        qDebug()<<q.lastError();
     }
 }
 
