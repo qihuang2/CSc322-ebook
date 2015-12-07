@@ -16,7 +16,8 @@ QSqlQuery DocumentsDB::getDocInfoForUID(int id){
     QSqlQuery query;
     //if command runs
     if(!query.exec("SELECT * FROM doc_info WHERE u_id = "+QString::number(id))) {
-        qDebug() << "DOCSDB: doc info query for id " << id << " failed.";
+        qDebug() << "getDocInfoForUID: " + QString::number(id)  +" failed.";
+        qDebug()<<query.lastError();
     }
     return query;
 }
@@ -25,13 +26,19 @@ QSqlQuery DocumentsDB::getDocsUploadedByUser(QString username){
     QSqlQuery query;
     //there is no check to see if this command is run
     //I did it this way so it is easier to iterate through using : while (query.next())
-    query.exec("SELECT * FROM doc_info WHERE posted_by = '"+username+"' AND is_deleted = 0");
+    if(!query.exec("SELECT * FROM doc_info WHERE posted_by = '"+username+"' AND is_deleted = 0")){
+        qDebug()<<"getDocUploadedByUser: "+username+"failed";
+        qDebug()<<query.lastError();
+    }
     return query;
 }
 
 QSqlQuery DocumentsDB::getAllDocs(){
     QSqlQuery q;
-    q.exec("SELECT * FROM doc_info WHERE approved = 3 AND is_deleted = 0");
+    if(!q.exec("SELECT * FROM doc_info WHERE approved = 3 AND is_deleted = 0")){
+        qDebug()<<"getAllDocs failed";
+        qDebug()<<q.lastError();
+    }
     return q;
 }
 
@@ -43,7 +50,10 @@ void DocumentsDB::addDocument(QString title, QString posted_by, int genre, QStri
     if (query.exec("INSERT INTO doc_info(title,posted_by,genre, upload_date, rating, num_of_ratings, views, num_of_complaints, approved, asking_price, counter_offer, summary, is_deleted) "
                    "VALUES ('"+title+"','"+posted_by+"',"+QString::number(genre)+",CURRENT_TIMESTAMP, 0, 0, 0, 0, 3,"+askingPrice+",null," + "'" + summary + "',0)"))
         qDebug()<<"Document added";
-    else qDebug() <<"DOCSDB: " << query.lastError();
+    else{
+        qDebug() <<"addDocument: "+title+" "+posted_by+" "+QString::number(genre)+ " " + summary + " " + askingPrice + " failed";
+        qDebug()<<query.lastError();
+    }
 }
 
 void DocumentsDB::deleteDocumentWithUID(int id){
@@ -51,7 +61,10 @@ void DocumentsDB::deleteDocumentWithUID(int id){
     //delete row where u_id == id
     if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(id)))
         qDebug()<< "Document has been deleted.";
-    else qDebug()<<q.lastError();
+    else{
+        qDebug()<<"deleteDocumentWitUID: "+QString::number(id)+ " failed";
+        qDebug()<<q.lastError();
+    }
 }
 
 void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, QString reason){
@@ -67,34 +80,31 @@ void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, Q
         //add complaint and update database value
         if(++currentComplaints >= 3){ //delete book if reached complaint limit
 
-            deleteDocumentWithUID(book_id);
+            deleteDocumentWithUID(book_id); //delete document
             int creditPenalty = q.value(10).toInt() + 100;
             uploader.changeCreditsBy(-creditPenalty); //decrement credits
 
-            uploader.incrementBooksDeletedBy(1);
-            if(uploader.getNumOfDeletedBooks() >= 2){
+            uploader.incrementBooksDeletedBy(1);//add num of books deleted
+
+            if(uploader.getNumOfDeletedBooks() >= 2){ //user has 2 or more deleted books so ban
                 if(!q.exec("UPDATE users SET is_banned = 1 WHERE username = '"+uploader.getUsername()+"'")){
-                    qDebug() << "Error autobanning user";
+                    qDebug() << "Error autobanning user inside addComplaintToDocumentWithUID :" + username + " " + QString::number(book_id)+ " "+ reason;
+                    qDebug()<< q.lastError();
                 }
             }
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+", is_deleted = 1 WHERE u_id = "+QString::number(book_id)))
-                qDebug()<< "Complaint recorded.";
-            else qDebug()<<q.lastError();
         }
-        else {//didn't reach complaint limit
-            if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
-                qDebug()<< "Complaint recorded.";
-            else qDebug()<<q.lastError();
 
+        if(!q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id))){
+            qDebug() << "Error adding complaint inside addComplaintToDocumentWithUID :" + username + " " + QString::number(book_id)+ " "+ reason;
+            qDebug()<< q.lastError();
         }
-        if(q.exec("UPDATE doc_info SET num_of_complaints = "+QString::number(currentComplaints)+" WHERE u_id = "+QString::number(book_id)))
-            qDebug()<< "Complaint recorded.";
-        else qDebug()<<q.lastError();
+
 
         //add to report_info
+        //this is to determine if user has reported the document already: users can't report the same doc twice
         if(!q.exec("INSERT INTO report_info VALUES ('"+username+ "',"+QString::number(book_id)+",'" + reason +"')")){
+            qDebug() << "Error adding into report_info inside addComplaintToDocumentWithUID :" + username + " " + QString::number(book_id)+ " "+ reason;
             qDebug()<<q.lastError();
-            qDebug()<<"didn't add commplaint to report_info";
         }
     }
 }
@@ -107,9 +117,10 @@ void DocumentsDB::addViewToDocWithUID(int id){
         //get current number of views
         int currentViews = q.value(7).toInt();
         //add complaint and update database value
-        if(q.exec("UPDATE doc_info SET views = "+QString::number(currentViews+1)+" WHERE u_id = "+QString::number(id)))
-            qDebug()<< "Views updated.";
-        else qDebug()<<q.lastError();
+        if(!q.exec("UPDATE doc_info SET views = "+QString::number(currentViews+1)+" WHERE u_id = "+QString::number(id))){
+            qDebug()<< "Error using addViewToDocWithUID: " + QString::number(id);
+            qDebug()<< q.lastError();
+        }
     }
 }
 
@@ -123,19 +134,22 @@ void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRatin
         int totalNumOfRatings = q.value(6).toInt();
 
         //update to new rating
-        if(q.exec("UPDATE doc_info SET rating = "+QString::number(getNewAverageRating(newRating, avgRating, totalNumOfRatings))+" WHERE u_id = "+QString::number(id)))
-            qDebug()<< "Rating updated.";
-        else qDebug()<<q.lastError();
+        if(!q.exec("UPDATE doc_info SET rating = "+QString::number(getNewAverageRating(newRating, avgRating, totalNumOfRatings))+" WHERE u_id = "+QString::number(id))){
+            qDebug()<< "Error updating new rating addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
+            qDebug()<<q.lastError();
+        }
 
         //update total number of ratings made
-        if(q.exec("UPDATE doc_info SET num_of_ratings = "+QString::number(totalNumOfRatings+1)+" WHERE u_id = "+QString::number(id)))
-            qDebug()<< "Total number of ratings updated.";
-        else qDebug()<<q.lastError();
+        if(!q.exec("UPDATE doc_info SET num_of_ratings = "+QString::number(totalNumOfRatings+1)+" WHERE u_id = "+QString::number(id))){
+            qDebug()<< "Error updating total ratings addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
+            qDebug()<<q.lastError();
+        }
 
         //add user to user rated_info
+        //so users can't rate twice
         if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(id)+")")){
+            qDebug()<< "Error adding into rated_info addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
             qDebug()<<q.lastError();
-            qDebug()<<"entry wasn't added to rating_info";
         }
     }
 }
@@ -158,6 +172,7 @@ int DocumentsDB::getNumDocs() {
         return q.first() ? q.value(0).toInt() : -1;
     }
     else {
+        qDebug()<<"Error getNumDocs";
         qDebug()<<q.lastError();
         return -1;
     }
@@ -170,6 +185,7 @@ int DocumentsDB::getLastInsertRowUID(){
         return q.first() ? q.value(0).toInt() : 0;
     }
    else {
+        qDebug()<<"Error in getLastInsertRowUID";
         qDebug() << q.lastError();
         return 0;
     }
@@ -186,6 +202,7 @@ int DocumentsDB::getnumSumm(QString book_Name)
     }
     else
     {
+        qDebug()<<"Error in getnumSumm";
         qDebug() << q.lastError();
         return -1;
     }
@@ -206,6 +223,7 @@ QString DocumentsDB::getSummary(QString book_Name)
     }
     else
     {
+        qDebug()<<"Error in getSummary";
         QString blank = "";
         qDebug() << query.lastError();
         return blank;
@@ -219,7 +237,7 @@ bool DocumentsDB::userHasReportedBook(QString username, int book_id){
             return true;
         }else return false; //no entry so user hasn't reported book yet
     }else {
-        qDebug()<<"didn't get userHasReportedBook properly";
+        qDebug()<<"Error userHasReportedBook: "+username+ " "+QString::number(book_id);
         qDebug()<<query.lastError();
        return false;
     }
@@ -233,7 +251,7 @@ bool DocumentsDB::userHasRatedBook(QString username, int book_id){
             return true;
         }else return false; //no entry so user hasn't rated book yet
     }else {
-        qDebug()<<"didn't get userHasRatedBook properly";
+        qDebug()<<"Error userHasRatedBook: "+username + QString::number(book_id);
         qDebug()<<query.lastError();
        return false;
     }
@@ -242,9 +260,9 @@ bool DocumentsDB::userHasRatedBook(QString username, int book_id){
 QSqlQuery DocumentsDB::getFiveMostViewed(int row){
     QSqlQuery q;
     if(!q.exec("SELECT * FROM doc_info ORDER BY views DESC LIMIT 5 offset "+QString::number(row))){
-        qDebug()<<"Unable to get top views docs";
+        qDebug()<<"Error getFiveMostViewed";
         qDebug()<<q.lastError();
-      }
+     }
     return q;
 }
 
