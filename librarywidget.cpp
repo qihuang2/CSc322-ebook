@@ -250,13 +250,33 @@ void LibraryWidget::selectCell()
     //Get the row
     QModelIndex currentIndex = m_tableWidget->currentIndex();
     int row = currentIndex.row();
+    int b_genre;
+    float b_rating;
     current_row = row;
 
     //Clear the preview box first
     m_previewText->clear();
 
+    //Get the data in each column for that row
+    Title = m_tableWidget->item(row,0)->text();
+    Author = m_tableWidget->item(row,1)->text();
+    Genre = m_tableWidget->item(row,2)->text();
+    Rating = m_tableWidget->item(row,3)->text();
+
+    //Set the Strings
+    m_booktitle->setText(Title);
+    m_bookauthor->setText(Author);
+    m_bookgenre->setText(Genre);
+    m_bookrating->setText(Rating);
+
+    b_genre = Genre.toInt();
+    b_rating = Rating.toFloat();
+
     //Setting up the preview
-    QString path = docDir + "/" + QString::number(current_row+1) + ".txt";
+    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    QString book = QString::number(book_id);
+    QString path = docDir + "/" + book + ".txt";
+    qDebug() << "The path is " << path;
     QFile file(path); //open file
     QString line;
 
@@ -286,20 +306,8 @@ void LibraryWidget::selectCell()
     bg_color.setColor(QPalette::Inactive, QPalette::Base, Qt::gray);
     m_previewText->setPalette(bg_color);
 
-    //Get the data in each column for that row
-    Title = m_tableWidget->item(row,0)->text();
-    Author = m_tableWidget->item(row,1)->text();
-    Genre = m_tableWidget->item(row,2)->text();
-    Rating = m_tableWidget->item(row,3)->text();
-
-    //Set the Strings
-    m_booktitle->setText(Title);
-    m_bookauthor->setText(Author);
-    m_bookgenre->setText(Genre);
-    m_bookrating->setText(Rating);
-
-    //Set up the Comment Table
-    number_ofSummary = m_db->getnumSumm(Title);
+    //Set up the Summary Table
+    int number_ofSummary = m_db->getnumSumm(Title);
     m_previewWidget->clear();
     m_previewWidget->setColumnCount(1);
     m_previewWidget->setRowCount(number_ofSummary+2);
@@ -344,13 +352,33 @@ void LibraryWidget::selectRecommendation()
     //Get the row
     QModelIndex currentIndex = m_recommendWidget->currentIndex();
     int row = currentIndex.row();
+    int b_genre;
+    float b_rating;
     current_row = row;
 
     //Clear the preview box first
     m_previewText->clear();
 
+    //Get the data in each column for that row
+    Title = m_recommendWidget->item(row,0)->text();
+    Author = m_recommendWidget->item(row,1)->text();
+    Genre = m_recommendWidget->item(row,2)->text();
+    Rating = m_recommendWidget->item(row,3)->text();
+
+    //Set the Strings
+    m_booktitle->setText(Title);
+    m_bookauthor->setText(Author);
+    m_bookgenre->setText(Genre);
+    m_bookrating->setText(Rating);
+
+    b_genre = Genre.toInt();
+    b_rating = Rating.toFloat();
+
     //Setting up the preview
-    QString path = docDir + "/" + QString::number(current_row+1) + ".txt";
+    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    QString book = QString::number(book_id);
+    QString path = docDir + "/" + book + ".txt";
+    qDebug() << "The path is " << path;
     QFile file(path); //open file
     QString line;
 
@@ -379,18 +407,6 @@ void LibraryWidget::selectRecommendation()
     bg_color.setColor(QPalette::Active, QPalette::Base, Qt::gray);
     bg_color.setColor(QPalette::Inactive, QPalette::Base, Qt::gray);
     m_previewText->setPalette(bg_color);
-
-    //Get the data in each column for that row
-    Title = m_recommendWidget->item(row,0)->text();
-    Author = m_recommendWidget->item(row,1)->text();
-    Genre = m_recommendWidget->item(row,2)->text();
-    Rating = m_recommendWidget->item(row,3)->text();
-
-    //Set the Strings
-    m_booktitle->setText(Title);
-    m_bookauthor->setText(Author);
-    m_bookgenre->setText(Genre);
-    m_bookrating->setText(Rating);
 
     //Set up the Comment Table
     number_ofSummary = m_db->getnumSumm(Title);

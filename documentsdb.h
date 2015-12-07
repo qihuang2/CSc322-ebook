@@ -116,6 +116,8 @@ public:
 
     //get top 5 most views documents
     QSqlQuery getFiveMostViewed();
+
+    int getbookID(QString, QString, int, float);
 };
 
 #endif // DOCUMENTSDB_H
