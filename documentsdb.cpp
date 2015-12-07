@@ -276,4 +276,3 @@ int DocumentsDB::getbookID(QString book_name, QString book_author, int book_genr
     }
     return query.first() ? query.value(0).toInt() : -1;
 }
-

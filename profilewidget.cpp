@@ -41,12 +41,19 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
     m_submitGift->setMaximumSize(200, 50);
 
     //Create the Line Edit
-    m_sendCredits = new QLineEdit("Enter an amount here");
+    m_sendCredits = new QLineEdit();
+    m_sendCredits->setPlaceholderText("Enter an amount here");
     m_sendCredits->setMaximumSize(QSize(200, 50));
 
     //Create the Combo Box
     m_userList = new QComboBox();
     m_userList->setMaximumSize(200, 50);
+    QSqlQuery user_list = user->getAllUsers();
+    while (user_list.next())
+    {
+        QString user(user_list.value(0).toString());
+        m_userList->addItem(user);
+    }
 
     //Create the Layout
     QVBoxLayout *QV=new QVBoxLayout();
@@ -112,6 +119,7 @@ void ProfileWidget::hideGift()
     m_submitGift->hide();
     m_giftButton->show();
 }
+
 
 void ProfileWidget::update_History(RegisteredUser* user)
 {

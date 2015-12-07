@@ -25,6 +25,7 @@ void DocumentWidget::createLayouts()
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
     m_reportText = new QTextEdit(widget); //Create a Report Box Widget
     m_searchLine = new QLineEdit(widget);
+    m_searchLine->setPlaceholderText("Type what you want to search here");
 
     //Create Labels
     m_rating = new QLabel("Rate this book:");
