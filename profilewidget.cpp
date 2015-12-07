@@ -6,12 +6,13 @@
 #include "documentwidget.h"
 #include <QHeaderView>
 
-ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(parent)
+ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
 
+    m_parent = mw;
     //Create the History Table
     m_historyText = new QTableWidget();
-
+    m_user=user;
     HistoryDB *db=new HistoryDB();
     int row = db->getHistoryRow(user->getUsername());
 
@@ -42,8 +43,8 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
 
     //Create the Line Edit
     m_sendCredits = new QLineEdit();
-    m_sendCredits->setPlaceholderText("Enter an amount here");
-    m_sendCredits->setMaximumSize(QSize(200, 50));
+    m_sendCredits->setPlaceholderText("Enter an amount here, has to be an integer");
+    m_sendCredits->setMaximumSize(QSize(300, 50));
 
     //Create the Combo Box
     m_userList = new QComboBox();
@@ -51,9 +52,15 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
     QSqlQuery user_list = user->getAllUsers();
     while (user_list.next())
     {
-        QString user(user_list.value(0).toString());
-        m_userList->addItem(user);
+        QString am_user(user_list.value(0).toString());
+        if (am_user == user->getUsername())
+            continue;
+        else
+            m_userList->addItem(am_user);
     }
+
+    //Create the label
+    m_creditLabel=new QLabel("Remaining Credits: " + QString::number(user->getNumOfCredits()));
 
     //Create the Layout
     QVBoxLayout *QV=new QVBoxLayout();
@@ -62,7 +69,7 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
     giftLayout->addWidget(m_sendCredits);
     giftLayout->addWidget(m_submitGift);
     QV->addWidget(new QLabel("Username: " + user->getUsername()));
-    QV->addWidget(new QLabel("Remaining Credits: " + QString::number(user->getNumOfCredits())));
+    QV->addWidget(m_creditLabel);
     QV->addWidget(m_giftButton);
     QV->addLayout(giftLayout);
     QV->addWidget(m_showHistory);
@@ -84,10 +91,12 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, QWidget *parent) : QWidget(pa
 
 void ProfileWidget::createActions()
 {
+
     connect(m_showHistory, SIGNAL(clicked()), this, SLOT(showHistory()));
     connect(m_hideHistory, SIGNAL(clicked()), this, SLOT(hideHistory()));
     connect(m_giftButton, SIGNAL(clicked()), this, SLOT(showGift()));
     connect(m_submitGift, SIGNAL(clicked()), this, SLOT(hideGift()));
+    connect(m_submitGift, SIGNAL(clicked()), m_parent, SLOT(s_updateCredit()));
 }
 
 void ProfileWidget::showHistory()
@@ -114,10 +123,24 @@ void ProfileWidget::showGift()
 
 void ProfileWidget::hideGift()
 {
+    QString credits = m_sendCredits->text();
+    QRegExp re("\\d*");  // a digit (\d), zero or more times (*)
+    if (re.exactMatch(credits))
+    {
+        m_user->changeCreditsBy(-credits.toInt());
+        m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
+        QString picked = m_userList->currentText();
+        RegisteredUser* r_user = new RegisteredUser(picked);
+        r_user->changeCreditsBy(credits.toInt());
+    }
+    else
+        qDebug() << "Not an integer";
     m_userList->hide();
     m_sendCredits->hide();
+    m_sendCredits->clear();
     m_submitGift->hide();
     m_giftButton->show();
+
 }
 
 

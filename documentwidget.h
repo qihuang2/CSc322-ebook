@@ -28,6 +28,7 @@ public:
     explicit DocumentWidget(QWidget *parent = 0,BaseUser *m_baseuser=0);
 
     void readFile(QString);
+    void updateCredits();
 
 signals:
 

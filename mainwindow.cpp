@@ -63,7 +63,7 @@ void MainWindow::createWidgets() {
         RegisteredUser* tmp;
         if(m_user->getUserType() == BaseUser::REGISTERED) tmp = new RegisteredUser(m_user->getUsername());
         else tmp = new SuperUser(m_user->getUsername());
-        ProfileWidget* pf = new ProfileWidget(tmp, m_tabWidget);
+        ProfileWidget* pf = new ProfileWidget(tmp, this,m_tabWidget);
         m_tabWidget->addTab(pf,"My Profile");
     }
 
@@ -99,8 +99,6 @@ void MainWindow::createLayouts() {
     m_mainLayout->addWidget(m_loginLabel);
     m_mainLayout->addWidget(m_tabWidget);
     m_mainLayout->addWidget(m_exitButton);
-
-
 
     m_tabWidget->widget(HISTORY);
 
@@ -148,6 +146,12 @@ void MainWindow::s_updateHistory()
             tmp = new SuperUser(m_user->getUsername());
         pw->update_History(tmp);
     }
+}
+
+void MainWindow::s_updateCredit()
+{
+    DocumentWidget* dw = (DocumentWidget*)m_tabWidget->widget(DOC);
+    dw->updateCredits();
 }
 
 MainWindow::~MainWindow() {}

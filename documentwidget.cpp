@@ -314,3 +314,10 @@ void DocumentWidget::clearReport()
 {
     m_reportText->clear();
 }
+
+void DocumentWidget::updateCredits()
+{
+    qDebug() << "Updating credits in DocumentWidget::updateCredits";
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
+    m_credits->setText("Credits:"+QString::number(t->getNumOfCredits()));
+}
