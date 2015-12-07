@@ -19,8 +19,7 @@ public:
     explicit ProfileWidget(RegisteredUser* user, QWidget *parent = 0);
     ~ProfileWidget();
 
-public slots:
-    void update_History();
+    void update_History(RegisteredUser* user);
 
 private:
     QTableWidget*	m_historyText;

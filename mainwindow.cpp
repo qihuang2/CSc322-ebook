@@ -137,4 +137,17 @@ void MainWindow::s_openBook()
 
 }
 
+void MainWindow::s_updateHistory()
+{
+    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(HISTORY);
+    if(!(m_user->getUserType() == BaseUser::VISITING)) {
+        RegisteredUser* tmp;
+        if(m_user->getUserType() == BaseUser::REGISTERED)
+            tmp = new RegisteredUser(m_user->getUsername());
+        else
+            tmp = new SuperUser(m_user->getUsername());
+        pw->update_History(tmp);
+    }
+}
+
 MainWindow::~MainWindow() {}

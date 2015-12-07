@@ -203,6 +203,7 @@ void LibraryWidget::createActions() {
     connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));
     connect(m_openBook, SIGNAL(clicked()), this, SLOT(s_addHistory()));
     connect(m_openBook, SIGNAL(clicked()), m_parent, SLOT(s_openBook()));
+    connect(m_openBook, SIGNAL(clicked()), m_parent, SLOT(s_updateHistory()));
     connect(m_hideRecommend, SIGNAL(clicked()), this, SLOT(hideRecommendations()));
     connect(m_recommendWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_recommendWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectRecommendation()));

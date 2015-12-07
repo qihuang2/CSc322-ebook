@@ -50,6 +50,7 @@ private:
 private slots:
     void s_refreshTable(int current);
     void s_openBook();
+    void s_updateHistory();
 };
 
 #endif // MAINWINDOW_H
