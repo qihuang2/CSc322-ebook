@@ -21,9 +21,27 @@ public:
 
     void update_History(RegisteredUser* user);
 
+public slots:
+    void hideHistory();
+    void showHistory();
+    void showGift();
+    void hideGift();
+
 private:
+    void createActions();
+
+    QHBoxLayout* giftLayout;
+
+    QComboBox* m_userList;
+
+    QLineEdit* m_sendCredits;
+
     QTableWidget*	m_historyText;
+
     QPushButton*    m_giftButton;
+    QPushButton*    m_hideHistory;
+    QPushButton*    m_showHistory;
+    QPushButton*    m_submitGift;
 };
 
 #endif // PROFILEWIDGET_H

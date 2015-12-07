@@ -118,6 +118,8 @@ public:
     QSqlQuery getFiveMostViewed();
 
     int getbookID(QString, QString, int, float);
+
+
 };
 
 #endif // DOCUMENTSDB_H
