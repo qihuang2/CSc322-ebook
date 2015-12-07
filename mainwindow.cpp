@@ -39,9 +39,9 @@ void MainWindow::createWidgets() {
 
     // create the widgets to be added to the tabs
 
-    LibraryWidget* lib = new LibraryWidget(m_user->getUsername(),this, m_tabWidget);
+    LibraryWidget* lib = new LibraryWidget(m_user->getUsername(), this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
-    DocumentWidget* doc = new DocumentWidget(m_tabWidget,m_user);
+    DocumentWidget* doc = new DocumentWidget(m_tabWidget, this, m_user);
 
 
     //Create the strings to match the labels
@@ -130,9 +130,16 @@ void MainWindow::s_openBook()
     //Update the view, match the book id, add one to its row it the view column
     m_docDB->addViewToDocWithUID(lib->getRow());
 
-    //Open the Book
-    doc->readFile(p);
-
+    //Open the Book after prompting yes or no
+    QMessageBox::StandardButton reply;
+      reply = QMessageBox::question(this, "Test", "Opening this document will cost you 15 credits.\n Do you wish to continue?",
+                                    QMessageBox::Yes|QMessageBox::No);
+      if (reply == QMessageBox::Yes)
+      {
+            s_updateHistory();
+            doc->readFile(p);
+            s_updateCredit();
+      }
 }
 
 void MainWindow::s_updateHistory()
@@ -151,7 +158,10 @@ void MainWindow::s_updateHistory()
 void MainWindow::s_updateCredit()
 {
     DocumentWidget* dw = (DocumentWidget*)m_tabWidget->widget(DOC);
+    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(HISTORY);
     dw->updateCredits();
+    pw->updatepwCredits();
 }
+
 
 MainWindow::~MainWindow() {}

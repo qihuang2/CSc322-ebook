@@ -125,16 +125,19 @@ void ProfileWidget::hideGift()
 {
     QString credits = m_sendCredits->text();
     QRegExp re("\\d*");  // a digit (\d), zero or more times (*)
-    if (re.exactMatch(credits))
+    if (re.exactMatch(credits) && credits.toInt() <= m_user->getNumOfCredits())
     {
         m_user->changeCreditsBy(-credits.toInt());
         m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
         QString picked = m_userList->currentText();
         RegisteredUser* r_user = new RegisteredUser(picked);
         r_user->changeCreditsBy(credits.toInt());
+        QMessageBox::information(this, tr("Sent!"),
+            "Your gift has been sent!");
     }
     else
-        qDebug() << "Not an integer";
+        QMessageBox::information(this, tr("Error"),
+            "Your gift can only be integers and your gift cannot exceed your total credits.");
     m_userList->hide();
     m_sendCredits->hide();
     m_sendCredits->clear();
@@ -163,5 +166,9 @@ void ProfileWidget::update_History(RegisteredUser* user)
     }   
 }
 
+void ProfileWidget::updatepwCredits()
+{
+    m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
+}
 
 ProfileWidget::~ProfileWidget() {}

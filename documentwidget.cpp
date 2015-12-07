@@ -6,9 +6,10 @@
 QString g_path;
 QTextEdit *m_txt;
 
-DocumentWidget::DocumentWidget(QWidget *parent,BaseUser *bu) : QWidget(parent)
+DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu) : QWidget(parent)
 {
     //set up Timer
+    m_parent = mw;
     m_baseUser=bu;
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     m_currentCredits=t->getNumOfCredits();
@@ -140,33 +141,33 @@ void DocumentWidget::createActions()
     connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
     connect(m_searchButton, SIGNAL(clicked()), this, SLOT(s_search()));
     connect(m_timer, SIGNAL(timeout()), this, SLOT(s_counter()));
+    connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
 }
 
 // Counter Function
 void DocumentWidget::s_counter()
 {
+    RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
+    QString T;
+    m_timevalue++;
+    int minute=m_timevalue/60;
+    if (m_timevalue%60 == 0)
+        t->changeCreditsBy(-1);
+    //calculate current credit in every minute
+    m_currentCredits=t->getNumOfCredits()-minute;
+    m_credits->setText("Credits: "+QString::number(m_currentCredits));
+    int leftSecond=m_timevalue%60;
 
-   RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
-   QString T;
-   m_timevalue++;
-   int minute=m_timevalue/60;
-
-   //calculate current credit in every minute
-   m_currentCredits=t->getNumOfCredits()-minute;
-   m_credits->setText("Credits:"+QString::number(m_currentCredits));
-   int leftSecond=m_timevalue%60;
-
-   if(leftSecond<10)
-   {
-       T=QString::number(minute)+":0"+QString::number(leftSecond);
-       m_time->setText("Time:"+T);
-   }
-   else
-   {
-       T=QString::number(minute)+":"+QString::number(leftSecond);
-       m_time->setText("Time:"+T);
-   }
-
+    if(leftSecond<10)
+    {
+        T=QString::number(minute)+":0"+QString::number(leftSecond);
+        m_time->setText("Time:"+T);
+    }
+    else
+    {
+        T=QString::number(minute)+":"+QString::number(leftSecond);
+        m_time->setText("Time:"+T);
+    }
 }
 
 //search function
@@ -274,6 +275,8 @@ void DocumentWidget::submitReview()
     DocumentsDB *d =new DocumentsDB();
     d->addRatingToDocWithUID(m_baseUser->getUsername(),4,m_slider->value());
     qDebug() << "The review for " << g_path << ": " << " is rated " << m_slider->value();
+    QMessageBox::information(this, tr("Sent!"),
+        "Your Review has been sent!");
 }
 
 //Get slider value
@@ -308,6 +311,8 @@ void DocumentWidget::submitReport()
     report = m_reportText->toPlainText();
     qDebug() << "The review for " << g_path << ": " << report;
     m_reportText->clear();
+    QMessageBox::information(this, tr("Sent!"),
+        "Your report has been sent!");
 }
 
 void DocumentWidget::clearReport()
@@ -317,7 +322,8 @@ void DocumentWidget::clearReport()
 
 void DocumentWidget::updateCredits()
 {
-    qDebug() << "Updating credits in DocumentWidget::updateCredits";
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     m_credits->setText("Credits:"+QString::number(t->getNumOfCredits()));
 }
+
+

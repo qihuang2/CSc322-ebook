@@ -21,6 +21,7 @@ public:
     ~ProfileWidget();
 
     void update_History(RegisteredUser* user);
+    void updatepwCredits();
 
 public slots:
     void hideHistory();

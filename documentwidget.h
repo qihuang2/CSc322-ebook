@@ -21,11 +21,13 @@
 #include "baseuser.h"
 #include <QPlainTextEdit>
 
+class MainWindow;
+
 class DocumentWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DocumentWidget(QWidget *parent = 0,BaseUser *m_baseuser=0);
+    explicit DocumentWidget(QWidget *parent = 0, MainWindow* mw = 0, BaseUser *m_baseuser=0);
 
     void readFile(QString);
     void updateCredits();
@@ -49,6 +51,8 @@ private:
     void createActions();
 
     void writeBook();
+
+    MainWindow* m_parent;
 
     QTextEdit *m_reportText;
     QLineEdit *m_searchLine;
