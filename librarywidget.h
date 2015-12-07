@@ -70,6 +70,8 @@ private:
     void createLayouts();
     void createActions();
 
+    void createRecommend();
+
     void removeFileWithID(int id);
 
     int current_row;

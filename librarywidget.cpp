@@ -26,6 +26,7 @@ LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *pare
     createLayouts();
     createActions();
 
+    createRecommend();
     s_refresh();
 }
 
@@ -158,14 +159,14 @@ void LibraryWidget::s_refresh() {
             m_tableWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
             m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
             m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
-
-            QString view(current.value(MainDB::VIEWS).toString());
-            qDebug() << "View of " << title << " is " << view;
         }else {
             qDebug() << "Document with id " << i << " doesn't exist.";
         }
     }
+}
 
+void LibraryWidget::createRecommend()
+{
     for(int i = 1; i < 6; i++)
     {
         QSqlQuery current = m_db->getFiveMostViewed(i-1);
