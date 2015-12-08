@@ -197,7 +197,7 @@ void LibraryWidget::refreshTable() {
 
 //Triggers for each button or (double) click on table
 void LibraryWidget::createActions() {
-    connect(m_refresh, SIGNAL(clicked()), this, SLOT(s_refresh()));
+    //connect(m_refresh, SIGNAL(clicked()), this, SLOT(s_refresh()));
     connect(m_tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectCell()));
     connect(m_hidePreview, SIGNAL(clicked()), this, SLOT(hidePreview()));

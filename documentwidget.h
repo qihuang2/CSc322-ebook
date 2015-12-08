@@ -22,16 +22,16 @@
 #include <QPlainTextEdit>
 
 class MainWindow;
-
+class QTabWidget;
 class DocumentWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DocumentWidget(QWidget *parent = 0, MainWindow* mw = 0, BaseUser *m_baseuser=0);
+    explicit DocumentWidget(QWidget *parent = 0, MainWindow* mw = 0, BaseUser *m_baseuser=0,QTabWidget*tab=0);
 
     void readFile(QString);
     void updateCredits();
-
+    void ResumeTimer();
 signals:
 
 public slots:
@@ -88,6 +88,8 @@ private:
     QSlider *m_slider;
 
     QSpinBox *m_box;
+
+    QTabWidget* m_tab;
 
     int				m_timevalue;
     int				m_currentCredits;

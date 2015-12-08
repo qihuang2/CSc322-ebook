@@ -6,9 +6,10 @@
 QString g_path;
 QTextEdit *m_txt;
 
-DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu) : QWidget(parent)
+DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu,QTabWidget*tab) : QWidget(parent)
 {
     //set up Timer
+    m_tab=tab;
     m_parent = mw;
     m_baseUser=bu;
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
@@ -40,7 +41,7 @@ void DocumentWidget::createLayouts()
 
     //Create Labels
     m_rating = new QLabel("Rate this book:");
-    m_time = new QLabel("Time: 0:00");
+    m_time = new QLabel("Time:0:00");
     m_credits = new QLabel("Credits:"+QString::number(t->getNumOfCredits()));
 
     //Create the buttons
@@ -144,9 +145,16 @@ void DocumentWidget::createActions()
     connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
 }
 
+void DocumentWidget::ResumeTimer()
+{
+        m_timer->blockSignals(false);
+}
+
 // Counter Function
 void DocumentWidget::s_counter()
 {
+    if(m_tab->currentIndex()!=2)
+        m_timer->blockSignals(true);
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     QString T;
     m_timevalue++;
@@ -246,6 +254,7 @@ void DocumentWidget::closeFile()
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
     m_timer->stop();
+    m_tab->setCurrentIndex(0);
 }
 
 //Show the Review Box

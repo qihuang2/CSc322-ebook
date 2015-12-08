@@ -42,7 +42,7 @@ void MainWindow::createWidgets() {
 
     LibraryWidget* lib = new LibraryWidget(m_user->getUsername(), this, m_tabWidget);
     UploadWidget* up = new UploadWidget(m_tabWidget);
-    DocumentWidget* doc = new DocumentWidget(m_tabWidget, this, m_user);
+    DocumentWidget* doc = new DocumentWidget(m_tabWidget, this, m_user,m_tabWidget);
 
 
     //Create the strings to match the labels
@@ -119,6 +119,11 @@ void MainWindow::s_refreshTable(int current) {
         LibraryWidget* w = (LibraryWidget*)m_tabWidget->widget(LIB);
         w->s_refresh();
     }
+    else if(current == DOC)
+    {
+        DocumentWidget*d=(DocumentWidget*)m_tabWidget->widget(DOC);
+        d->ResumeTimer();
+    }
 }
 
 void MainWindow::s_openBook()
@@ -140,6 +145,7 @@ void MainWindow::s_openBook()
             s_updateHistory();
             doc->readFile(p);
             s_updateCredit();
+            m_tabWidget->setCurrentIndex(2);
       }
 }
 
