@@ -28,25 +28,32 @@ public slots:
     void showHistory();
     void showGift();
     void hideGift();
+    void showCOTable();
+    void hideCOTable();
 
 private:
     void createActions();
 
     RegisteredUser* m_user;
-    MainWindow* m_parent;
+    MainWindow*     m_parent;
 
-    QHBoxLayout* giftLayout;
+    QHBoxLayout*    giftLayout;
 
-    QComboBox* m_userList;
+    QComboBox*      m_userList;
 
-    QLineEdit* m_sendCredits;
+    QLineEdit*      m_sendCredits;
 
     QTableWidget*	m_historyText;
+    QTableWidget*   m_counterofferTable;
 
     QPushButton*    m_giftButton;
     QPushButton*    m_hideHistory;
     QPushButton*    m_showHistory;
     QPushButton*    m_submitGift;
+    QPushButton*    m_counteroffer;
+    QPushButton*    m_hideCOTable;
+    QPushButton*    m_approveButton;
+    QPushButton*    m_declineButton;
 
     QLabel*         m_creditLabel;
     QLabel*         m_complaintLabel;

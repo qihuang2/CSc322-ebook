@@ -10,6 +10,25 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 {
 
     m_parent = mw;
+
+    //Create the buttons
+    m_giftButton = new QPushButton("Gift to a friend");
+    m_giftButton->setMaximumSize(QSize(200, 50));
+    m_showHistory = new QPushButton("Show my history");
+    m_showHistory->setMaximumSize(QSize(200,50));
+    m_hideHistory = new QPushButton("Hide the History Table");
+    m_hideHistory->setMaximumSize(QSize(200, 50));
+    m_submitGift = new QPushButton("Send this gift");
+    m_submitGift->setMaximumSize(200, 50);
+    m_counteroffer = new QPushButton("Show Upload Requests");
+    m_counteroffer->setMaximumSize(200, 50);
+    m_hideCOTable = new QPushButton("Hide Upload Requests");
+    m_hideCOTable->setMaximumSize(200, 50);
+    m_approveButton = new QPushButton("Accept");
+    m_approveButton->setMaximumSize(QSize(250, 50));
+    m_declineButton = new QPushButton("Decline");
+    m_declineButton->setMaximumSize(QSize(250, 50));
+
     //Create the History Table
     m_historyText = new QTableWidget();
     m_user=user;
@@ -31,16 +50,24 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
         m_historyText->setItem(i, 1, new QTableWidgetItem(s));
     }
 
-    //Create the buttons
-    m_giftButton = new QPushButton("Gift to a friend");
-    m_giftButton->setMaximumSize(QSize(200, 50));
-    m_showHistory = new QPushButton("Show my history");
-    m_showHistory->setMaximumSize(QSize(200,50));
-    m_hideHistory = new QPushButton("Hide the History Table");
-    m_hideHistory->setMaximumSize(QSize(200, 50));
-    m_submitGift = new QPushButton("Send this gift");
-    m_submitGift->setMaximumSize(200, 50);
+    //Create the Approve/Decline Counter Offer Table
+    m_counterofferTable = new QTableWidget();
+    m_counterofferTable->setColumnCount(3);
+    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "Counter Offers from the Super-User" << "Accept" << "Decline");
+    m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    QSqlQuery getPending = user->getPendingDocuments();
+    while(getPending.next())
+    {
+        int rowIndex = m_counterofferTable->rowCount();
+        m_counterofferTable->insertRow(rowIndex);
 
+        QString pending(getPending.value(0).toString());
+
+        m_counterofferTable->setItem(rowIndex, 0, new QTableWidgetItem(pending, 0));
+        m_counterofferTable->setCellWidget(rowIndex, 1, m_approveButton);
+        m_counterofferTable->setCellWidget(rowIndex, 2, m_declineButton);
+    }
     //Create the Line Edit
     m_sendCredits = new QLineEdit();
     m_sendCredits->setPlaceholderText("Enter an amount here, has to be an integer");
@@ -78,7 +105,10 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     QV->addLayout(giftLayout);
     QV->addWidget(m_showHistory);
     QV->addWidget(m_hideHistory);
+    QV->addWidget(m_counteroffer);
     QV->addWidget(m_historyText);
+    QV->addWidget(m_hideCOTable);
+    QV->addWidget(m_counterofferTable);
     QV->setAlignment(Qt::AlignTop);
 
     setLayout(QV);
@@ -86,6 +116,8 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     createActions();
 
     //Hide the gift layout and history table
+    m_hideCOTable->hide();
+    m_counterofferTable->hide();
     m_hideHistory->hide();
     m_historyText->hide();
     m_userList->hide();
@@ -101,6 +133,8 @@ void ProfileWidget::createActions()
     connect(m_giftButton, SIGNAL(clicked()), this, SLOT(showGift()));
     connect(m_submitGift, SIGNAL(clicked()), this, SLOT(hideGift()));
     connect(m_submitGift, SIGNAL(clicked()), m_parent, SLOT(s_updateCredit()));
+    connect(m_counteroffer, SIGNAL(clicked()), this, SLOT(showCOTable()));
+    connect(m_hideCOTable, SIGNAL(clicked()), this, SLOT(hideCOTable()));
 }
 
 void ProfileWidget::showHistory()
@@ -173,6 +207,20 @@ void ProfileWidget::update_History(RegisteredUser* user)
 void ProfileWidget::updatepwCredits()
 {
     m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
+}
+
+void ProfileWidget::showCOTable()
+{
+    m_counteroffer->hide();
+    m_hideCOTable->show();
+    m_counterofferTable->show();
+}
+
+void ProfileWidget::hideCOTable()
+{
+    m_counteroffer->show();
+    m_hideCOTable->hide();
+    m_counterofferTable->hide();
 }
 
 ProfileWidget::~ProfileWidget() {}
