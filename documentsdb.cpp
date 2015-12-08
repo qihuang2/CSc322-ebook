@@ -259,7 +259,7 @@ bool DocumentsDB::userHasRatedBook(QString username, int book_id){
 
 QSqlQuery DocumentsDB::getFiveMostViewed(){
     QSqlQuery q;
-    if(!q.exec("SELECT * FROM doc_info ORDER BY views DESC LIMIT 5")){
+    if(!q.exec("SELECT * FROM doc_info WHERE approved = 3 AND is_deleted = 0 ORDER BY views DESC LIMIT 5")){
         qDebug()<<"Error getFiveMostViewed";
         qDebug()<<q.lastError();
      }

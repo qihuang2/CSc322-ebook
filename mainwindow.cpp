@@ -23,6 +23,7 @@ MainWindow::MainWindow(BaseUser *user)
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
 
+
     createWidgets();
     createLayouts();
     createActions();

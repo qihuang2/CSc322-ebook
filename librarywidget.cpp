@@ -334,6 +334,7 @@ QString LibraryWidget::getPath()
 
 void LibraryWidget::s_addHistory()
 {
+
     HistoryDB *h =new HistoryDB();
     h->addHistory(m_loginName,m_booktitle->text(),m_bookauthor->text());
 }

@@ -15,8 +15,13 @@ bool LoginDB::checkUserAndPass(QString username, QString password){
     if (!userExists(username)) return false;
     QSqlQuery q;
     if(q.exec("SELECT password FROM users WHERE username = '"+username+"'")){
-        q.next();
-        return (q.value(0).toString().compare(password) == 0) ? true : false ;
+        if(q.first()){
+            return (q.value(0).toString().compare(password) == 0) ? true : false ;
+        }
+        else {
+            qDebug()<<"Error in checkUserAndPass: "+username+ " "+password;
+            return false;
+        }
     }
     else {
         qDebug()<<"Error in checkUserAndPass: "+username+ " "+password;

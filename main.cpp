@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
         MainDB db;
         BaseUser* user;
         QSqlQuery userQuery = db.getAccount(loginUsername);
+        userQuery.first();     //go to valid entry
         if(userQuery.value(2) == BaseUser::VISITING) {
             user = new BaseUser();
         }else if(userQuery.value(2) == BaseUser::REGISTERED) {

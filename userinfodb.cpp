@@ -11,8 +11,12 @@ UserInfoDB::UserInfoDB():MainDB()
 int UserInfoDB::getIntForKey(QString username, QString key){
     QSqlQuery q;
     if(q.exec("SELECT "+key+ " FROM user_info WHERE username = '"+username+"'")){
-        q.next();
-        return q.value(0).toInt();
+        if(q.first()){
+            return q.value(0).toInt();
+        }else {
+            qDebug()<<"Error in getIntForKey: "+username+" "+key;
+            return 0;
+        }
     }
     else {
         qDebug()<<"Error in getIntForKey: "+username+" "+key;
@@ -35,8 +39,12 @@ void UserInfoDB::setIntForKey(QString username, QString key, int value){
 QString UserInfoDB::getStringForKey(QString username, QString key){
     QSqlQuery q;
     if(q.exec("SELECT "+key+ " FROM user_info WHERE username = '"+username+"'")){
-        q.next();
-        return q.value(0).toString();
+        if (q.first()){
+            return q.value(0).toString();
+        }else {
+            qDebug()<<"Error in getStringForKey: "+username+" "+key;
+            return "";
+        }
     }
     else {
         qDebug()<<"Error in getStringForKey: "+username+" "+key;
