@@ -24,17 +24,21 @@ int main(int argc, char *argv[])
 
     if(initialDialog.exec() == QDialog::Accepted) {
         // if dialog was accepted, show main window
-        MainDB db;
+
         BaseUser* user;
-        QSqlQuery userQuery = db.getAccount(loginUsername);
-        userQuery.first();     //go to valid entry
-        if(userQuery.value(2) == BaseUser::VISITING) {
+        if(loginUsername.isEmpty()) //is a visiter
             user = new BaseUser();
-        }else if(userQuery.value(2) == BaseUser::REGISTERED) {
-            user = new RegisteredUser(loginUsername);
-        }else{
-            user = new SuperUser(loginUsername);
+        else { //is superuser or registeruser
+            MainDB db;
+            QSqlQuery userQuery = db.getAccount(loginUsername);
+            userQuery.first();     //go to valid entry
+
+            if(userQuery.value(2) == BaseUser::REGISTERED) //is a registed user
+                user = new RegisteredUser(loginUsername);
+            else //is a superuser
+                user = new SuperUser(loginUsername);
         }
+
         MainWindow w(user);
         w.show();
         return a.exec();
