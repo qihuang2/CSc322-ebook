@@ -9,6 +9,20 @@ class QSqlQuery;
 class MainDB
 {
 public: 
+    //u_id: unique book id. The value is automatically incremented so we don't have to worry about that
+    //title: title of the book. Limited to 25 characters
+    //posted_by: username of user who posted document
+    //genre: genre of book. saved as an int
+    //upload_date: date document was uploaded
+    //rating: average rating of book. stored as a float
+    //num_of_ratings: total number of people who rated the book
+    //views: total number of people that read the document
+    //num_of_complaints: number of users who complained about the book
+    //approved: document has been approved by SU
+    //asking_price: how much user asks for uploud
+    //counter_offer: super user presents a counter offer
+    //summary: document summary. Limited to 250 characters
+    //is_deleted: document has been deleted
     enum documentKeys {
         UID,
         TITLE,
@@ -20,7 +34,10 @@ public:
         VIEWS,
         NUMCOMPLAINTS,
         APPROVED,
-        SUMMARY
+        ASKINGPRICE,
+        COUNTEROFFER,
+        SUMMARY,
+        ISDELETED
     };
 
     MainDB();

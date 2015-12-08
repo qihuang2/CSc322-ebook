@@ -49,6 +49,14 @@ class QSqlQuery;
 class DocumentsDB : public MainDB
 {
 public:
+
+    typedef enum {
+        WAITING,
+        DENIED,
+        COUNTERED,
+        CONFIRMED
+    } ApprovalStatus;
+
     DocumentsDB();
     //returns a QSqlQuery object of document where u_id == id
     //
@@ -58,7 +66,6 @@ public:
     //qDebug() << q.value(1).toString();
     //}
     QSqlQuery getDocInfoForUID(int id);
-
 
     //get QSqlQuery of documents where posted_by == username
     //
@@ -106,10 +113,8 @@ public:
 
     QString getSummary(QString);
 
-
     //check if user has reported book already
     bool userHasReportedBook(QString username, int book_id);
-
 
     //checks if user has rated book
     bool userHasRatedBook(QString username, int book_id);
@@ -118,8 +123,6 @@ public:
     QSqlQuery getFiveMostViewed();
 
     int getbookID(QString, QString, int, float);
-
-
 };
 
 #endif // DOCUMENTSDB_H

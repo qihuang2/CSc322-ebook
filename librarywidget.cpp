@@ -56,7 +56,6 @@ void LibraryWidget::createWidgets() {
     m_bookgenre = new QLabel(Genre);
     m_bookrating = new QLabel(Rating);
 
-
     m_previewText = new QTextEdit(widget);
 
     m_refresh = new QPushButton(tr("Refresh"));

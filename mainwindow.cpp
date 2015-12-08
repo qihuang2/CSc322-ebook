@@ -23,7 +23,6 @@ MainWindow::MainWindow(BaseUser *user)
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
 
-
     createWidgets();
     createLayouts();
     createActions();
@@ -60,6 +59,7 @@ void MainWindow::createWidgets() {
     m_tabWidget->addTab(up, "Upload");
     m_tabWidget->addTab(doc, "Document");
 
+    // if registered user show profile tab
     if(!(m_user->getUserType() == BaseUser::VISITING)) {
         RegisteredUser* tmp;
         if(m_user->getUserType() == BaseUser::REGISTERED) tmp = new RegisteredUser(m_user->getUsername());
@@ -68,15 +68,16 @@ void MainWindow::createWidgets() {
         m_tabWidget->addTab(pf,"My Profile");
     }
 
-    if(m_user->getUserType() == BaseUser::SUPER) {
-        SuperWidget* sup = new SuperWidget(m_tabWidget);
+    // super user show super widget
+    if(1 || m_user->getUserType() == BaseUser::SUPER) {
+        SuperWidget* sup = new SuperWidget((SuperUser*)m_user, m_tabWidget);
         m_tabWidget->addTab(sup, "Super User");
     }
 
     m_loginLabel = new QLabel();
 
     //Set username
-    m_loginLabel->setText(QString("Logged in as: %1").arg(m_user->getUsername()));
+    m_loginLabel->setText(QString("Logged in as: %1 %2").arg(m_user->getUsername()).arg(m_user->getUserType() == BaseUser::SUPER ? "(SU)" : ""));
 
     //if it's a registered user or super user, print info
     if (m_user->getUserType() != 0) {

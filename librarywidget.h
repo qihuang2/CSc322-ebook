@@ -65,8 +65,6 @@ private:
     QString				m_loginName;
     QString             path;
 
-    void populateTable();
-
     void createWidgets();
     void createLayouts();
     void createActions();

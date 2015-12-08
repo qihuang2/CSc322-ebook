@@ -88,7 +88,7 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 
     //Create the label
     m_creditLabel = new QLabel("Remaining Credits: " + QString::number(user->getNumOfCredits()));
-    m_complaintLabel = new QLabel("Number of Complaint(s): " + user->getNumOfDeletedBooks());
+    m_complaintLabel = new QLabel("Number of Complaint(s): " + QString::number(user->getNumOfDeletedBooks()));
     m_datecreateLabel = new QLabel("Member Since: " + user->getDateCreated());
 
     //Create the Layout
