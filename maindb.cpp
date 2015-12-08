@@ -25,7 +25,7 @@ MainDB::MainDB()
     if(MainDB::st_mainDB == NULL){
 
         MainDB::st_mainDB = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-        MainDB::st_mainDB->setDatabaseName("/Users/youshenghua/Desktop/ebookDB.db");
+        MainDB::st_mainDB->setDatabaseName("ebookDB.db");
 
         if(!MainDB::st_mainDB->open()){
             qDebug()<<"Something went wrong connecting to DB.";
