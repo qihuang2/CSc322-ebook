@@ -27,7 +27,6 @@ void SuperWidget::createWidgets() {
     m_pending->setHorizontalHeaderLabels(QStringList() << "Title" << "User" << "Cred. Request" << "" << "" << "" << "Counter Value");
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
 }
 
 void SuperWidget::createLayouts() {
@@ -38,35 +37,16 @@ void SuperWidget::createLayouts() {
 }
 
 void SuperWidget::createActions() {
-    connect(m_pending, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_accept()));
-    connect(m_pending, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_decline()));
+    connect(m_pending, SIGNAL(cellClicked(int, int)),
+            this, SLOT(s_buttonClicked(int,int)));
 }
 
 void SuperWidget::populateTable() {
-    /*Create the Approve/Decline Counter Offer Table
-    m_counterofferTable = new QTableWidget();
-    m_counterofferTable->setColumnCount(3);
-    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "Counter Offers from the Super-User" << "Accept" << "Decline");
-    m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    QSqlQuery getPending = user->getPendingDocuments();
-    while(getPending.next())
-    {
-        int rowIndex = m_counterofferTable->rowCount();
-        m_counterofferTable->insertRow(rowIndex);
-
-        QString pending(getPending.value(0).toString());
-
-        m_counterofferTable->setItem(rowIndex, 0, new QTableWidgetItem(pending, 0));
-        m_counterofferTable->setCellWidget(rowIndex, 1, m_approveButton);
-        m_counterofferTable->setCellWidget(rowIndex, 2, m_declineButton);
-    }*/
-
-
     QSqlQuery pending = m_user->getSupersPendingDocuments();
     while(pending.next()) {
         int index = m_pending->rowCount();
         m_pending->insertRow(index);
+
         // retrieve doc info
         QString title(pending.value(MainDB::TITLE).toString());
         QString user(pending.value(MainDB::POSTEDBY).toString());
@@ -77,22 +57,26 @@ void SuperWidget::populateTable() {
         m_pending->setItem(index, USER, new QTableWidgetItem(user));
         m_pending->setItem(index, REQCRED, new QTableWidgetItem(reqCreds));
 
-        m_accept = new QPushButton(tr("Accept"));
-        m_decline = new QPushButton(tr("Decline"));
-        m_counter = new QPushButton(tr("Counter"));
-        m_counterValue = new QSpinBox();
-        m_counterValue->setMaximum(1000);
-        QLabel* acceptLabel=new QLabel("Accept");
-        QLabel* declineLabel=new QLabel("Decline");
-        m_pending->setCellWidget(index, APPROVE, acceptLabel);
-        m_pending->setCellWidget(index, DECLINE, declineLabel);
-        m_pending->setCellWidget(index, COUNTER, m_counter);
-        m_pending->setCellWidget(index, COUNTERVAL, m_counterValue);
+        m_pending->setCellWidget(index, APPROVE, new QPushButton(tr("Accept")));
+        m_pending->setCellWidget(index, DECLINE, new QPushButton(tr("Decline")));
+        m_pending->setCellWidget(index, COUNTER, new QPushButton(tr("Counter")));
     }
 }
 
-void SuperWidget::s_accept()
+void SuperWidget::s_buttonClicked(int row, int col) {
+    if(col == APPROVE) {
+        accept(row);
+    }else if(col == DECLINE) {
+        decline(row);
+    }else if(col == COUNTER) {
+        counter(row);
+    }
+}
+
+void SuperWidget::accept(int row)
 {
+    qDebug() << "Row: " << row << " accepted";
+    /*
     QModelIndex currentIndex = m_pending->currentIndex();
     int row = currentIndex.row();
     int column=currentIndex.column();
@@ -111,11 +95,13 @@ void SuperWidget::s_accept()
         RegisteredUser *ru=new RegisteredUser(m_username);
         ru->changeCreditsBy(m_credits.toInt());
     }
-
+*/
 }
 
-void SuperWidget::s_decline()
+void SuperWidget::decline(int row)
 {
+    qDebug() << "Row: " << row << " declined";
+    /*
     QModelIndex currentIndex = m_pending->currentIndex();
     int row = currentIndex.row();
     m_title=m_pending->item(row,0)->text();
@@ -129,9 +115,10 @@ void SuperWidget::s_decline()
         m_user->declineDocumentWithUID(m_id,30);
         qDebug()<<"m_id"<<m_id<<" Decline";
     }
+    */
 }
 
-void SuperWidget::s_counter()
+void SuperWidget::counter(int row)
 {
-
+    qDebug() << "Row: " << row << " countered";
 }

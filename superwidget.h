@@ -20,26 +20,25 @@ private:
     QVBoxLayout*    m_mainLayout;
     QTableWidget*   m_pending;
 
-    QPushButton*    m_accept;
-    QPushButton*    m_decline;
-    QPushButton*    m_counter;
-    QSpinBox*       m_counterValue;
-
     QString m_title;
     QString m_username;
     QString m_credits;
+
     void createWidgets();
     void createLayouts();
     void createActions();
 
     void populateTable();
 
+    void accept(int row);
+    void decline(int row);
+    void counter(int row);
+
 signals:
 
 public slots:
-    void s_accept();
-    void s_decline();
-    void s_counter();
+    void s_buttonClicked(int row, int col);
+
 };
 
 #endif // SUPERWIDGET_H

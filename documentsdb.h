@@ -50,12 +50,12 @@ class DocumentsDB : public MainDB
 {
 public:
 
-    typedef enum {
+    enum ApprovalStatus {
         WAITING,
         DENIED,
         COUNTERED,
         CONFIRMED
-    } ApprovalStatus;
+    };
 
     DocumentsDB();
     //returns a QSqlQuery object of document where u_id == id
