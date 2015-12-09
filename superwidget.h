@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include "superuser.h"
-
+#include "documentsdb.h"
+#include "registereduser.h"
 class QVBoxLayout;
 class QTableWidget;
 class QPushButton;
 class QSpinBox;
-
+class QString;
 class SuperWidget : public QWidget
 {
     Q_OBJECT
@@ -24,6 +25,9 @@ private:
     QPushButton*    m_counter;
     QSpinBox*       m_counterValue;
 
+    QString m_title;
+    QString m_username;
+    QString m_credits;
     void createWidgets();
     void createLayouts();
     void createActions();
@@ -33,6 +37,9 @@ private:
 signals:
 
 public slots:
+    void s_accept();
+    void s_decline();
+    void s_counter();
 };
 
 #endif // SUPERWIDGET_H

@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QString>
 #include "registereduser.h"
 #include "mainwindow.h"
 class DocumentsDB;
@@ -30,6 +31,8 @@ public slots:
     void hideGift();
     void showCOTable();
     void hideCOTable();
+    void s_accept();
+    void s_decline();
 
 private:
     void createActions();

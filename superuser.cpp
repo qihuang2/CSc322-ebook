@@ -21,7 +21,7 @@ QSqlQuery SuperUser::getSupersPendingDocuments(){
 
 void SuperUser::acceptDocumentWithUID(int bookID){
     QSqlQuery q;
-    if(!q.exec("UPDATE doc_info SET approved = 2 WHERE u_id = "+QString::number(bookID))){
+    if(!q.exec("UPDATE doc_info SET approved = 3 WHERE u_id = "+QString::number(bookID))){
         qDebug()<<"Error in acceptDocumentWithUID by superuser";
         qDebug()<<q.lastError();
     }

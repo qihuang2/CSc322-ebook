@@ -8,7 +8,7 @@
 #include <QSpinBox>
 #include "documentsdb.h"
 #include <QDebug>
-
+#include <QLabel>
 enum {TITLE, USER, REQCRED, APPROVE, DECLINE, COUNTER, COUNTERVAL};
 
 SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
@@ -28,10 +28,6 @@ void SuperWidget::createWidgets() {
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    m_accept = new QPushButton(tr("Accept"));
-    m_decline = new QPushButton(tr("Decline"));
-    m_counter = new QPushButton(tr("Counter"));
-    m_counterValue = new QSpinBox();
 }
 
 void SuperWidget::createLayouts() {
@@ -42,7 +38,8 @@ void SuperWidget::createLayouts() {
 }
 
 void SuperWidget::createActions() {
-
+    connect(m_pending, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_accept()));
+    connect(m_pending, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_decline()));
 }
 
 void SuperWidget::populateTable() {
@@ -80,9 +77,61 @@ void SuperWidget::populateTable() {
         m_pending->setItem(index, USER, new QTableWidgetItem(user));
         m_pending->setItem(index, REQCRED, new QTableWidgetItem(reqCreds));
 
-        m_pending->setCellWidget(index, APPROVE, m_accept);
-        m_pending->setCellWidget(index, DECLINE, m_decline);
+        m_accept = new QPushButton(tr("Accept"));
+        m_decline = new QPushButton(tr("Decline"));
+        m_counter = new QPushButton(tr("Counter"));
+        m_counterValue = new QSpinBox();
+        m_counterValue->setMaximum(1000);
+        QLabel* acceptLabel=new QLabel("Accept");
+        QLabel* declineLabel=new QLabel("Decline");
+        m_pending->setCellWidget(index, APPROVE, acceptLabel);
+        m_pending->setCellWidget(index, DECLINE, declineLabel);
         m_pending->setCellWidget(index, COUNTER, m_counter);
         m_pending->setCellWidget(index, COUNTERVAL, m_counterValue);
     }
+}
+
+void SuperWidget::s_accept()
+{
+    QModelIndex currentIndex = m_pending->currentIndex();
+    int row = currentIndex.row();
+    int column=currentIndex.column();
+    if(column==3)
+    {
+        m_title=m_pending->item(row,0)->text();
+        m_username=m_pending->item(row,1)->text();
+        m_credits=m_pending->item(row,2)->text();
+        qDebug()<<row<<m_title<<m_username<<m_credits;
+        //get ID and accept
+        DocumentsDB *db=new DocumentsDB();
+        int m_id=db->getbookID(m_title,m_username,0,0);
+        qDebug()<<"m_id"<<m_id<<" Accept";
+        m_user->acceptDocumentWithUID(m_id);
+        //give points to registered user
+        RegisteredUser *ru=new RegisteredUser(m_username);
+        ru->changeCreditsBy(m_credits.toInt());
+    }
+
+}
+
+void SuperWidget::s_decline()
+{
+    QModelIndex currentIndex = m_pending->currentIndex();
+    int row = currentIndex.row();
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    m_credits=m_pending->item(row,2)->text();
+    int column=currentIndex.column();
+    if(column==4)
+    {
+        DocumentsDB *db=new DocumentsDB();
+        int m_id=db->getbookID(m_title,m_username,0,0);
+        m_user->declineDocumentWithUID(m_id,30);
+        qDebug()<<"m_id"<<m_id<<" Decline";
+    }
+}
+
+void SuperWidget::s_counter()
+{
+
 }
