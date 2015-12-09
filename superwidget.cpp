@@ -17,6 +17,7 @@ SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
     createWidgets();
     createLayouts();
     createActions();
+    populateTable();
 }
 
 void SuperWidget::createWidgets() {
@@ -68,6 +69,7 @@ void SuperWidget::populateTable() {
     QSqlQuery pending = m_user->getSupersPendingDocuments();
     while(pending.next()) {
         int index = m_pending->rowCount();
+        m_pending->insertRow(index);
         // retrieve doc info
         QString title(pending.value(MainDB::TITLE).toString());
         QString user(pending.value(MainDB::POSTEDBY).toString());
