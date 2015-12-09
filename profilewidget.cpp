@@ -54,6 +54,13 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     m_counterofferTable = new QTableWidget();
     m_counterofferTable->setRowCount(1);
     m_counterofferTable->setColumnCount(3);
+
+    //TODO: maybe change this table to the following columns:
+    //DOC Title
+    //Asking Price  //getPending().value(10)
+    //Counter Offer //if (column named 'approved' == 1) counterOffer = getPending.value(11) else counterOffer = null
+    //Accept
+    //Decline
     m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "Counter Offers from the Super-User" << "Accept" << "Decline");
     m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
