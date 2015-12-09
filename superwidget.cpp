@@ -75,15 +75,17 @@ void SuperWidget::s_buttonClicked(int row, int col) {
 
 void SuperWidget::accept(int row)
 {
-
+    //use m_user->acceptDocumentWithUID(int bookID)
+    //afterwards, RU still has to confirm
 }
 
 void SuperWidget::decline(int row)
 {
+    //use m_user->deleteBookWithUID(int uid) to delete the book
 
 }
 
 void SuperWidget::counter(int row)
 {
-
+    //user m_user->declineDocumentWithUID(int bookID, int counterOffer)
 }
