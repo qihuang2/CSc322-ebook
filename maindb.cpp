@@ -51,6 +51,13 @@ MainDB::MainDB()
             qDebug() << qry.lastError();
         }
 
+
+        //add admin account
+        if(!qry.exec("INSERT OR IGNORE INTO users VALUES ('admin', 'password', 2, 0)")){
+            qDebug()<<"Error creating SuperUser in MainDB()";
+            qDebug() << qry.lastError();
+        }
+
         //creates the table 'user_info' if it does't exist
         //
         //CONTAINS-
@@ -70,6 +77,12 @@ MainDB::MainDB()
         if( !qry.exec() ){
             qDebug()<<"Error creating user_info in MainDB()";
            qDebug() << qry.lastError();
+        }
+
+        //add admin to user_info
+        if(!qry.exec("INSERT OR IGNORE INTO user_info VALUES ('admin', 999, 0, 0, CURRENT_TIMESTAMP)")){
+            qDebug()<<"Error creating SuperUser user_info in MainDB()";
+            qDebug() << qry.lastError();
         }
 
         //creates the table 'doc_info' if it does't exist

@@ -49,6 +49,7 @@ void MainWindow::createWidgets() {
     m_name = m_user->getUsername();
     m_credit = QString::number(t->getNumOfCredits());
 
+
     //Create the labels
     m_username = new QLabel();
     m_usercredits = new QLabel();
@@ -73,7 +74,6 @@ void MainWindow::createWidgets() {
         SuperWidget* sup = new SuperWidget((SuperUser*)m_user, m_tabWidget);
         m_tabWidget->addTab(sup, "Super User");
     }
-
     m_loginLabel = new QLabel();
 
     //Set username

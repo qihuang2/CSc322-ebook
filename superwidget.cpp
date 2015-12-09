@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include "documentsdb.h"
+#include <QDebug>
 
 enum {TITLE, USER, REQCRED, APPROVE, DECLINE, COUNTER, COUNTERVAL};
 
