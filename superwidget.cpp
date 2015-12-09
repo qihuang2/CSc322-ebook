@@ -20,7 +20,9 @@ SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
 }
 
 void SuperWidget::createWidgets() {
-    m_pending = new QTableWidget(m_user->getSupersPendingDocuments().value(0).toInt(), COUNTERVAL+1);
+    //m_pending = new QTableWidget(m_user->getSupersPendingDocuments().value(0).toInt(), COUNTERVAL+1);
+    m_pending = new QTableWidget();
+    m_pending->setColumnCount(COUNTERVAL+1);
     m_pending->setHorizontalHeaderLabels(QStringList() << "Title" << "User" << "Cred. Request" << "Approve" << "Decline" << "Counter" << "Counter Value");
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
