@@ -107,11 +107,7 @@ void SuperWidget::s_accept()
         int m_id=db->getbookID(m_title,m_username,0,0);
         qDebug()<<"m_id"<<m_id<<" Accept";
         m_user->acceptDocumentWithUID(m_id);
-        //give points to registered user
-        RegisteredUser *ru=new RegisteredUser(m_username);
-        ru->changeCreditsBy(m_credits.toInt());
     }
-
 }
 
 void SuperWidget::s_decline()
@@ -126,7 +122,7 @@ void SuperWidget::s_decline()
     {
         DocumentsDB *db=new DocumentsDB();
         int m_id=db->getbookID(m_title,m_username,0,0);
-        m_user->declineDocumentWithUID(m_id,30);
+        m_user->deleteBookWithUID(m_id);
         qDebug()<<"m_id"<<m_id<<" Decline";
     }
 }
