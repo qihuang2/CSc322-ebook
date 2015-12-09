@@ -1,3 +1,4 @@
+#include "registereduser.h"
 #include "uploadwidget.h"
 #include <QLabel>
 #include <QString>
@@ -7,13 +8,15 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QDebug>
+#include <QSpinBox>
 #include "constants.h"
 #include "documentsdb.h"
 #include "mainwindow.h"
 
-UploadWidget::UploadWidget(QWidget *parent) : QWidget(parent)
+UploadWidget::UploadWidget(RegisteredUser* user, QWidget *parent) : QWidget(parent)
 {
     m_db = new DocumentsDB();
+    m_user = user;
 
     createWidgets();
     createLayouts();
@@ -32,7 +35,7 @@ void UploadWidget::s_browse() {
 
 void UploadWidget::createWidgets() {
     m_titleField = new QLineEdit();
-    m_authorField = new QLineEdit();
+    m_creditsField = new QSpinBox();
     m_genreField = new QComboBox();
 
     m_clearButton = new QPushButton(tr("Clear"));
@@ -55,7 +58,7 @@ void UploadWidget::createLayouts() {
     QHBoxLayout* authorLayout = new QHBoxLayout();
     QLabel* authorLabel = new QLabel(tr("Author\t\t"));
     authorLayout->addWidget(authorLabel);
-    authorLayout->addWidget(m_authorField);
+    authorLayout->addWidget(m_creditsField);
 
     QHBoxLayout* genreLayout = new QHBoxLayout();
     QLabel* genreLabel = new QLabel(tr("Genre\t\t"));
@@ -87,7 +90,6 @@ void UploadWidget::createActions() {
 void UploadWidget::s_upload() {
     // make sure all fields are filled in
     if(m_titleField->text().trimmed() != "" &&
-            m_authorField->text().trimmed() != "" &&
             m_fileLabel->text().trimmed() != "") {
         // make a copy of the file
         QString newPath(docDir + "/" + QString::number(m_db->getLastInsertRowUID() + 1) + ".txt");
@@ -95,10 +97,10 @@ void UploadWidget::s_upload() {
         // add to database
         // no genre or summaries for now
 
-        m_db->addDocument(m_titleField->text(), m_authorField->text(), 0, "summary", QString::number(55));
+        m_db->addDocument(m_titleField->text(), m_user->getUsername(), 0, "summary", QString::number(55));
 
         m_titleField->clear();
-        m_authorField->clear();
+        m_creditsField->setValue(0);
         m_fileLabel->clear();
         QMessageBox::information(this, tr("Uploaded!"),
             "Your document has been uploaded!");

@@ -3,18 +3,20 @@
 
 #include <QWidget>
 
+class RegisteredUser;
 class DocumentsDB;
 class QVBoxLayout;
 class QHBoxLayout;
 class QPushButton;
 class QLineEdit;
 class QComboBox;
+class QSpinBox;
 
 class UploadWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UploadWidget(QWidget *parent = 0);
+    explicit UploadWidget(RegisteredUser* user, QWidget *parent = 0);
     ~UploadWidget();
 
 private:
@@ -22,10 +24,11 @@ private:
     void createLayouts();
     void createActions();
 
+    RegisteredUser* m_user;
     DocumentsDB*    m_db;
     QVBoxLayout*    m_mainLayout;
     QLineEdit*      m_titleField;
-    QLineEdit*      m_authorField;
+    QSpinBox*       m_creditsField;
     QComboBox*      m_genreField;
     QHBoxLayout*    m_uploadLayout;
     QPushButton*    m_clearButton;  /* Clears current path. */
