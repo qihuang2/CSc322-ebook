@@ -45,26 +45,37 @@ void MainWindow::createWidgets() {
 
     // create the widgets to be added to the tabs
 
+    // library for all users
     LibraryWidget* lib = new LibraryWidget(m_user->getUsername(), this, m_tabWidget);
-    UploadWidget* up = new UploadWidget(m_tabWidget);
-    DocumentWidget* doc = new DocumentWidget(m_tabWidget, this, m_user,m_tabWidget);
+    m_tabWidget->addTab(lib, tr("Library"));
 
+    //  only for registered/super
+    if(!(m_user->getUserType() == BaseUser::VISITING)) {
+        RegisteredUser* tmpUser = static_cast<RegisteredUser*>(m_user);
+        UploadWidget* up = new UploadWidget(tmpUser, m_tabWidget);
+        m_tabWidget->addTab(up, tr("Upload"));
 
-    //Create the strings to match the labels
-    RegisteredUser* t = static_cast<RegisteredUser*>(m_user);
+        DocumentWidget* doc = new DocumentWidget(m_tabWidget, this, tmpUser,m_tabWidget);
+        m_tabWidget->addTab(doc, tr("Document"));
+
+        ProfileWidget* prof = new ProfileWidget(tmpUser, this, m_tabWidget);
+        m_tabWidget->addTab(prof, tr("Profile"));
+
+        m_credit = QString::number(tmpUser->getNumOfCredits());
+    }
+
+    if(m_user->getUserType() == BaseUser::SUPER) {
+        SuperWidget* sw = new SuperWidget(static_cast<SuperUser*>(m_user));
+        m_tabWidget->addTab(sw, tr("Super"));
+    }
+
     m_name = m_user->getUsername();
-    m_credit = QString::number(t->getNumOfCredits());
-
 
     //Create the labels
     m_username = new QLabel();
     m_usercredits = new QLabel();
     m_username->setText("User Name: " + m_name);
     m_usercredits->setText("Credit(s) Remaining: " + m_credit);
-
-    m_tabWidget->addTab(lib, "Library");
-    m_tabWidget->addTab(up, "Upload");
-    m_tabWidget->addTab(doc, "Document");
 
     // if registered user show profile tab
     if(!(m_user->getUserType() == BaseUser::VISITING)) {
