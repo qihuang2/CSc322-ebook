@@ -154,6 +154,36 @@ void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRatin
     }
 }
 
+//COMMENTS: use this if we are supporting comments
+void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRating, QString comment){
+    QSqlQuery q = this->getDocInfoForUID(id);
+    //if q exists
+    if (q.first()){
+        //get current avg rating and total num of ratings
+        float avgRating = q.value(5).toFloat();
+        int totalNumOfRatings = q.value(6).toInt();
+
+        //update to new rating
+        if(!q.exec("UPDATE doc_info SET rating = "+QString::number(getNewAverageRating(newRating, avgRating, totalNumOfRatings))+" WHERE u_id = "+QString::number(id))){
+            qDebug()<< "Error updating new rating addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
+            qDebug()<<q.lastError();
+        }
+
+        //update total number of ratings made
+        if(!q.exec("UPDATE doc_info SET num_of_ratings = "+QString::number(totalNumOfRatings+1)+" WHERE u_id = "+QString::number(id))){
+            qDebug()<< "Error updating total ratings addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
+            qDebug()<<q.lastError();
+        }
+
+        //add user to user rated_info
+        //so users can't rate twice
+        if(!q.exec("INSERT INTO rating_info VALUES ('"+username+"',"+QString::number(id)+", "+QString::number(newRating)+ ",'"+ comment+"')")){
+            qDebug()<< "Error adding into rated_info addRatingToDoc: "+username+ " " + QString::number(id)+ " " + QString::number(newRating);
+            qDebug()<<q.lastError();
+        }
+    }
+}
+
 //return the new average rating
 float getNewAverageRating(float newRating, float avgRating, int totalNumOfRatings){
     float currentTotal = avgRating * totalNumOfRatings + newRating;
@@ -275,4 +305,13 @@ int DocumentsDB::getbookID(QString book_name, QString book_author, int book_genr
         qDebug() << query.lastError();
     }
     return query.first() ? query.value(0).toInt() : -1;
+}
+
+//COMMENTS: use if we want to add comments
+QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
+    QSqlQuery q;
+    if(!q.exec("SELECT * FROM rating_info WHERE book_id = "+QString::number(uid))){
+        qDebug()<<"Error in getCommentsOfDocWithUID: " + QString::number(uid);
+        qDebug()<< q.lastError();
+    }
 }

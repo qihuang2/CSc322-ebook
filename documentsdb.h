@@ -93,6 +93,9 @@ public:
     //add new rating
     void addRatingToDocWithUID(QString username, int id, float newRating);
 
+    //COMMENTS: use this function if we are supporting comments
+    void addRatingToDocWithUID(QString username, int id, float newRating, QString comment);
+
     //return a QString with path to document
     QString getPathToDocWithUID(int id);
 
@@ -123,6 +126,9 @@ public:
     QSqlQuery getFiveMostViewed();
 
     int getbookID(QString, QString, int, float);
+
+    //returns comments of document
+    QSqlQuery getCommentsOfDocWithUID(int uid);
 };
 
 #endif // DOCUMENTSDB_H

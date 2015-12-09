@@ -75,50 +75,15 @@ void SuperWidget::s_buttonClicked(int row, int col) {
 
 void SuperWidget::accept(int row)
 {
-    qDebug() << "Row: " << row << " accepted";
-    /*
-    QModelIndex currentIndex = m_pending->currentIndex();
-    int row = currentIndex.row();
-    int column=currentIndex.column();
-    if(column==3)
-    {
-        m_title=m_pending->item(row,0)->text();
-        m_username=m_pending->item(row,1)->text();
-        m_credits=m_pending->item(row,2)->text();
-        qDebug()<<row<<m_title<<m_username<<m_credits;
-        //get ID and accept
-        DocumentsDB *db=new DocumentsDB();
-        int m_id=db->getbookID(m_title,m_username,0,0);
-        qDebug()<<"m_id"<<m_id<<" Accept";
-        m_user->acceptDocumentWithUID(m_id);
-        //give points to registered user
-        RegisteredUser *ru=new RegisteredUser(m_username);
-        ru->changeCreditsBy(m_credits.toInt());
-    }
-*/
+
 }
 
 void SuperWidget::decline(int row)
 {
-    qDebug() << "Row: " << row << " declined";
-    /*
-    QModelIndex currentIndex = m_pending->currentIndex();
-    int row = currentIndex.row();
-    m_title=m_pending->item(row,0)->text();
-    m_username=m_pending->item(row,1)->text();
-    m_credits=m_pending->item(row,2)->text();
-    int column=currentIndex.column();
-    if(column==4)
-    {
-        DocumentsDB *db=new DocumentsDB();
-        int m_id=db->getbookID(m_title,m_username,0,0);
-        m_user->declineDocumentWithUID(m_id,30);
-        qDebug()<<"m_id"<<m_id<<" Decline";
-    }
-    */
+
 }
 
 void SuperWidget::counter(int row)
 {
-    qDebug() << "Row: " << row << " countered";
+
 }

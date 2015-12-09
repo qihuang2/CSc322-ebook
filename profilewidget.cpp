@@ -240,8 +240,10 @@ void ProfileWidget::s_accept()
     int column=currentIndex.column();
     if(column==1)
     {
+        //TODO: get book uid
+        //call m_user->approveSuperUserCounterForBook(book uid, true);
+        //the function above changes the users credits for us
        QString m_credits=m_counterofferTable->item(row,0)->text();
-        m_user->changeCreditsBy(m_credits.toInt());
         m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
         qDebug()<<"registered user accept counter offer";
     }
@@ -251,6 +253,8 @@ void ProfileWidget::s_accept()
 void ProfileWidget::s_decline()
 {
     //what happen if decline?
+    //get book uid
+    //call m_user->approveSuperUserCounterForBook(book uid, false)
 }
 
 ProfileWidget::~ProfileWidget() {}
