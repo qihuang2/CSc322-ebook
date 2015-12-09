@@ -41,7 +41,7 @@ void LoginDB::addUser(QString username, QString password, QString account_type){
             qDebug()<<"Error adding into users in addUser: " + username + " " + password + " "+ account_type;
             qDebug()<<query.lastError();
         }
-        if (!query.exec("INSERT INTO user_info(username,credits,complaints,uploads,created) VALUES ('"+username+"', 0, 0, 0, CURRENT_TIMESTAMP)")){
+        if (!query.exec("INSERT INTO user_info(username,credits,complaints,uploads,created) VALUES ('"+username+"', 500, 0, 0, CURRENT_TIMESTAMP)")){
             qDebug()<<"Error adding into user_info in addUser: " + username + " " + password + " "+ account_type;
             qDebug()<<query.lastError();
         }

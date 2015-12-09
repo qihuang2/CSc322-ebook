@@ -187,11 +187,11 @@ bool MainDB::userExists(QString username){
     QSqlQuery query;
     if (query.exec("SELECT * FROM users WHERE username = '"+username+"'")){
         //if query returned a value, then user exists
-        if(query.next())
+        if(query.first())
             return true;
+    }else {
+        qDebug()<<"Error in userExists: "+username;
     }
-    qDebug()<<"Error in userExists: "+username;
-
     //else username not taken
     return false;
 }

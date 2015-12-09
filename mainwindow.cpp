@@ -70,7 +70,7 @@ void MainWindow::createWidgets() {
     }
 
     // super user show super widget
-    if(1 || m_user->getUserType() == BaseUser::SUPER) {
+    if(m_user->getUserType() == BaseUser::SUPER) {
         SuperWidget* sup = new SuperWidget((SuperUser*)m_user, m_tabWidget);
         m_tabWidget->addTab(sup, "Super User");
     }
@@ -85,7 +85,8 @@ void MainWindow::createWidgets() {
         RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user  
         qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
         qDebug()<<"Complaints: "<<t->getNumOfDeletedBooks()<<"   Date Created: "<< t->getDateCreated();
-        qDebug()<<"Uploads: "<<t->getNumOfUploads();
+        qDebug()<<"Uploads: "<<t->getNumOfUploads()<< "   UserType: "<< ((t->getUserType() == 1) ? "RU" : "SU") ;
+
     }
 
     //Create Buttons
