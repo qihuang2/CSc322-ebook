@@ -52,6 +52,7 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 
     //Create the Approve/Decline Counter Offer Table
     m_counterofferTable = new QTableWidget();
+    m_counterofferTable->setRowCount(1);
     m_counterofferTable->setColumnCount(3);
     m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "Counter Offers from the Super-User" << "Accept" << "Decline");
     m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -62,12 +63,18 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
         int rowIndex = m_counterofferTable->rowCount();
         m_counterofferTable->insertRow(rowIndex);
 
-        QString pending(getPending.value(0).toString());
+        QString pending(getPending.value(11).toString());
 
-        m_counterofferTable->setItem(rowIndex, 0, new QTableWidgetItem(pending, 0));
-        m_counterofferTable->setCellWidget(rowIndex, 1, m_approveButton);
-        m_counterofferTable->setCellWidget(rowIndex, 2, m_declineButton);
+        m_counterofferTable->setItem(rowIndex-1, 0, new QTableWidgetItem(pending, 0));
+//        m_counterofferTable->setCellWidget(rowIndex, 1, m_approveButton);
+//        m_counterofferTable->setCellWidget(rowIndex, 2, m_declineButton);
+        QLabel* acceptLabel=new QLabel("Accept");
+        QLabel* declineLabel=new QLabel("Decline");
+        m_counterofferTable->setCellWidget(rowIndex-1, 1, acceptLabel);
+        m_counterofferTable->setCellWidget(rowIndex-1, 2, declineLabel);
     }
+//    m_counterofferTable->setCellWidget(0, 1, m_approveButton);
+//    m_counterofferTable->setCellWidget(0, 2, m_declineButton);
     //Create the Line Edit
     m_sendCredits = new QLineEdit();
     m_sendCredits->setPlaceholderText("Enter an amount here, has to be an integer");
@@ -135,6 +142,9 @@ void ProfileWidget::createActions()
     connect(m_submitGift, SIGNAL(clicked()), m_parent, SLOT(s_updateCredit()));
     connect(m_counteroffer, SIGNAL(clicked()), this, SLOT(showCOTable()));
     connect(m_hideCOTable, SIGNAL(clicked()), this, SLOT(hideCOTable()));
+    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_accept()));
+    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_decline()));
+    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), m_parent, SLOT(s_updateCredit()));
 }
 
 void ProfileWidget::showHistory()
@@ -221,6 +231,26 @@ void ProfileWidget::hideCOTable()
     m_counteroffer->show();
     m_hideCOTable->hide();
     m_counterofferTable->hide();
+}
+
+void ProfileWidget::s_accept()
+{
+    QModelIndex currentIndex = m_counterofferTable->currentIndex();
+    int row = currentIndex.row();
+    int column=currentIndex.column();
+    if(column==1)
+    {
+       QString m_credits=m_counterofferTable->item(row,0)->text();
+        m_user->changeCreditsBy(m_credits.toInt());
+        m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
+        qDebug()<<"registered user accept counter offer";
+    }
+    //should have a function to set Approved to 3 when register user accept.
+}
+
+void ProfileWidget::s_decline()
+{
+    //what happen if decline?
 }
 
 ProfileWidget::~ProfileWidget() {}
