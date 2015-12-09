@@ -45,11 +45,11 @@ void MainWindow::createWidgets() {
 
     // create the widgets to be added to the tabs
 
-    // library for all users
+    // show library for any user type
     LibraryWidget* lib = new LibraryWidget(m_user->getUsername(), this, m_tabWidget);
     m_tabWidget->addTab(lib, tr("Library"));
 
-    //  only for registered/super
+    // only for registered/super
     if(!(m_user->getUserType() == BaseUser::VISITING)) {
         RegisteredUser* tmpUser = static_cast<RegisteredUser*>(m_user);
         UploadWidget* up = new UploadWidget(tmpUser, m_tabWidget);
@@ -64,6 +64,7 @@ void MainWindow::createWidgets() {
         m_credit = QString::number(tmpUser->getNumOfCredits());
     }
 
+    // only for super user
     if(m_user->getUserType() == BaseUser::SUPER) {
         SuperWidget* sw = new SuperWidget(static_cast<SuperUser*>(m_user));
         m_tabWidget->addTab(sw, tr("Super"));
@@ -77,20 +78,6 @@ void MainWindow::createWidgets() {
     m_username->setText("User Name: " + m_name);
     m_usercredits->setText("Credit(s) Remaining: " + m_credit);
 
-    // if registered user show profile tab
-    if(!(m_user->getUserType() == BaseUser::VISITING)) {
-        RegisteredUser* tmp;
-        if(m_user->getUserType() == BaseUser::REGISTERED) tmp = new RegisteredUser(m_user->getUsername());
-        else tmp = new SuperUser(m_user->getUsername());
-        ProfileWidget* pf = new ProfileWidget(tmp, this,m_tabWidget);
-        m_tabWidget->addTab(pf,"My Profile");
-    }
-
-    // super user show super widget
-    if(m_user->getUserType() == BaseUser::SUPER) {
-        SuperWidget* sup = new SuperWidget((SuperUser*)m_user, m_tabWidget);
-        m_tabWidget->addTab(sup, "Super User");
-    }
     m_loginLabel = new QLabel();
 
     //Set username
@@ -109,8 +96,6 @@ void MainWindow::createWidgets() {
     //Create Buttons
     m_exitButton = new QPushButton("Exit");
     m_exitButton->setMaximumSize(QSize(100, 50));
-
-
     m_centralWidget = new QWidget();
 }
 

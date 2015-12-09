@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include <QDebug>
+#include <QPlainTextEdit>
 #include <QSpinBox>
 #include "constants.h"
 #include "documentsdb.h"
@@ -37,6 +38,7 @@ void UploadWidget::createWidgets() {
     m_titleField = new QLineEdit();
     m_creditsField = new QSpinBox();
     m_genreField = new QComboBox();
+    m_summaryField = new QPlainTextEdit();
 
     m_clearButton = new QPushButton(tr("Clear"));
     m_browseButton = new QPushButton(tr("Browse"));
@@ -45,6 +47,23 @@ void UploadWidget::createWidgets() {
 
     m_uploadButton = new QPushButton(tr("Upload"));
     m_uploadButton->setFixedSize(QSize(100,50));
+
+    m_listGenres[_SELECT_] = "--Select One--";
+    m_listGenres[BIO] = "Biography";
+    m_listGenres[FANTASY] = "Fantasy";
+    m_listGenres[HISTORY] = "History";
+    m_listGenres[HORROR] = "Horror";
+    m_listGenres[KIDS] = "Kids";
+    m_listGenres[MANGA] = "Manga";
+    m_listGenres[MYSTERY] = "Mystery";
+    m_listGenres[MYTH] = "Mythology";
+    m_listGenres[ROMANCE] = "Romance";
+    m_listGenres[SCIFI] = "Science Fiction";
+    m_listGenres[YOUNGADULT] = "Young Adult";
+
+    for(int i = _SELECT_; i <= YOUNGADULT; ++i) {
+        m_genreField->addItem(m_listGenres[i]);
+    }
 }
 
 void UploadWidget::createLayouts() {
@@ -56,7 +75,7 @@ void UploadWidget::createLayouts() {
     titleLayout->addWidget(m_titleField);
 
     QHBoxLayout* authorLayout = new QHBoxLayout();
-    QLabel* authorLabel = new QLabel(tr("Author\t\t"));
+    QLabel* authorLabel = new QLabel(tr("Credits Requested\t\t"));
     authorLayout->addWidget(authorLabel);
     authorLayout->addWidget(m_creditsField);
 
@@ -65,9 +84,15 @@ void UploadWidget::createLayouts() {
     genreLayout->addWidget(genreLabel);
     genreLayout->addWidget(m_genreField);
 
+    QHBoxLayout* summLayout = new QHBoxLayout();
+    QLabel* summLabel = new QLabel(tr("Summary\t\t"));
+    summLayout->addWidget(summLabel);
+    summLayout->addWidget(m_summaryField);
+
     m_mainLayout->addLayout(titleLayout);
     m_mainLayout->addLayout(authorLayout);
     m_mainLayout->addLayout(genreLayout);
+    m_mainLayout->addLayout(summLayout);
 
     m_uploadLayout = new QHBoxLayout();
     m_uploadLayout->addWidget(m_clearButton);
@@ -89,25 +114,36 @@ void UploadWidget::createActions() {
 
 void UploadWidget::s_upload() {
     // make sure all fields are filled in
-    if(m_titleField->text().trimmed() != "" &&
-            m_fileLabel->text().trimmed() != "") {
+    if(fieldsFilledIn()) {
         // make a copy of the file
         QString newPath(docDir + "/" + QString::number(m_db->getLastInsertRowUID() + 1) + ".txt");
         QFile::copy(m_fileLabel->text(), newPath);
         // add to database
-        // no genre or summaries for now
+        m_db->addDocument(m_titleField->text(), m_user->getUsername(), m_genreField->currentIndex(), m_summaryField->toPlainText(), QString::number(m_creditsField->value()));
 
-        m_db->addDocument(m_titleField->text(), m_user->getUsername(), 0, "summary", QString::number(55));
+        clearFields();
 
-        m_titleField->clear();
-        m_creditsField->setValue(0);
-        m_fileLabel->clear();
         QMessageBox::information(this, tr("Uploaded!"),
             "Your document has been uploaded!");
     }else {
-        // notify user to fill in all fields
-        qDebug() << "All fields must be filled in.";
+        QMessageBox::information(this, tr("Failed!"),
+            "Please make sure all fields are filled in.");
     }
+}
+
+bool UploadWidget::fieldsFilledIn() {
+    return m_titleField->text().trimmed() != "" &&
+            m_fileLabel->text().trimmed() != "" &&
+            m_summaryField->toPlainText() != "" &&
+            m_genreField->currentIndex() != _SELECT_;
+}
+
+void UploadWidget::clearFields() {
+    m_titleField->clear();
+    m_creditsField->setValue(0);
+    m_fileLabel->clear();
+    m_summaryField->setPlainText("");
+    m_genreField->setCurrentIndex(_SELECT_);
 }
 
 UploadWidget::~UploadWidget() {}
