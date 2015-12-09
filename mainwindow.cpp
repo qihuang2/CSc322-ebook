@@ -20,14 +20,20 @@ MainWindow::MainWindow(BaseUser *user)
 {
     m_user = user;
 
+    if(m_user->getUserType() == BaseUser::VISITING) {
+        qDebug() << "Visiting";
+    }else if(m_user->getUserType() == BaseUser::REGISTERED) {
+        qDebug() << "Reg";
+    }else {
+        qDebug() << "SUPER";
+    }
+
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
 
     createWidgets();
     createLayouts();
     createActions();
-
-    if(m_user->getUserType() == BaseUser::SUPER) m_tabWidget->removeTab(SUPER);
 
     setCentralWidget(m_centralWidget);
     setMinimumSize(600, 400);
