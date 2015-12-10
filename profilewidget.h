@@ -6,6 +6,7 @@
 #include <QString>
 #include "registereduser.h"
 #include "mainwindow.h"
+#include "documentsdb.h"
 class DocumentsDB;
 class QVBoxLayout;
 class QHBoxLayout;
@@ -31,12 +32,13 @@ public slots:
     void hideGift();
     void showCOTable();
     void hideCOTable();
-    void s_accept();
-    void s_decline();
-
+    void s_accept(int row);
+    void s_decline(int row);
+    void s_buttonClicked(int row, int col);
 private:
     void createActions();
-
+    void ClearTable();
+    void populateTable();
     RegisteredUser* m_user;
     MainWindow*     m_parent;
 

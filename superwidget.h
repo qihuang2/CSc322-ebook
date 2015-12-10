@@ -29,6 +29,7 @@ private:
     void createActions();
 
     void populateTable();
+    void ClearTable();
 
     void accept(int row);
     void decline(int row);

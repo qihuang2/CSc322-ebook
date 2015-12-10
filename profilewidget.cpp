@@ -52,36 +52,12 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 
     //Create the Approve/Decline Counter Offer Table
     m_counterofferTable = new QTableWidget();
-    m_counterofferTable->setRowCount(1);
-    m_counterofferTable->setColumnCount(3);
-
-    //TODO: maybe change this table to the following columns:
-    //DOC Title
-    //Asking Price  //getPending().value(10)
-    //Counter Offer //if (column named 'approved' == 1) counterOffer = getPending.value(11) else counterOffer = null
-    //Accept
-    //Decline
-    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "Counter Offers from the Super-User" << "Accept" << "Decline");
+     m_counterofferTable->setColumnCount(5);
+    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "DOC Title" << "Asking Price" <<
+                                                   "Counter Offer"<<"Accept"<<"Decline");
     m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    QSqlQuery getPending = user->getPendingDocuments();
-    while(getPending.next())
-    {
-        int rowIndex = m_counterofferTable->rowCount();
-        m_counterofferTable->insertRow(rowIndex);
-
-        QString pending(getPending.value(11).toString());
-
-        m_counterofferTable->setItem(rowIndex-1, 0, new QTableWidgetItem(pending, 0));
-//        m_counterofferTable->setCellWidget(rowIndex, 1, m_approveButton);
-//        m_counterofferTable->setCellWidget(rowIndex, 2, m_declineButton);
-        QLabel* acceptLabel=new QLabel("Accept");
-        QLabel* declineLabel=new QLabel("Decline");
-        m_counterofferTable->setCellWidget(rowIndex-1, 1, acceptLabel);
-        m_counterofferTable->setCellWidget(rowIndex-1, 2, declineLabel);
-    }
-//    m_counterofferTable->setCellWidget(0, 1, m_approveButton);
-//    m_counterofferTable->setCellWidget(0, 2, m_declineButton);
+    populateTable();
     //Create the Line Edit
     m_sendCredits = new QLineEdit();
     m_sendCredits->setPlaceholderText("Enter an amount here, has to be an integer");
@@ -149,9 +125,9 @@ void ProfileWidget::createActions()
     connect(m_submitGift, SIGNAL(clicked()), m_parent, SLOT(s_updateCredit()));
     connect(m_counteroffer, SIGNAL(clicked()), this, SLOT(showCOTable()));
     connect(m_hideCOTable, SIGNAL(clicked()), this, SLOT(hideCOTable()));
-    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_accept()));
-    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(s_decline()));
-    connect(m_counterofferTable, SIGNAL(cellDoubleClicked(int,int)), m_parent, SLOT(s_updateCredit()));
+    connect(m_counterofferTable, SIGNAL(cellClicked(int, int)),
+            this, SLOT(s_buttonClicked(int,int)));
+    connect(m_counterofferTable, SIGNAL(cellClicked(int,int)), m_parent, SLOT(s_updateCredit()));
 }
 
 void ProfileWidget::showHistory()
@@ -240,28 +216,73 @@ void ProfileWidget::hideCOTable()
     m_counterofferTable->hide();
 }
 
-void ProfileWidget::s_accept()
+void ProfileWidget::s_accept(int row)
 {
-    QModelIndex currentIndex = m_counterofferTable->currentIndex();
-    int row = currentIndex.row();
-    int column=currentIndex.column();
-    if(column==1)
-    {
+
         //TODO: get book uid
         //call m_user->approveSuperUserCounterForBook(book uid, true);
         //the function above changes the users credits for us
-       QString m_credits=m_counterofferTable->item(row,0)->text();
-        m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
-        qDebug()<<"registered user accept counter offer";
-    }
-    //should have a function to set Approved to 3 when register user accept.
+       QString title=m_counterofferTable->item(row,0)->text();
+       DocumentsDB *docDB=new DocumentsDB();
+       int id=docDB->getbookID(title,m_user->getUsername(),1,0);
+        m_user->approveSuperUserCounterForBook(id,true);
 }
 
-void ProfileWidget::s_decline()
+void ProfileWidget::s_decline(int row)
 {
     //what happen if decline?
     //get book uid
     //call m_user->approveSuperUserCounterForBook(book uid, false)
+    QString title=m_counterofferTable->item(row,0)->text();
+    DocumentsDB *docDB=new DocumentsDB();
+    int id=docDB->getbookID(title,m_user->getUsername(),1,0);
+     m_user->approveSuperUserCounterForBook(id,false);
+
+}
+
+void ProfileWidget::s_buttonClicked(int row, int col) {
+    if(col == 3) {
+        s_accept(row);
+        ClearTable();
+        populateTable();
+    }else if(col == 4) {
+        s_decline(row);
+        ClearTable();
+        populateTable();
+    }
+}
+
+void ProfileWidget::ClearTable()
+{
+    while (m_counterofferTable->rowCount() > 0)
+    {
+        m_counterofferTable->removeRow(0);
+    }
+}
+
+void ProfileWidget::populateTable()
+{
+
+    //TODO: maybe change this table to the following columns:
+    //DOC Title
+    //Asking Price  //getPending().value(10)
+    //Counter Offer //if (column named 'approved' == 1) counterOffer = getPending.value(11) else counterOffer = null
+    //Accept
+    //Decline
+    QSqlQuery getPending = m_user->getPendingDocuments();
+    while(getPending.next())
+    {
+        int rowIndex = m_counterofferTable->rowCount();
+        m_counterofferTable->insertRow(rowIndex);
+        QString Ask_price(getPending.value(10).toString());
+        QString offer(getPending.value(11).toString());
+        QString title(getPending.value(1).toString());
+        m_counterofferTable->setItem(rowIndex, 0, new QTableWidgetItem(title));
+        m_counterofferTable->setItem(rowIndex, 1, new QTableWidgetItem(Ask_price));
+        m_counterofferTable->setItem(rowIndex, 2, new QTableWidgetItem(offer));
+        m_counterofferTable->setCellWidget(rowIndex, 3, new QLabel(tr("Accept")));
+        m_counterofferTable->setCellWidget(rowIndex, 4, new QLabel(tr("Decline")));
+    }
 }
 
 ProfileWidget::~ProfileWidget() {}

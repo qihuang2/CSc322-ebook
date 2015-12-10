@@ -57,19 +57,25 @@ void SuperWidget::populateTable() {
         m_pending->setItem(index, USER, new QTableWidgetItem(user));
         m_pending->setItem(index, REQCRED, new QTableWidgetItem(reqCreds));
 
-        m_pending->setCellWidget(index, APPROVE, new QPushButton(tr("Accept")));
-        m_pending->setCellWidget(index, DECLINE, new QPushButton(tr("Decline")));
-        m_pending->setCellWidget(index, COUNTER, new QPushButton(tr("Counter")));
+        m_pending->setCellWidget(index, APPROVE, new QLabel(tr("Accept")));
+        m_pending->setCellWidget(index, DECLINE, new QLabel(tr("Decline")));
+        m_pending->setCellWidget(index, COUNTER, new QLabel(tr("Counter")));
     }
 }
 
 void SuperWidget::s_buttonClicked(int row, int col) {
     if(col == APPROVE) {
         accept(row);
+        ClearTable();
+        populateTable();
     }else if(col == DECLINE) {
         decline(row);
+        ClearTable();
+        populateTable();
     }else if(col == COUNTER) {
         counter(row);
+        ClearTable();
+        populateTable();
     }
 }
 
@@ -77,15 +83,42 @@ void SuperWidget::accept(int row)
 {
     //use m_user->acceptDocumentWithUID(int bookID)
     //afterwards, RU still has to confirm
+    qDebug()<<"accept"<<QString::number(row);
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    qDebug()<<m_title;
+    //get ID and accept
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->acceptDocumentWithUID(m_id);
+    qDebug()<<"Accept "<<m_id;
 }
 
 void SuperWidget::decline(int row)
 {
-    //use m_user->deleteBookWithUID(int uid) to delete the book
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->deleteBookWithUID(m_id);
 
 }
 
 void SuperWidget::counter(int row)
 {
     //user m_user->declineDocumentWithUID(int bookID, int counterOffer)
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->declineDocumentWithUID(m_id,5);
+}
+
+
+void SuperWidget::ClearTable()
+{
+    while (m_pending->rowCount() > 0)
+    {
+        m_pending->removeRow(0);
+    }
 }
