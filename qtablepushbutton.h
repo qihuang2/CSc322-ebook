@@ -10,7 +10,7 @@ class QTablePushButton : public QPushButton
     Q_OBJECT
 
 public:
-    QTablePushButton(const QString & text, int row, int col, SuperWidget* parentWidget, QWidget * parent = 0);
+    QTablePushButton(const QString & text, int row, int col, QWidget * parent = 0);
 
 private:
     int m_row;

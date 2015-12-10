@@ -15,9 +15,6 @@ SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
 {
     m_user = user;
 
-    m_lastRowClicked = -1;
-    m_lastColClicked = -1;
-
     createWidgets();
     createLayouts();
     createActions();
@@ -43,7 +40,7 @@ void SuperWidget::createLayouts() {
 
 void SuperWidget::createActions() {
     connect(m_pending, SIGNAL(cellChanged(int,int)),
-            this, SLOT(s_cellEntered(int,int)));
+            this, SLOT(s_buttonClicked(int,int)));
 }
 
 void SuperWidget::populateTable() {
@@ -62,11 +59,11 @@ void SuperWidget::populateTable() {
         QTablePushButton* counterButton = new QTablePushButton(tr("Counter"), index, COUNTER, this);
 
         connect(approveButton, SIGNAL(sendLoc(int,int)),
-                this, SLOT(s_cellEntered(int,int)));
+                this, SLOT(s_buttonClicked(int,int)));
         connect(declineButton, SIGNAL(sendLoc(int,int)),
-                this, SLOT(s_cellEntered(int,int)));
+                this, SLOT(s_buttonClicked(int,int)));
         connect(counterButton, SIGNAL(sendLoc(int,int)),
-                this, SLOT(s_cellEntered(int,int)));
+                this, SLOT(s_buttonClicked(int,int)));
 
 
         // insert items to row
@@ -80,28 +77,32 @@ void SuperWidget::populateTable() {
     }
 }
 
-void SuperWidget::s_buttonClicked() {
-    if(m_lastColClicked == APPROVE) {
-        accept(m_lastRowClicked);
-    }else if(m_lastColClicked == DECLINE) {
-        decline(m_lastRowClicked);
-    }else if(m_lastColClicked == COUNTER) {
-        counter(m_lastRowClicked);
-    }
-}
-
 void SuperWidget::accept(int row)
 {
     //use m_user->acceptDocumentWithUID(int bookID)
     //afterwards, RU still has to confirm
 
-    qDebug() << "Accepted row " << row;
+    qDebug()<<"accept"<<QString::number(row);
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    qDebug()<<m_title;
+    //get ID and accept
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->acceptDocumentWithUID(m_id);
+    qDebug()<<"Accept "<<m_id;
 }
 
 void SuperWidget::decline(int row)
 {
     //use m_user->deleteBookWithUID(int uid) to delete the book
     qDebug() << "Declined row " << row;
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->deleteBookWithUID(m_id);
+
 }
 
 void SuperWidget::counter(int row)
@@ -110,6 +111,32 @@ void SuperWidget::counter(int row)
     qDebug() << "Countered row " << row;
 }
 
-void SuperWidget::s_cellEntered(int row, int col) {
+void SuperWidget::s_buttonClicked(int row, int col) {
     qDebug() << "Row: " << row << " Col: " << col;
+
+    /*
+    m_title=m_pending->item(row,0)->text();
+    m_username=m_pending->item(row,1)->text();
+    DocumentsDB *db=new DocumentsDB();
+    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_user->declineDocumentWithUID(m_id,5);
+    */
+
+    if(col == APPROVE) {
+        accept(row);
+    }else if(col == DECLINE) {
+        decline(row);
+    }else if(col == COUNTER) {
+        counter(row);
+    }
+    m_pending->removeRow(row);
+}
+
+
+void SuperWidget::ClearTable()
+{
+    while (m_pending->rowCount() > 0)
+    {
+        m_pending->removeRow(0);
+    }
 }

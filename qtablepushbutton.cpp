@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QAction>
 
-QTablePushButton::QTablePushButton(const QString &text, int row, int col, SuperWidget *parentWidget, QWidget *parent) : QPushButton(text, parent)
+QTablePushButton::QTablePushButton(const QString &text, int row, int col, QWidget *parent) : QPushButton(text, parent)
 {
     m_row = row;
     m_col = col;
