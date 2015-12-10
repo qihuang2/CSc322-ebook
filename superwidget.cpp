@@ -28,7 +28,6 @@ void SuperWidget::createWidgets() {
     m_pending->setHorizontalHeaderLabels(QStringList() << "Title" << "User" << "Cred. Request" << "" << "" << "" << "Counter Value");
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    m_pending->setMouseTracking(true);
 }
 
 void SuperWidget::createLayouts() {
@@ -39,8 +38,6 @@ void SuperWidget::createLayouts() {
 }
 
 void SuperWidget::createActions() {
-    connect(m_pending, SIGNAL(cellChanged(int,int)),
-            this, SLOT(s_buttonClicked(int,int)));
 }
 
 void SuperWidget::populateTable() {
@@ -79,6 +76,7 @@ void SuperWidget::populateTable() {
 
 void SuperWidget::accept(int row)
 {
+    qDebug() << "Accepted row " << row;
     //use m_user->acceptDocumentWithUID(int bookID)
     //afterwards, RU still has to confirm
 /*
@@ -96,6 +94,7 @@ void SuperWidget::accept(int row)
 
 void SuperWidget::decline(int row)
 {
+    qDebug() << "Declined row " << row;
     /*
     //use m_user->deleteBookWithUID(int uid) to delete the book
     qDebug() << "Declined row " << row;
@@ -110,6 +109,7 @@ void SuperWidget::decline(int row)
 
 void SuperWidget::counter(int row)
 {
+    qDebug() << "Countered row " << row;
     /*
     //user m_user->declineDocumentWithUID(int bookID, int counterOffer)
     qDebug() << "Countered row " << row;
@@ -134,7 +134,8 @@ void SuperWidget::s_buttonClicked(int row, int col) {
     }else if(col == COUNTER) {
         counter(row);
     }
-    m_pending->removeRow(row);
+    ClearTable();
+    populateTable();
 }
 
 
