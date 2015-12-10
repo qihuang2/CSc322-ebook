@@ -81,7 +81,7 @@ void SuperWidget::accept(int row)
 {
     //use m_user->acceptDocumentWithUID(int bookID)
     //afterwards, RU still has to confirm
-
+/*
     qDebug()<<"accept"<<QString::number(row);
     m_title=m_pending->item(row,0)->text();
     m_username=m_pending->item(row,1)->text();
@@ -91,10 +91,12 @@ void SuperWidget::accept(int row)
     int m_id=db->getbookID(m_title,m_username,1,0);
     m_user->acceptDocumentWithUID(m_id);
     qDebug()<<"Accept "<<m_id;
+    */
 }
 
 void SuperWidget::decline(int row)
 {
+    /*
     //use m_user->deleteBookWithUID(int uid) to delete the book
     qDebug() << "Declined row " << row;
     m_title=m_pending->item(row,0)->text();
@@ -102,13 +104,16 @@ void SuperWidget::decline(int row)
     DocumentsDB *db=new DocumentsDB();
     int m_id=db->getbookID(m_title,m_username,1,0);
     m_user->deleteBookWithUID(m_id);
+    */
 
 }
 
 void SuperWidget::counter(int row)
 {
+    /*
     //user m_user->declineDocumentWithUID(int bookID, int counterOffer)
     qDebug() << "Countered row " << row;
+    */
 }
 
 void SuperWidget::s_buttonClicked(int row, int col) {
