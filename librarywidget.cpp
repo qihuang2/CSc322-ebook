@@ -137,30 +137,22 @@ void LibraryWidget::createLayouts() {
 void LibraryWidget::s_refresh() {
     // empty table
     while(m_tableWidget->rowCount() > 0) m_tableWidget->removeRow(0);
-    int numDocs = m_db->getNumDocs();
 
-    qDebug() << "Number of documents: " << numDocs;
-
-    // i = 1 and <= numDocs because UID starts at 1
-    for(int i = 1; i <= numDocs; ++i) {
-        QSqlQuery current = m_db->getDocInfoForUID(i);
-        // check if query was successful, otherwise indicates document with uid: i was deleted, do not display
-        if(current.first()) {
-            int rowIndex = m_tableWidget->rowCount();
-            m_tableWidget->insertRow(rowIndex);
-
-            QString title(current.value(MainDB::TITLE).toString());
-            QString author(current.value(MainDB::POSTEDBY).toString());
-            QString genre(current.value(MainDB::GENRE).toString());
-            QString rating(current.value(MainDB::RATING).toString());
-
-            m_tableWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
-            m_tableWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
-            m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
-            m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
-        }else {
-            qDebug() << "Document with id " << i << " doesn't exist.";
-        }
+    QSqlQuery current = m_db->getAllDocs();
+    
+    while(current.next()){
+        int rowIndex = m_tableWidget->rowCount();
+        m_tableWidget->insertRow(rowIndex);
+        
+        QString title(current.value(MainDB::TITLE).toString());
+        QString author(current.value(MainDB::POSTEDBY).toString());
+        QString genre(current.value(MainDB::GENRE).toString());
+        QString rating(current.value(MainDB::RATING).toString());
+        
+        m_tableWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
+        m_tableWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
+        m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
+        m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
     }
 }
 
