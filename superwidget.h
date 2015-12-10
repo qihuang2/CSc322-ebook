@@ -24,6 +24,9 @@ private:
     QString m_username;
     QString m_credits;
 
+    int m_lastRowClicked;
+    int m_lastColClicked;
+
     void createWidgets();
     void createLayouts();
     void createActions();
@@ -37,7 +40,8 @@ private:
 signals:
 
 public slots:
-    void s_buttonClicked(int row, int col);
+    void s_buttonClicked();
+    void s_cellEntered(int row, int col);
 
 };
 

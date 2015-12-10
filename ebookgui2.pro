@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     profilewidget.cpp \
     historydb.cpp \
     superuser.cpp \
-    superwidget.cpp
+    superwidget.cpp \
+    qtablepushbutton.cpp
 
 HEADERS  += mainwindow.h \
     librarywidget.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     profilewidget.h \
     historydb.h \
     superuser.h \
-    superwidget.h
+    superwidget.h \
+    qtablepushbutton.h
 
 FORMS    +=
 
