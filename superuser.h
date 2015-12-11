@@ -30,7 +30,7 @@ public:
     //reason : reason for reporting the book
     QSqlQuery getAllDocumentsWithComplaints();
 
-    void changeCreditsBy(int credits);
+    void changeCreditsBy(int);
 };
 
 #endif // SUPERUSER_H

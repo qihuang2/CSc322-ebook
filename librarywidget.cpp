@@ -213,6 +213,7 @@ void LibraryWidget::createActions() {
 //Show the Preview
 void LibraryWidget::showPreview()
 {
+    qDebug() << "SHOWING PREVIEW";
     m_preview->show();
     m_previewText->show();
     m_title->show();
@@ -270,7 +271,7 @@ void LibraryWidget::selectCell()
     m_bookrating->setText(Rating);
 
     //Setting up the preview
-    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
+    int book_id = m_tableWidget->item(row, UID)->text().toInt();
     QString book = QString::number(book_id);
     path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;

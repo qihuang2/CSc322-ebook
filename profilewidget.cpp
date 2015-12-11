@@ -235,7 +235,6 @@ void ProfileWidget::s_decline(int row)
     //get book uid
     //call m_user->approveSuperUserCounterForBook(book uid, false)
     QString title=m_counterofferTable->item(row,0)->text();
-    DocumentsDB *docDB=new DocumentsDB();
     int id = m_counterofferTable->item(row, UID)->text().toInt();
     m_user->approveSuperUserCounterForBook(id,false);
 
@@ -264,6 +263,7 @@ void ProfileWidget::ClearTable()
 void ProfileWidget::populateTable()
 {
 
+    ClearTable();
     //TODO: maybe change this table to the following columns:
     //DOC Title
     //Asking Price  //getPending().value(10)

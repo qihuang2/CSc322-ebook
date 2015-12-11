@@ -24,7 +24,7 @@ public:
 
     void update_History(RegisteredUser* user);
     void updatepwCredits();
-
+    void populateTable();
 public slots:
     void hideHistory();
     void showHistory();
@@ -38,7 +38,7 @@ public slots:
 private:
     void createActions();
     void ClearTable();
-    void populateTable();
+
     RegisteredUser* m_user;
     MainWindow*     m_parent;
 
