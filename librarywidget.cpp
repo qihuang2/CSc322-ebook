@@ -253,8 +253,6 @@ void LibraryWidget::selectCell()
     //Get the row
     QModelIndex currentIndex = m_tableWidget->currentIndex();
     int row = currentIndex.row();
-    int b_genre;
-    float b_rating;
     current_row = row;
 
     //Clear the preview box first
@@ -272,11 +270,8 @@ void LibraryWidget::selectCell()
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
 
-    b_genre = Genre.toInt();
-    b_rating = Rating.toFloat();
-
     //Setting up the preview
-    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
     QString book = QString::number(book_id);
     path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;
@@ -359,18 +354,16 @@ void LibraryWidget::selectRecommendation()
     //Get the row
     QModelIndex currentIndex = m_recommendWidget->currentIndex();
     int row = currentIndex.row();
-    int b_genre;
-    float b_rating;
     current_row = row;
 
     //Clear the preview box first
     m_previewText->clear();
 
     //Get the data in each column for that row
-    Title = m_recommendWidget->item(row,0)->text();
-    Author = m_recommendWidget->item(row,1)->text();
-    Genre = m_recommendWidget->item(row,2)->text();
-    Rating = m_recommendWidget->item(row,3)->text();
+    Title = m_recommendWidget->item(row,TITLE)->text();
+    Author = m_recommendWidget->item(row,AUTHOR)->text();
+    Genre = m_recommendWidget->item(row,GENRE)->text();
+    Rating = m_recommendWidget->item(row,RATING)->text();
 
     //Set the Strings
     m_booktitle->setText(Title);
@@ -378,11 +371,8 @@ void LibraryWidget::selectRecommendation()
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
 
-    b_genre = Genre.toInt();
-    b_rating = Rating.toFloat();
-
     //Setting up the preview
-    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
     QString book = QString::number(book_id);
     path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;

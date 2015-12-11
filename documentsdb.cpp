@@ -296,17 +296,6 @@ QSqlQuery DocumentsDB::getFiveMostViewed(){
     return q;
 }
 
-int DocumentsDB::getbookID(QString book_name, QString book_author, int book_genre, float book_rating)
-{
-    QSqlQuery query;
-    if(!query.exec("select u_id from doc_info where title = '"+book_name+"' and posted_by = '"+book_author+"' and genre = '"+QString::number(book_genre)+"' and rating = '"+QString::number(book_rating)+"'"))
-    {
-        qDebug() << "Failed to get getbookID";
-        qDebug() << query.lastError();
-    }
-    return query.first() ? query.value(0).toInt() : -1;
-}
-
 //COMMENTS: use if we want to add comments
 QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
     QSqlQuery q;

@@ -125,8 +125,6 @@ public:
     //get top 5 most views documents
     QSqlQuery getFiveMostViewed();
 
-    int getbookID(QString, QString, int, float);
-
     //returns comments of document
     QSqlQuery getCommentsOfDocWithUID(int uid);
 };

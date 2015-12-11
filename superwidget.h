@@ -18,7 +18,7 @@ public:
     explicit SuperWidget(SuperUser* user = 0, QWidget *parent = 0);
 
     void populateTable();
-    void ClearTable();
+    void clearTable();
 private:
     SuperUser*      m_user;
     QVBoxLayout*    m_mainLayout;

@@ -6,6 +6,8 @@
 #include "documentwidget.h"
 #include <QHeaderView>
 
+enum {UID, TITLE, ASKINGPRC, CO, ACCEPT, DECLINE};
+
 ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
 
@@ -52,8 +54,8 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 
     //Create the Approve/Decline Counter Offer Table
     m_counterofferTable = new QTableWidget();
-     m_counterofferTable->setColumnCount(5);
-    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "DOC Title" << "Asking Price" <<
+    m_counterofferTable->setColumnCount(DECLINE+1);
+    m_counterofferTable->setHorizontalHeaderLabels(QStringList() << "UID" << "DOC Title" << "Asking Price" <<
                                                    "Counter Offer"<<"Accept"<<"Decline");
     m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -164,11 +166,11 @@ void ProfileWidget::hideGift()
         RegisteredUser* r_user = new RegisteredUser(picked);
         r_user->changeCreditsBy(credits.toInt());
         QMessageBox::information(this, tr("Sent!"),
-            "Your gift has been sent!");
+                                 "Your gift has been sent!");
     }
     else
         QMessageBox::information(this, tr("Error"),
-            "Your gift can only be integers and your gift cannot exceed your total credits.");
+                                 "Your gift can only be integers and your gift cannot exceed your total credits.");
     m_userList->hide();
     m_sendCredits->hide();
     m_sendCredits->clear();
@@ -194,7 +196,7 @@ void ProfileWidget::update_History(RegisteredUser* user)
         m_historyText->verticalHeader()->setVisible(false);
         QString s = db->getHistory(user->getUsername(),i-1);
         m_historyText->setItem(i, 1, new QTableWidgetItem(s));
-    }   
+    }
 }
 
 void ProfileWidget::updatepwCredits()
@@ -219,13 +221,12 @@ void ProfileWidget::hideCOTable()
 void ProfileWidget::s_accept(int row)
 {
 
-        //TODO: get book uid
-        //call m_user->approveSuperUserCounterForBook(book uid, true);
-        //the function above changes the users credits for us
-       QString title=m_counterofferTable->item(row,0)->text();
-       DocumentsDB *docDB=new DocumentsDB();
-       int id=docDB->getbookID(title,m_user->getUsername(),1,0);
-        m_user->approveSuperUserCounterForBook(id,true);
+    //TODO: get book uid
+    //call m_user->approveSuperUserCounterForBook(book uid, true);
+    //the function above changes the users credits for us
+    QString title=m_counterofferTable->item(row,TITLE)->text();
+    int id = m_counterofferTable->item(row, UID)->text().toInt();
+    m_user->approveSuperUserCounterForBook(id,true);
 }
 
 void ProfileWidget::s_decline(int row)
@@ -235,8 +236,8 @@ void ProfileWidget::s_decline(int row)
     //call m_user->approveSuperUserCounterForBook(book uid, false)
     QString title=m_counterofferTable->item(row,0)->text();
     DocumentsDB *docDB=new DocumentsDB();
-    int id=docDB->getbookID(title,m_user->getUsername(),1,0);
-     m_user->approveSuperUserCounterForBook(id,false);
+    int id = m_counterofferTable->item(row, UID)->text().toInt();
+    m_user->approveSuperUserCounterForBook(id,false);
 
 }
 
@@ -274,14 +275,17 @@ void ProfileWidget::populateTable()
     {
         int rowIndex = m_counterofferTable->rowCount();
         m_counterofferTable->insertRow(rowIndex);
-        QString Ask_price(getPending.value(10).toString());
-        QString offer(getPending.value(11).toString());
-        QString title(getPending.value(1).toString());
-        m_counterofferTable->setItem(rowIndex, 0, new QTableWidgetItem(title));
-        m_counterofferTable->setItem(rowIndex, 1, new QTableWidgetItem(Ask_price));
-        m_counterofferTable->setItem(rowIndex, 2, new QTableWidgetItem(offer));
-        m_counterofferTable->setCellWidget(rowIndex, 3, new QLabel(tr("Accept")));
-        m_counterofferTable->setCellWidget(rowIndex, 4, new QLabel(tr("Decline")));
+        QString Ask_price(getPending.value(MainDB::ASKINGPRICE).toString());
+        QString offer(getPending.value(MainDB::COUNTEROFFER).toString());
+        QString title(getPending.value(MainDB::TITLE).toString());
+        QString id(getPending.value(MainDB::UID).toString());
+
+        m_counterofferTable->setItem(rowIndex, UID, new QTableWidgetItem(id));
+        m_counterofferTable->setItem(rowIndex, TITLE, new QTableWidgetItem(title));
+        m_counterofferTable->setItem(rowIndex, ASKINGPRC, new QTableWidgetItem(Ask_price));
+        m_counterofferTable->setItem(rowIndex, CO, new QTableWidgetItem(offer));
+        m_counterofferTable->setCellWidget(rowIndex, ACCEPT, new QLabel(tr("Accept")));
+        m_counterofferTable->setCellWidget(rowIndex, DECLINE, new QLabel(tr("Decline")));
     }
 }
 

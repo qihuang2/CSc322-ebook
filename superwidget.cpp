@@ -9,6 +9,7 @@
 #include "documentsdb.h"
 #include <QDebug>
 #include <QLabel>
+
 enum {UID, TITLE, USER, REQCRED, APPROVE, DECLINE, COUNTER, COUNTERVAL};
 
 SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
@@ -41,7 +42,7 @@ void SuperWidget::createActions() {
 }
 
 void SuperWidget::populateTable() {
-    ClearTable();
+    clearTable();
 
     QSqlQuery pending = m_user->getSupersPendingDocuments();
     while(pending.next()) {
@@ -147,11 +148,11 @@ void SuperWidget::s_buttonClicked(int row, int col) {
     }else if(col == COUNTER) {
         counter(row);
     }
-    ClearTable();
+    clearTable();
     populateTable();
 }
 
-void SuperWidget::ClearTable()
+void SuperWidget::clearTable()
 {
     while (m_pending->rowCount() > 0)
     {
