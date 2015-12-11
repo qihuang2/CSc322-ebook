@@ -9,7 +9,7 @@
 #include "documentsdb.h"
 #include <QDebug>
 #include <QLabel>
-enum {TITLE, USER, REQCRED, APPROVE, DECLINE, COUNTER, COUNTERVAL};
+enum {UID, TITLE, USER, REQCRED, APPROVE, DECLINE, COUNTER, COUNTERVAL};
 
 SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
 {
@@ -25,7 +25,7 @@ void SuperWidget::createWidgets() {
     //m_pending = new QTableWidget(m_user->getSupersPendingDocuments().value(0).toInt(), COUNTERVAL+1);
     m_pending = new QTableWidget();
     m_pending->setColumnCount(COUNTERVAL+1);
-    m_pending->setHorizontalHeaderLabels(QStringList() << "Title" << "User" << "Cred. Request" << "" << "" << "" << "Counter Value");
+    m_pending->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "User" << "Cred. Request" << "" << "" << "" << "Counter Value");
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
@@ -47,6 +47,7 @@ void SuperWidget::populateTable() {
         m_pending->insertRow(index);
 
         // retrieve doc info
+        QString uid(pending.value(MainDB::UID).toString());
         QString title(pending.value(MainDB::TITLE).toString());
         QString user(pending.value(MainDB::POSTEDBY).toString());
         QString reqCreds(pending.value(MainDB::ASKINGPRICE).toString());
@@ -64,6 +65,7 @@ void SuperWidget::populateTable() {
 
 
         // insert items to row
+        m_pending->setItem(index, UID, new QTableWidgetItem(uid));
         m_pending->setItem(index, TITLE, new QTableWidgetItem(title));
         m_pending->setItem(index, USER, new QTableWidgetItem(user));
         m_pending->setItem(index, REQCRED, new QTableWidgetItem(reqCreds));
