@@ -138,7 +138,6 @@ void SuperWidget::s_buttonClicked(int row, int col) {
     populateTable();
 }
 
-
 void SuperWidget::ClearTable()
 {
     while (m_pending->rowCount() > 0)

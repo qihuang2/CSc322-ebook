@@ -7,6 +7,7 @@
 #include "superwidget.h"
 #include "superuser.h"
 #include "historydb.h"
+#include "constants.h"
 #include <documentsdb.h>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -14,19 +15,11 @@
 #include <QDebug>
 #include <QtSql>
 
-enum {LIB, UP, DOC, HISTORY, SUPER};
+enum {LIB, UP, DOC, PROFILE, SUPER};
 
 MainWindow::MainWindow(BaseUser *user)
 {
     m_user = user;
-
-    if(m_user->getUserType() == BaseUser::VISITING) {
-        qDebug() << "Visiting";
-    }else if(m_user->getUserType() == BaseUser::REGISTERED) {
-        qDebug() << "Reg";
-    }else {
-        qDebug() << "SUPER";
-    }
 
     //init DB that keeps track of uploaded documents
     this->m_docDB = new DocumentsDB();
@@ -49,9 +42,16 @@ void MainWindow::createWidgets() {
     LibraryWidget* lib = new LibraryWidget(m_user->getUsername(), this, m_tabWidget);
     m_tabWidget->addTab(lib, tr("Library"));
 
-    // only for registered/super
+    /*
+     * PLEASE use the if statements below.
+     * Use these to insert widgets that are dependent on the user type.
+     * I keep seeing things outside these if statements that a visiting user should not have (such as credits).
+     */
+
+    // only for registered (and super)
     if(!(m_user->getUserType() == BaseUser::VISITING)) {
         RegisteredUser* tmpUser = static_cast<RegisteredUser*>(m_user);
+
         UploadWidget* up = new UploadWidget(tmpUser, m_tabWidget);
         m_tabWidget->addTab(up, tr("Upload"));
 
@@ -61,22 +61,19 @@ void MainWindow::createWidgets() {
         ProfileWidget* prof = new ProfileWidget(tmpUser, this, m_tabWidget);
         m_tabWidget->addTab(prof, tr("Profile"));
 
-        m_credit = QString::number(tmpUser->getNumOfCredits());
+        //Create the labels
+        m_username = new QLabel();
+        m_usercredits = new QLabel();
+        m_username->setText("User Name: " + m_user->getUsername());
+        m_usercredits->setText("Credit(s) Remaining: " + QString::number(tmpUser->getNumOfCredits()));
     }
 
     // only for super user
     if(m_user->getUserType() == BaseUser::SUPER) {
         SuperWidget* sw = new SuperWidget(static_cast<SuperUser*>(m_user));
+
         m_tabWidget->addTab(sw, tr("Super"));
     }
-
-    m_name = m_user->getUsername();
-
-    //Create the labels
-    m_username = new QLabel();
-    m_usercredits = new QLabel();
-    m_username->setText("User Name: " + m_name);
-    m_usercredits->setText("Credit(s) Remaining: " + m_credit);
 
     m_loginLabel = new QLabel();
 
@@ -84,7 +81,7 @@ void MainWindow::createWidgets() {
     m_loginLabel->setText(QString("Logged in as: %1 %2").arg(m_user->getUsername()).arg(m_user->getUserType() == BaseUser::SUPER ? "(SU)" : ""));
 
     //if it's a registered user or super user, print info
-    if (m_user->getUserType() != 0) {
+    if (m_user->getUserType() != BaseUser::VISITING) {
         //Test info
         RegisteredUser* t = static_cast<RegisteredUser*>(m_user); //cast to registered user  
         qDebug()<< "Username: "<<t->getUsername()<< "   Credits: "<<t->getNumOfCredits();
@@ -105,7 +102,7 @@ void MainWindow::createLayouts() {
     m_mainLayout->addWidget(m_tabWidget);
     m_mainLayout->addWidget(m_exitButton);
 
-    m_tabWidget->widget(HISTORY);
+    m_tabWidget->widget(PROFILE);
 
     m_centralWidget->setLayout(m_mainLayout);
 }
@@ -173,7 +170,7 @@ void MainWindow::s_openBook()
 //Update history in Profile Widget
 void MainWindow::s_updateHistory()
 {
-    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(HISTORY);
+    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(PROFILE);
     if(!(m_user->getUserType() == BaseUser::VISITING)) {
         RegisteredUser* tmp;
         if(m_user->getUserType() == BaseUser::REGISTERED)
@@ -188,7 +185,7 @@ void MainWindow::s_updateHistory()
 void MainWindow::s_updateCredit()
 {
     DocumentWidget* dw = (DocumentWidget*)m_tabWidget->widget(DOC);
-    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(HISTORY);
+    ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(PROFILE);
     dw->updateCredits();
     pw->updatepwCredits();
 }

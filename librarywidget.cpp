@@ -12,7 +12,7 @@
 #include <QtSql>
 
 // Values for books in table
-enum {TITLE, AUTHOR, GENRE, RATING, SUMMARY};
+enum {UID, TITLE, AUTHOR, GENRE, RATING};
 
 LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
@@ -28,6 +28,7 @@ LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *pare
 
     createRecommend();
     s_refresh();
+
 }
 
 LibraryWidget::~LibraryWidget() {
@@ -65,7 +66,7 @@ void LibraryWidget::createWidgets() {
 
     //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
-    m_tableWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
+    m_tableWidget->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "Author" << "Genre" << "Rating");
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
@@ -75,7 +76,7 @@ void LibraryWidget::createWidgets() {
     //Create the Recommendation Table
     m_recommendWidget = new QTableWidget();
     m_recommendWidget->setColumnCount(4);
-    m_recommendWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
+    m_recommendWidget->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "Author" << "Genre" << "Rating");
     m_recommendWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_recommendWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
@@ -150,11 +151,13 @@ void LibraryWidget::s_refresh() {
         int rowIndex = m_tableWidget->rowCount();
         m_tableWidget->insertRow(rowIndex);
         
+        QString uid(current.value(MainDB::UID).toString());
         QString title(current.value(MainDB::TITLE).toString());
         QString author(current.value(MainDB::POSTEDBY).toString());
-        QString genre(current.value(MainDB::GENRE).toString());
+        QString genre(genres[current.value(MainDB::GENRE).toInt()]);
         QString rating(current.value(MainDB::RATING).toString());
         
+        m_tableWidget->setItem(rowIndex, UID, new QTableWidgetItem(uid, 0));
         m_tableWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
         m_tableWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
         m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
@@ -171,11 +174,13 @@ void LibraryWidget::createRecommend()
         int rowIndex = m_recommendWidget->rowCount();
         m_recommendWidget->insertRow(rowIndex);
 
+        QString uid(topFive.value(MainDB::UID).toString());
         QString title(topFive.value(MainDB::TITLE).toString());
         QString author(topFive.value(MainDB::POSTEDBY).toString());
         QString genre(topFive.value(MainDB::GENRE).toString());
         QString rating(topFive.value(MainDB::RATING).toString());
 
+        m_recommendWidget->setItem(rowIndex, UID, new QTableWidgetItem(uid, 0));
         m_recommendWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
         m_recommendWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
         m_recommendWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));

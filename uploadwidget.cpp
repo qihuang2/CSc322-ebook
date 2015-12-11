@@ -48,21 +48,8 @@ void UploadWidget::createWidgets() {
     m_uploadButton = new QPushButton(tr("Upload"));
     m_uploadButton->setFixedSize(QSize(100,50));
 
-    m_listGenres[_SELECT_] = "--Select One--";
-    m_listGenres[BIO] = "Biography";
-    m_listGenres[FANTASY] = "Fantasy";
-    m_listGenres[HISTORY] = "History";
-    m_listGenres[HORROR] = "Horror";
-    m_listGenres[KIDS] = "Kids";
-    m_listGenres[MANGA] = "Manga";
-    m_listGenres[MYSTERY] = "Mystery";
-    m_listGenres[MYTH] = "Mythology";
-    m_listGenres[ROMANCE] = "Romance";
-    m_listGenres[SCIFI] = "Science Fiction";
-    m_listGenres[YOUNGADULT] = "Young Adult";
-
     for(int i = _SELECT_; i <= YOUNGADULT; ++i) {
-        m_genreField->addItem(m_listGenres[i]);
+        m_genreField->addItem(genres[i]);
     }
 }
 

@@ -2,6 +2,7 @@
 #define UPLOADWIDGET_H
 
 #include <QWidget>
+#include "constants.h"
 
 class RegisteredUser;
 class DocumentsDB;
@@ -20,20 +21,7 @@ public:
     explicit UploadWidget(RegisteredUser* user, QWidget *parent = 0);
     ~UploadWidget();
 
-    typedef enum {
-        _SELECT_,
-        BIO,
-        FANTASY,
-        HISTORY,
-        HORROR,
-        KIDS,
-        MANGA,
-        MYSTERY,
-        MYTH,
-        ROMANCE,
-        SCIFI,
-        YOUNGADULT
-    } Genre;
+
 
 private:
     void createWidgets();
@@ -50,7 +38,6 @@ private:
     QSpinBox*       m_creditsField;
     QComboBox*      m_genreField;
     QPlainTextEdit* m_summaryField;
-    QString         m_listGenres[YOUNGADULT+1];
     QHBoxLayout*    m_uploadLayout;
     QPushButton*    m_clearButton;  /* Clears current path. */
     QPushButton*    m_browseButton; /* Allows user to browse for a file. */

@@ -40,9 +40,6 @@ private:
     QLabel* m_username;
     QLabel* m_usercredits;
 
-    QString m_name;
-    QString m_credit;
-
     void createWidgets();
     void createLayouts();
     void createActions();
