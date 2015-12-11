@@ -111,7 +111,6 @@ void UploadWidget::s_upload() {
         QString newPath(docDir + "/" + QString::number(nextUID) + ".txt");
         QFile::copy(m_fileLabel->text(), newPath);
 
-        qDebug() << "New path: " << newPath;
         QMessageBox::information(this, tr("Uploaded!"),
             "Your document has been sent to the Super-User to seek approval!");
 

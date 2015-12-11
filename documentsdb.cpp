@@ -67,6 +67,15 @@ void DocumentsDB::deleteDocumentWithUID(int id){
     }
 }
 
+void DocumentsDB::modifyCounterForUID(int id, int counter) {
+    QString query = QString("UPDATE doc_info SET approved = %1 WHERE u_id = %2").arg(QString::number(counter), QString::number(id));
+    qDebug() << "Query: " << query;
+    QSqlQuery q;
+    if(!(q.exec(query))) {
+        qDebug() << "Error while countering.";
+    }
+}
+
 void DocumentsDB::addComplaintToDocumentWithUID(QString username, int book_id, QString reason){
     QSqlQuery q = this->getDocInfoForUID(book_id);
     //if doc was found
@@ -123,7 +132,6 @@ void DocumentsDB::addViewToDocWithUID(int id){
         }
     }
 }
-
 
 void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRating){
     QSqlQuery q = this->getDocInfoForUID(id);
@@ -274,7 +282,6 @@ bool DocumentsDB::userHasReportedBook(QString username, int book_id){
     }
 }
 
-
 bool DocumentsDB::userHasRatedBook(QString username, int book_id){
     QSqlQuery query;
     if(query.exec("SELECT * FROM rating_info  WHERE username = '"+username+"' AND book_id = " + QString::number(book_id) )){
@@ -305,4 +312,6 @@ QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
         qDebug()<<"Error in getCommentsOfDocWithUID: " + QString::number(uid);
         qDebug()<< q.lastError();
     }
+    return q;
 }
+

@@ -1,6 +1,5 @@
 #include "superwidget.h"
 #include "superuser.h"
-#include <QComboBox>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 #include <QTableWidget>
@@ -21,6 +20,7 @@ SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
     createLayouts();
     createActions();
     populateTable();
+    s_hidePendingTable();
 }
 
 void SuperWidget::createWidgets() {
@@ -31,17 +31,44 @@ void SuperWidget::createWidgets() {
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     m_counterField = new QComboBox();
-    // todo combo box
+    // todo combo box 
+    m_banuser = new QComboBox();
+    QSqlQuery user_list = m_user->getAllUsers();
+    while (user_list.next())
+    {
+        QString am_user(user_list.value(0).toString());
+        if (am_user == m_user->getUsername())
+            continue;
+        else
+            m_banuser->addItem(am_user);
+    }
+    m_showPending =new QPushButton("Show Pending Table");
+    m_hidePending =new QPushButton("Hide Pending Table");
+    m_ban = new QPushButton("Ban");
+    m_ban->setMaximumWidth(50);
+    m_banuser->setMinimumWidth(150);
+    m_showPending->setMaximumWidth(200);
+    m_hidePending->setMaximumWidth(200);
 }
 
 void SuperWidget::createLayouts() {
     m_mainLayout = new QVBoxLayout();
+    QHBoxLayout *banLayout= new QHBoxLayout();
+    banLayout->setAlignment(Qt::AlignLeft);
+    banLayout->addWidget(m_banuser);
+    banLayout->addWidget(m_ban);
+    m_mainLayout->addLayout(banLayout);
+    m_mainLayout->addWidget(m_showPending);
+    m_mainLayout->addWidget(m_hidePending);
     m_mainLayout->addWidget(m_pending);
-
+    m_mainLayout->setAlignment(Qt::AlignTop);
     setLayout(m_mainLayout);
 }
 
 void SuperWidget::createActions() {
+    connect(m_ban, SIGNAL(clicked()), this, SLOT(s_ban()));
+    connect(m_showPending, SIGNAL(clicked()), this, SLOT(s_showPendingTable()));
+    connect(m_hidePending, SIGNAL(clicked()), this, SLOT(s_hidePendingTable()));
 }
 
 void SuperWidget::populateTable() {
@@ -58,9 +85,10 @@ void SuperWidget::populateTable() {
         QString user(pending.value(MainDB::POSTEDBY).toString());
         QString reqCreds(pending.value(MainDB::ASKINGPRICE).toString());
 
-        QTablePushButton* approveButton = new QTablePushButton(tr("Accept"), index, APPROVE, this);
-        QTablePushButton* declineButton = new QTablePushButton(tr("Decline"), index, DECLINE, this);
-        QTablePushButton* counterButton = new QTablePushButton(tr("Counter"), index, COUNTER, this);
+        QTablePushButton*   approveButton = new QTablePushButton(tr("Accept"), index, APPROVE, this);
+        QTablePushButton*   declineButton = new QTablePushButton(tr("Decline"), index, DECLINE, this);
+        QTablePushButton*   counterButton = new QTablePushButton(tr("Counter"), index, COUNTER, this);
+        QSpinBox*           counterValue = new QSpinBox();
 
         connect(approveButton, SIGNAL(sendLoc(int,int)),
                 this, SLOT(s_buttonClicked(int,int)));
@@ -79,6 +107,7 @@ void SuperWidget::populateTable() {
         m_pending->setCellWidget(index, APPROVE, approveButton);
         m_pending->setCellWidget(index, DECLINE, declineButton);
         m_pending->setCellWidget(index, COUNTER, counterButton);
+        m_pending->setCellWidget(index, COUNTERVAL, counterValue);
     }
 }
 
@@ -86,19 +115,16 @@ void SuperWidget::accept(int row)
 {
     qDebug() << "Accepted row " << row;
     //afterwards, RU still has to confirm
-    m_uid=m_pending->item(row,UID)->text();
-    m_username=m_pending->item(row,USER)->text();
-    m_credits = m_pending->item(row,REQCRED)->text();
 
-    m_giveCredit = m_credits.toInt();
+    int uid = m_pending->item(row, UID)->text().toInt();
+    m_giveCredit = m_pending->item(row, REQCRED)->text().toInt();
 
-    RegisteredUser* user = new RegisteredUser(m_username);
+    RegisteredUser* user = new RegisteredUser(m_pending->item(row, USER)->text());
     user->changeCreditsBy(m_giveCredit);
     delete user;
 
     //upload the book to the table
-    m_id = m_uid.toInt();
-    m_user->acceptDocumentWithUID(m_id);
+    m_user->acceptDocumentWithUID(uid);
 
     // Get username
     // create registered user
@@ -126,11 +152,27 @@ void SuperWidget::decline(int row)
 
 void SuperWidget::counter(int row)
 {
-    qDebug() << "Countered row " << row;
     /*
-    //user m_user->declineDocumentWithUID(int bookID, int counterOffer)
-    qDebug() << "Countered row " << row;
+    QSqlQuery q;
+    //delete row where u_id == id
+    if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(id)))
+        qDebug()<< "Document has been deleted.";
+    else{
+        qDebug()<<"deleteDocumentWitUID: "+QString::number(id)+ " failed";
+        qDebug()<<q.lastError();
+    }
     */
+
+    QSpinBox* box = dynamic_cast<QSpinBox*>(m_pending->cellWidget(row, COUNTERVAL));
+    qDebug() << "Countered row " << row << " for " << box->value();
+
+    int uid = m_pending->item(row, UID)->text().toInt();
+    int counterVal = box->value();
+
+    DocumentsDB* db = new DocumentsDB();
+    db->modifyCounterForUID(uid, counterVal);
+
+
 }
 
 void SuperWidget::s_buttonClicked(int row, int col) {
@@ -162,3 +204,27 @@ void SuperWidget::clearTable()
         m_pending->removeRow(0);
     }
 }
+
+void SuperWidget::s_ban()
+{
+
+    QString picked = m_banuser->currentText();
+    m_user->banUser(picked);
+    QMessageBox::information(this, tr("Ban!"),
+                             "The use has been baned");
+}
+
+void SuperWidget::s_showPendingTable()
+{
+    m_pending->setHidden(false);
+    m_showPending->setHidden(true);
+    m_hidePending->setHidden(false);
+}
+
+void SuperWidget::s_hidePendingTable()
+{
+    m_pending->setHidden(true);
+    m_showPending->setHidden(false);
+    m_hidePending->setHidden(true);
+}
+

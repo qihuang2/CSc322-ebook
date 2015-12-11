@@ -236,18 +236,17 @@ void ProfileWidget::s_decline(int row)
     //get book uid
     //call m_user->approveSuperUserCounterForBook(book uid, false)
     QString title=m_counterofferTable->item(row,0)->text();
-    DocumentsDB *docDB=new DocumentsDB();
     int id = m_counterofferTable->item(row, UID)->text().toInt();
     m_user->approveSuperUserCounterForBook(id,false);
 
 }
 
 void ProfileWidget::s_buttonClicked(int row, int col) {
-    if(col == 3) {
+    if(col == 4) {
         s_accept(row);
         ClearTable();
         populateTable();
-    }else if(col == 4) {
+    }else if(col == 5) {
         s_decline(row);
         ClearTable();
         populateTable();
@@ -265,6 +264,7 @@ void ProfileWidget::ClearTable()
 void ProfileWidget::populateTable()
 {
 
+    ClearTable();
     //TODO: maybe change this table to the following columns:
     //DOC Title
     //Asking Price  //getPending().value(10)

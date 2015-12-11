@@ -119,25 +119,25 @@ void MainWindow::s_refreshTable(int current) {
     if(current == LIB) {
         LibraryWidget* w = static_cast<LibraryWidget*>(m_tabWidget->widget(LIB));
         w->s_refresh();
-    }
-    else if(current == DOC)
-    {
+    }else if(current == DOC) {
         DocumentWidget*d=(DocumentWidget*)m_tabWidget->widget(DOC);
         d->ResumeTimer();
-    }
-    else if(current == SUPER)
-    {
+    }else if(current == SUPER) {
         SuperWidget* sp = static_cast<SuperWidget*>(m_tabWidget->widget(SUPER));
         sp->populateTable();
+    }else if(current == PROFILE) {
+        ProfileWidget* pw = static_cast<ProfileWidget*>(m_tabWidget->widget(PROFILE));
+        pw->populateTable();
     }
 }
 
 void MainWindow::s_openBook()
 {
+    qDebug() << "OPEN BOOK CALLED";
     LibraryWidget* lib = (LibraryWidget*)m_tabWidget->widget(LIB);
     DocumentWidget* doc = (DocumentWidget*)m_tabWidget->widget(DOC);
     //Get the Path
-    QString p = lib->getPath();
+    QString p = lib->getPath(); // WRONG
 
     //Update the view, match the book id, add one to its row it the view column
     m_docDB->addViewToDocWithUID(lib->getRow());

@@ -51,7 +51,7 @@ QSqlQuery RegisteredUser::getPendingDocuments(){
     QSqlQuery query;
     //there is no check to see if this command is run
     //I did it this way so it is easier to iterate through using : while (query.next())
-    if (!query.exec("SELECT * FROM doc_info WHERE posted_by = '"+m_username+"' AND approved != 3 AND is_deleted = 0")){
+    if (!query.exec("SELECT * FROM doc_info WHERE posted_by = '"+m_username+"' AND approved != 3 AND approved != 0 AND is_deleted = 0")){
         qDebug()<<"Error in getPendingDocuments";
         qDebug()<<query.lastError();
     }
