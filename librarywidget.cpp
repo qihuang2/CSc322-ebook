@@ -28,7 +28,6 @@ LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *pare
 
     createRecommend();
     s_refresh();
-
 }
 
 LibraryWidget::~LibraryWidget() {

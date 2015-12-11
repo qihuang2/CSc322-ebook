@@ -1,5 +1,6 @@
 #include "superwidget.h"
 #include "superuser.h"
+#include <QComboBox>
 #include <QSqlQuery>
 #include <QVBoxLayout>
 #include <QTableWidget>
@@ -23,12 +24,14 @@ SuperWidget::SuperWidget(SuperUser* user, QWidget* parent) : QWidget(parent)
 }
 
 void SuperWidget::createWidgets() {
-    //m_pending = new QTableWidget(m_user->getSupersPendingDocuments().value(0).toInt(), COUNTERVAL+1);
     m_pending = new QTableWidget();
     m_pending->setColumnCount(COUNTERVAL+1);
     m_pending->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "User" << "Cred. Request" << "" << "" << "" << "Counter Value");
     m_pending->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_pending->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    m_counterField = new QComboBox();
+    // todo combo box
 }
 
 void SuperWidget::createLayouts() {

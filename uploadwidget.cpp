@@ -22,6 +22,7 @@ UploadWidget::UploadWidget(RegisteredUser* user, QWidget *parent) : QWidget(pare
     createWidgets();
     createLayouts();
     createActions();
+
     setLayout(m_mainLayout);
 }
 
@@ -102,16 +103,19 @@ void UploadWidget::createActions() {
 void UploadWidget::s_upload() {
     // make sure all fields are filled in
     if(fieldsFilledIn()) {
-        // make a copy of the file
-        QString newPath(docDir + "/" + QString::number(m_db->getLastInsertRowUID() + 1) + ".txt");
-        QFile::copy(m_fileLabel->text(), newPath);
-        // add to database
         m_db->addDocument(m_titleField->text(), m_user->getUsername(), m_genreField->currentIndex(), m_summaryField->toPlainText(), QString::number(m_creditsField->value()));
 
-        clearFields();
+        // make copy
+        int nextUID = m_db->getLastInsertRowUID();
+        qDebug() << "NEW UID: " << nextUID;
+        QString newPath(docDir + "/" + QString::number(nextUID) + ".txt");
+        QFile::copy(m_fileLabel->text(), newPath);
 
+        qDebug() << "New path: " << newPath;
         QMessageBox::information(this, tr("Uploaded!"),
             "Your document has been sent to the Super-User to seek approval!");
+
+        clearFields();
     }else {
         QMessageBox::information(this, tr("Failed!"),
             "Please make sure all fields are filled in.");

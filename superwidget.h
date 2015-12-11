@@ -11,6 +11,7 @@ class QTableWidget;
 class QPushButton;
 class QSpinBox;
 class QString;
+class QComboBox;
 class SuperWidget : public QWidget
 {
     Q_OBJECT
@@ -23,6 +24,7 @@ private:
     SuperUser*      m_user;
     QVBoxLayout*    m_mainLayout;
     QTableWidget*   m_pending;
+    QComboBox*      m_counterField;
 
     QString m_title;
     QString m_username;
