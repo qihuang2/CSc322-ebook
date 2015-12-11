@@ -5,7 +5,7 @@
 #include "superuser.h"
 #include "documentsdb.h"
 #include "mainwindow.h"
-
+class QHBoxLayout;
 class QVBoxLayout;
 class QTableWidget;
 class QPushButton;
@@ -25,12 +25,14 @@ private:
     QVBoxLayout*    m_mainLayout;
     QTableWidget*   m_pending;
     QComboBox*      m_counterField;
-
+    QComboBox*      m_banuser;
     QString m_title;
     QString m_username;
     QString m_credits;
     QString m_uid;
-
+    QPushButton *   m_ban;
+    QPushButton *   m_showPending;
+    QPushButton *   m_hidePending;
     void createWidgets();
     void createLayouts();
     void createActions();
@@ -46,6 +48,9 @@ signals:
 
 public slots:
     void s_buttonClicked(int row, int col);
+    void s_ban();
+    void s_showPendingTable();
+    void s_hidePendingTable();
 };
 
 #endif // SUPERWIDGET_H

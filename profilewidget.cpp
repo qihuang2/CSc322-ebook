@@ -242,11 +242,11 @@ void ProfileWidget::s_decline(int row)
 }
 
 void ProfileWidget::s_buttonClicked(int row, int col) {
-    if(col == 3) {
+    if(col == 4) {
         s_accept(row);
         ClearTable();
         populateTable();
-    }else if(col == 4) {
+    }else if(col == 5) {
         s_decline(row);
         ClearTable();
         populateTable();
