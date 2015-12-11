@@ -10,14 +10,16 @@
 #include <QDebug>
 #include <QTextCursor>
 #include <QtSql>
+#include <QComboBox>
+#include <QLineEdit>
 
 // Values for books in table
 enum {UID, TITLE, AUTHOR, GENRE, RATING};
 
-LibraryWidget::LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent) : QWidget(parent)
+LibraryWidget::LibraryWidget(QString loginUserName,MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
     m_parent = mw;
-    m_loginName=loginUesrName;
+    m_loginName=loginUserName;
     m_db = new DocumentsDB();
 
     current_row = 0;
@@ -36,32 +38,44 @@ LibraryWidget::~LibraryWidget() {
 
 void LibraryWidget::createWidgets() {
 
-    QWidget* widget = new QWidget();
-
     //Create the buttons
     m_hidePreview = new QPushButton("Return to table");
     m_hidePreview->setMaximumSize(QSize(150,50));
     m_openBook = new QPushButton("Open Book");
     m_openBook->setMaximumSize(QSize(150,50));
-    m_hideRecommend = new QPushButton("Close Recommendations and Show Library");
-    m_hideRecommend->setMaximumSize(QSize(400,50));
+    m_hideRecommend = new QPushButton("Close Recommendations");
+    m_hideRecommend->setMaximumSize(QSize(200,50));
+    m_showRecommend = new QPushButton("Open Recommendations");
+    m_showRecommend->setMaximumSize(QSize(200,50));
     m_refresh = new QPushButton(tr("Refresh"));
     m_refresh->setFixedSize(QSize(100,50));
+    m_startSearch = new QPushButton("Search");
+    m_startSearch->setFixedSize(QSize(100,50));
 
     //Create the labels
-    m_recommend = new QLabel("Welcome!\n This is our recommendation table of our most viewed documents!\n You can close this table and continue to browse through our library if the recommendations don't interest you.");
+    m_recommend = new QLabel("This is our recommendation table of our most viewed documents!\n You can close this table and continue to browse through our library if the recommendations don't interest you.");
     m_title = new QLabel("Title: ");
     m_author = new QLabel("Author: ");
     m_genre = new QLabel("Genre: ");
     m_rating = new QLabel("Rating: ");
-    m_preview = new QLabel("Preview: ");
     m_booktitle = new QLabel(Title);
     m_bookauthor = new QLabel(Author);
     m_bookgenre = new QLabel(Genre);
     m_bookrating = new QLabel(Rating);
 
-    //Create the text
-    m_previewText = new QTextEdit(widget);
+    //Create the Line Edit
+    m_search = new QLineEdit();
+    m_search->setPlaceholderText("Search");
+    m_search->setMaximumSize(QSize(200, 50));
+
+    //Create the Combo Box
+    m_searchBy = new QComboBox();
+    m_searchBy->setMaximumSize(200, 50);
+    m_searchBy->addItem("Select");
+    m_searchBy->addItem("Title");
+    m_searchBy->addItem("Author");
+    m_searchBy->addItem("Genre");
+    m_searchBy->addItem("Rating");
 
     //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
@@ -74,7 +88,7 @@ void LibraryWidget::createWidgets() {
 
     //Create the Recommendation Table
     m_recommendWidget = new QTableWidget();
-    m_recommendWidget->setColumnCount(4);
+    m_recommendWidget->setColumnCount(RATING+1);
     m_recommendWidget->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "Author" << "Genre" << "Rating");
     m_recommendWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_recommendWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -92,10 +106,14 @@ void LibraryWidget::createLayouts() {
     m_previewLayout = new QVBoxLayout();
     m_previewbuttonLayout = new QHBoxLayout();
     m_recommendLayout = new QVBoxLayout();
+    m_searchLayout = new QHBoxLayout();
 
     //Insert widgets into layout
-    m_previewLayout->addWidget(m_preview);
-    m_previewLayout->addWidget(m_previewText); //Place textbox on top of preview layout
+    m_searchLayout->addWidget(m_showRecommend);
+    m_searchLayout->addWidget(m_hideRecommend);
+    m_searchLayout->addWidget(m_search);
+    m_searchLayout->addWidget(m_searchBy);
+    m_searchLayout->addWidget(m_startSearch);
     m_titleLayout->addWidget(m_title);
     m_titleLayout->addWidget(m_booktitle);
     m_previewLayout->addLayout(m_titleLayout); //Place title into preview layout
@@ -114,17 +132,17 @@ void LibraryWidget::createLayouts() {
     m_previewLayout->addLayout(m_previewbuttonLayout); //Place the button layout into the Preview Layout
     m_recommendLayout->addWidget(m_recommend);
     m_recommendLayout->addWidget(m_recommendWidget);
-    m_recommendLayout->addWidget(m_hideRecommend);
     m_tablewithpreviewLayout->addLayout(m_recommendLayout);//Place the layout into the most left side
     m_tablewithpreviewLayout->addWidget(m_tableWidget); //Place the Table Widget into the Preview Layout, will take up middle
     m_tablewithpreviewLayout->addLayout(m_previewLayout); //Place the Preview Layout onto the right side.
+    m_mainLayout->addLayout(m_searchLayout);
     m_mainLayout->addLayout(m_tablewithpreviewLayout); //Place the table and preview widgets into the mainlayout
     //m_mainLayout->addWidget(m_refresh);
 
     //Hide the preview buttons and tables initially
-    m_tableWidget->hide();
-    m_preview->hide();
-    m_previewText->hide();
+    m_recommend->hide();
+    m_recommendWidget->hide();
+    m_hideRecommend->hide();
     m_title->hide();
     m_author->hide();
     m_genre->hide();
@@ -206,15 +224,15 @@ void LibraryWidget::createActions() {
     connect(m_openBook, SIGNAL(clicked()), this, SLOT(s_addHistory()));
     connect(m_openBook, SIGNAL(clicked()), m_parent, SLOT(s_openBook()));
     connect(m_hideRecommend, SIGNAL(clicked()), this, SLOT(hideRecommendations()));
+    connect(m_showRecommend, SIGNAL(clicked()), this, SLOT(showRecommendations()));
     connect(m_recommendWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_recommendWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectRecommendation()));
+    connect(m_startSearch, SIGNAL(clicked()), this, SLOT(startSearch()));
 }
 
 //Show the Preview
 void LibraryWidget::showPreview()
 {
-    m_preview->show();
-    m_previewText->show();
     m_title->show();
     m_author->show();
     m_genre->show();
@@ -231,8 +249,6 @@ void LibraryWidget::showPreview()
 //Hide the Preview
 void LibraryWidget::hidePreview()
 {
-    m_preview->hide();
-    m_previewText->hide();
     m_title->hide();
     m_author->hide();
     m_genre->hide();
@@ -254,54 +270,17 @@ void LibraryWidget::selectCell()
     int row = currentIndex.row();
     current_row = row;
 
-    //Clear the preview box first
-    m_previewText->clear();
-
     //Get the data in each column for that row
-    Title = m_tableWidget->item(row,0)->text();
-    Author = m_tableWidget->item(row,1)->text();
-    Genre = m_tableWidget->item(row,2)->text();
-    Rating = m_tableWidget->item(row,3)->text();
+    Title = m_tableWidget->item(row,TITLE)->text();
+    Author = m_tableWidget->item(row,AUTHOR)->text();
+    Genre = m_tableWidget->item(row,GENRE)->text();
+    Rating = m_tableWidget->item(row,RATING)->text();
 
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
-
-    //Setting up the preview
-    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
-    QString book = QString::number(book_id);
-    path = docDir + "/" + book + ".txt";
-    qDebug() << "The path is " << path;
-    QFile file(path); //open file
-    QString line;
-
-    //handle error
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::information(0, "error", file.errorString());
-    }
-
-    QTextStream in(&file); //read into file
-    int i = 0;
-    while(!in.atEnd() and i < 10)
-    {
-        line = in.readLine(i);
-        m_previewText->append(line);
-        i++;
-    }
-    file.close(); //close the file
-
-    //Set read only and gray it out
-    m_previewText->setReadOnly(true);
-    m_previewText->setEnabled(true);
-    m_previewText->moveCursor(QTextCursor::Start);
-    m_previewText->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    QPalette bg_color = m_previewText->palette();
-    bg_color.setColor(QPalette::Active, QPalette::Base, Qt::gray);
-    bg_color.setColor(QPalette::Inactive, QPalette::Base, Qt::gray);
-    m_previewText->setPalette(bg_color);
 
     //Set up the Summary Table
     int number_ofSummary = m_db->getnumSumm(Title);
@@ -324,20 +303,6 @@ void LibraryWidget::selectCell()
     }
 }
 
-//Return the path
-QString LibraryWidget::getPath()
-{
-    return path;
-}
-
-//Add to history
-void LibraryWidget::s_addHistory()
-{
-
-    HistoryDB *h =new HistoryDB();
-    h->addHistory(m_loginName,m_booktitle->text(),m_bookauthor->text());
-}
-
 //Hide recommendations
 void LibraryWidget::hideRecommendations()
 {
@@ -345,6 +310,17 @@ void LibraryWidget::hideRecommendations()
     m_recommend->hide();
     m_recommendWidget->hide();
     m_hideRecommend->hide();
+    m_showRecommend->show();
+}
+
+//Show recommendations
+void LibraryWidget::showRecommendations()
+{
+    m_tableWidget->hide();
+    m_recommend->show();
+    m_recommendWidget->show();
+    m_hideRecommend->show();
+    m_showRecommend->hide();
 }
 
 //select a row  in recommendations and display details in preview
@@ -354,9 +330,6 @@ void LibraryWidget::selectRecommendation()
     QModelIndex currentIndex = m_recommendWidget->currentIndex();
     int row = currentIndex.row();
     current_row = row;
-
-    //Clear the preview box first
-    m_previewText->clear();
 
     //Get the data in each column for that row
     Title = m_recommendWidget->item(row,TITLE)->text();
@@ -369,40 +342,6 @@ void LibraryWidget::selectRecommendation()
     m_bookauthor->setText(Author);
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
-
-    //Setting up the preview
-    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
-    QString book = QString::number(book_id);
-    path = docDir + "/" + book + ".txt";
-    qDebug() << "The path is " << path;
-    QFile file(path); //open file
-    QString line;
-
-    //handle error
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::information(0, "error", file.errorString());
-    }
-
-    QTextStream in(&file); //read into file
-    int i = 0;
-    while(!in.atEnd() and i < 10)
-    {
-        line = in.readLine(i);
-        m_previewText->append(line);
-        i++;
-    }
-    file.close(); //close the file
-
-    //Set read only and gray it out
-    m_previewText->setReadOnly(true);
-    m_previewText->setEnabled(true);
-    m_previewText->moveCursor(QTextCursor::Start);
-    m_previewText->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    QPalette bg_color = m_previewText->palette();
-    bg_color.setColor(QPalette::Active, QPalette::Base, Qt::gray);
-    bg_color.setColor(QPalette::Inactive, QPalette::Base, Qt::gray);
-    m_previewText->setPalette(bg_color);
 
     //Set up the Comment Table
     number_ofSummary = m_db->getnumSumm(Title);
@@ -423,11 +362,31 @@ void LibraryWidget::selectRecommendation()
         m_previewWidget->setItem(i, 1, new QTableWidgetItem(current));
         m_previewWidget->update();
     }
-
 }
 
 //Get the current row
+//Change this to get book id
 int LibraryWidget::getRow()
 {
     return current_row+1;
+}
+
+//Return the path
+QString LibraryWidget::getPath()
+{
+    return path;
+}
+
+//Add to history
+void LibraryWidget::s_addHistory()
+{
+    HistoryDB *h =new HistoryDB();
+    h->addHistory(m_loginName,m_booktitle->text(),m_bookauthor->text());
+}
+
+//Search the table
+void LibraryWidget::startSearch()
+{
+    qDebug() << "Searching" << m_search->text() << " in " << m_searchBy->currentIndex();
+    //complete this function
 }

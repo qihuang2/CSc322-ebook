@@ -59,7 +59,7 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
                                                    "Counter Offer"<<"Accept"<<"Decline");
     m_counterofferTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_counterofferTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    populateTable();
+
     //Create the Line Edit
     m_sendCredits = new QLineEdit();
     m_sendCredits->setPlaceholderText("Enter an amount here, has to be an integer");
@@ -106,6 +106,7 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
     setLayout(QV);
 
     createActions();
+    populateTable();
 
     //Hide the gift layout and history table
     m_hideCOTable->hide();

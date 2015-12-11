@@ -155,6 +155,7 @@ void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRatin
 }
 
 //COMMENTS: use this if we are supporting comments
+//USE THIS ONE TO PUSH FROM DOCUMENT TO DB
 void DocumentsDB::addRatingToDocWithUID(QString username, int id, float newRating, QString comment){
     QSqlQuery q = this->getDocInfoForUID(id);
     //if q exists
@@ -297,6 +298,7 @@ QSqlQuery DocumentsDB::getFiveMostViewed(){
 }
 
 //COMMENTS: use if we want to add comments
+//USE THIS ONE FOR DB TO PREVIEW
 QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
     QSqlQuery q;
     if(!q.exec("SELECT * FROM rating_info WHERE book_id = "+QString::number(uid))){

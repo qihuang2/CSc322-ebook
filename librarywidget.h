@@ -17,7 +17,7 @@ class LibraryWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LibraryWidget(QString loginUesrName,MainWindow* mw, QWidget *parent = 0);
+    LibraryWidget(QString loginUserName,MainWindow* mw, QWidget *parent = 0);
     ~LibraryWidget();
 
     void refreshTable();
@@ -33,20 +33,20 @@ private:
     QHBoxLayout*        m_previewbuttonLayout;
     QHBoxLayout*        m_ratingLayout;
     QVBoxLayout*        m_recommendLayout;
+    QHBoxLayout*        m_searchLayout;
 
     QPushButton*        m_refresh;
     QPushButton*        m_hidePreview;
     QPushButton*        m_openBook;
     QPushButton*        m_hideRecommend;
+    QPushButton*        m_showRecommend;
+    QPushButton*        m_startSearch;
 
     QTableWidget*       m_tableWidget;
     QTableWidget*       m_previewWidget;
     QTableWidget*       m_recommendWidget;
 
-    QTextEdit*          m_previewText;
-
     QLabel*             m_title;
-    QLabel*             m_preview;
     QLabel*             m_author;
     QLabel*             m_genre;
     QLabel*             m_rating;
@@ -64,6 +64,10 @@ private:
     QString             Rating;
     QString				m_loginName;
     QString             path;
+
+    QLineEdit*           m_search;
+
+    QComboBox*           m_searchBy;
 
     void createWidgets();
     void createLayouts();
@@ -83,9 +87,11 @@ public slots:
     void selectCell();
     void s_addHistory();
     void hideRecommendations();
+    void showRecommendations();
     void selectRecommendation();
     QString getPath();
     int getRow();
+    void startSearch();
 };
 
 #endif // LIBRARYWIDGET_H

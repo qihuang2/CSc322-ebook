@@ -61,7 +61,6 @@ void DocumentWidget::createLayouts()
     m_submitReport->setMaximumSize(QSize(150, 50));
     m_clearReport = new QPushButton("Clear Report");
     m_clearReport->setMaximumSize(QSize(150, 50));
-    m_searchButton= new QPushButton("Find");
 
     //Create the Slider with initial values
     m_slider = new QSlider(Qt::Horizontal);
@@ -93,7 +92,6 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
     m_searchLayout->addWidget(m_searchLabel);
     m_searchLayout->addWidget(m_searchLine);
-    m_searchLayout->addWidget(m_searchButton);
     m_mainLayout->addLayout(m_searchLayout);
     m_mainLayout->addWidget(m_txt); //Place the Text Box Widget into the main layout
     m_buttonLayout->addWidget(m_reviewButton);
@@ -141,7 +139,6 @@ void DocumentWidget::createActions()
     connect(m_clearReport, SIGNAL(clicked()), this, SLOT(clearReport()));
     connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));
     connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
-    connect(m_searchButton, SIGNAL(clicked()), this, SLOT(s_search()));
     connect(m_timer, SIGNAL(timeout()), this, SLOT(s_counter()));
     connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
 }
@@ -348,5 +345,3 @@ void DocumentWidget::updateCredits()
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     m_credits->setText("Credits:"+QString::number(t->getNumOfCredits()));
 }
-
-

@@ -79,7 +79,6 @@ private:
     QPushButton *m_hideReport;
     QPushButton *m_submitReport;
     QPushButton *m_clearReport;
-    QPushButton *m_searchButton;
 
     QTimer*	m_timer;
 
