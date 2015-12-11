@@ -276,7 +276,7 @@ void LibraryWidget::selectCell()
     b_rating = Rating.toFloat();
 
     //Setting up the preview
-    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
     QString book = QString::number(book_id);
     path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;
@@ -367,10 +367,10 @@ void LibraryWidget::selectRecommendation()
     m_previewText->clear();
 
     //Get the data in each column for that row
-    Title = m_recommendWidget->item(row,0)->text();
-    Author = m_recommendWidget->item(row,1)->text();
-    Genre = m_recommendWidget->item(row,2)->text();
-    Rating = m_recommendWidget->item(row,3)->text();
+    Title = m_recommendWidget->item(row,TITLE)->text();
+    Author = m_recommendWidget->item(row,AUTHOR)->text();
+    Genre = m_recommendWidget->item(row,GENRE)->text();
+    Rating = m_recommendWidget->item(row,RATING)->text();
 
     //Set the Strings
     m_booktitle->setText(Title);
@@ -382,7 +382,7 @@ void LibraryWidget::selectRecommendation()
     b_rating = Rating.toFloat();
 
     //Setting up the preview
-    int book_id = m_db->getbookID(Title, Author, b_genre, b_rating);
+    int book_id = m_recommendWidget->item(row, UID)->text().toInt();
     QString book = QString::number(book_id);
     path = docDir + "/" + book + ".txt";
     qDebug() << "The path is " << path;
