@@ -140,17 +140,32 @@ void MainWindow::s_openBook()
     //Update the view, match the book id, add one to its row it the view column
     m_docDB->addViewToDocWithUID(lib->getRow());
 
+    //Check if visiting user
+    if(!(m_user->getUserType() == BaseUser::VISITING))
+    {
     //Open the Book after prompting yes or no
     QMessageBox::StandardButton reply;
       reply = QMessageBox::question(this, "Test", "Opening this document will cost you 15 credits.\n Do you wish to continue?",
                                     QMessageBox::Yes|QMessageBox::No);
-      if (reply == QMessageBox::Yes)
+      RegisteredUser* user = static_cast<RegisteredUser*>(m_user);
+      if (reply == QMessageBox::Yes and user->getNumOfCredits() >= 15)
       {
             s_updateHistory();
             doc->readFile(p);
             s_updateCredit();
             m_tabWidget->setCurrentIndex(2);
       }
+      else if (user->getNumOfCredits() < 15)
+      {
+          QMessageBox::information(this, tr("Sorry!"),
+              "You need to have 15 or more credits to open this book!");
+      }
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Sorry!"),
+            "Please sign up for an account to open this book!");
+    }
 }
 
 void MainWindow::s_updateHistory()

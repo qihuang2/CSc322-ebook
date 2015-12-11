@@ -77,7 +77,7 @@ void DocumentWidget::createLayouts()
     m_timer = new QTimer(this);
     m_timevalue = 0;
 
-    //Set the Layout
+    //Create the Layout
     m_buttonLayout = new QHBoxLayout();
     m_creditLayout = new QHBoxLayout();
     m_reviewLayout = new QVBoxLayout();
@@ -85,8 +85,9 @@ void DocumentWidget::createLayouts()
     m_ratingLayout = new QHBoxLayout();
     m_reportLayout = new QHBoxLayout();
     m_searchLayout = new QHBoxLayout();
-
     m_mainLayout = new QVBoxLayout(widget);
+
+    //Set the widgets into layout
     m_creditLayout->addWidget(m_time);
     m_creditLayout->addWidget(m_credits);
     m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
@@ -145,6 +146,7 @@ void DocumentWidget::createActions()
     connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
 }
 
+//Resume the timer
 void DocumentWidget::ResumeTimer()
 {
         m_timer->blockSignals(false);
@@ -158,9 +160,19 @@ void DocumentWidget::s_counter()
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     QString T;
     m_timevalue++;
+    //Check that current credits is not equal to zero if it is close the document
+    if (t->getNumOfCredits() == 0)
+    {
+        closeFile();
+        QMessageBox::information(this, tr("Sorry!"),
+            "You ran out of credits!");
+    }
+
+    //Update credits every minute
     int minute=m_timevalue/60;
     if (m_timevalue%60 == 0)
         t->changeCreditsBy(-1);
+
     //calculate current credit in every minute
     m_currentCredits=t->getNumOfCredits()-minute;
     m_credits->setText("Credits: "+QString::number(m_currentCredits));
@@ -324,11 +336,13 @@ void DocumentWidget::submitReport()
         "Your report has been sent!");
 }
 
+//Clear the report text
 void DocumentWidget::clearReport()
 {
     m_reportText->clear();
 }
 
+//Update credits
 void DocumentWidget::updateCredits()
 {
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
