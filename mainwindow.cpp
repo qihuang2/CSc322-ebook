@@ -155,12 +155,14 @@ void MainWindow::s_openBook()
             s_updateCredit();
             m_tabWidget->setCurrentIndex(2);
       }
-      else if (user->getNumOfCredits() < 15)
+      //User has less than 15 credits
+      else if (reply == QMessageBox::Yes and user->getNumOfCredits() < 15)
       {
           QMessageBox::information(this, tr("Sorry!"),
               "You need to have 15 or more credits to open this book!");
       }
     }
+    //Current user is visiting user
     else
     {
         QMessageBox::information(this, tr("Sorry!"),
@@ -168,6 +170,7 @@ void MainWindow::s_openBook()
     }
 }
 
+//Update history in Profile Widget
 void MainWindow::s_updateHistory()
 {
     ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(HISTORY);
@@ -181,6 +184,7 @@ void MainWindow::s_updateHistory()
     }
 }
 
+//Update credits in Document and Profile Widget
 void MainWindow::s_updateCredit()
 {
     DocumentWidget* dw = (DocumentWidget*)m_tabWidget->widget(DOC);

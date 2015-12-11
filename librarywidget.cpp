@@ -38,14 +38,18 @@ void LibraryWidget::createWidgets() {
 
     QWidget* widget = new QWidget();
 
+    //Create the buttons
     m_hidePreview = new QPushButton("Return to table");
     m_hidePreview->setMaximumSize(QSize(150,50));
     m_openBook = new QPushButton("Open Book");
     m_openBook->setMaximumSize(QSize(150,50));
     m_hideRecommend = new QPushButton("Close Recommendations and Show Library");
     m_hideRecommend->setMaximumSize(QSize(400,50));
+    m_refresh = new QPushButton(tr("Refresh"));
+    m_refresh->setFixedSize(QSize(100,50));
 
-    m_recommend = new QLabel("Welcome!\n This is the recommended table of our most viewed documents!\n You can close this table and continue to browse through our library if the recommendations don't interest you.");
+    //Create the labels
+    m_recommend = new QLabel("Welcome!\n This is our recommendation table of our most viewed documents!\n You can close this table and continue to browse through our library if the recommendations don't interest you.");
     m_title = new QLabel("Title: ");
     m_author = new QLabel("Author: ");
     m_genre = new QLabel("Genre: ");
@@ -56,18 +60,19 @@ void LibraryWidget::createWidgets() {
     m_bookgenre = new QLabel(Genre);
     m_bookrating = new QLabel(Rating);
 
+    //Create the text
     m_previewText = new QTextEdit(widget);
 
-    m_refresh = new QPushButton(tr("Refresh"));
-    m_refresh->setFixedSize(QSize(100,50));
-
+    //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
     m_tableWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    //Create the preview Table
     m_previewWidget = new QTableWidget();
 
+    //Create the Recommendation Table
     m_recommendWidget = new QTableWidget();
     m_recommendWidget->setColumnCount(4);
     m_recommendWidget->setHorizontalHeaderLabels(QStringList() << "Title" << "Author" << "Genre" << "Rating");
@@ -88,6 +93,7 @@ void LibraryWidget::createLayouts() {
     m_previewbuttonLayout = new QHBoxLayout();
     m_recommendLayout = new QVBoxLayout();
 
+    //Insert widgets into layout
     m_previewLayout->addWidget(m_preview);
     m_previewLayout->addWidget(m_previewText); //Place textbox on top of preview layout
     m_titleLayout->addWidget(m_title);
@@ -156,6 +162,7 @@ void LibraryWidget::s_refresh() {
     }
 }
 
+//Create recommendation table
 void LibraryWidget::createRecommend()
 {
     QSqlQuery topFive = m_db->getFiveMostViewed();
@@ -318,11 +325,13 @@ void LibraryWidget::selectCell()
     }
 }
 
+//Return the path
 QString LibraryWidget::getPath()
 {
     return path;
 }
 
+//Add to history
 void LibraryWidget::s_addHistory()
 {
 
@@ -330,6 +339,7 @@ void LibraryWidget::s_addHistory()
     h->addHistory(m_loginName,m_booktitle->text(),m_bookauthor->text());
 }
 
+//Hide recommendations
 void LibraryWidget::hideRecommendations()
 {
     m_tableWidget->show();
@@ -338,6 +348,7 @@ void LibraryWidget::hideRecommendations()
     m_hideRecommend->hide();
 }
 
+//select a row  in recommendations and display details in preview
 void LibraryWidget::selectRecommendation()
 {
     //Get the row
