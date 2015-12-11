@@ -49,6 +49,7 @@ private slots:
     void s_openBook();
     void s_updateHistory();
     void s_updateCredit();
+    void s_addBook();
 };
 
 #endif // MAINWINDOW_H

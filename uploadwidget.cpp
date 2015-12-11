@@ -111,7 +111,7 @@ void UploadWidget::s_upload() {
         clearFields();
 
         QMessageBox::information(this, tr("Uploaded!"),
-            "Your document has been uploaded!");
+            "Your document has been sent to the Super-User to seek approval!");
     }else {
         QMessageBox::information(this, tr("Failed!"),
             "Please make sure all fields are filled in.");

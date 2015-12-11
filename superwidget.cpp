@@ -41,6 +41,8 @@ void SuperWidget::createActions() {
 }
 
 void SuperWidget::populateTable() {
+    ClearTable();
+
     QSqlQuery pending = m_user->getSupersPendingDocuments();
     while(pending.next()) {
         int index = m_pending->rowCount();
@@ -79,19 +81,28 @@ void SuperWidget::populateTable() {
 void SuperWidget::accept(int row)
 {
     qDebug() << "Accepted row " << row;
-    //use m_user->acceptDocumentWithUID(int bookID)
     //afterwards, RU still has to confirm
-/*
-    qDebug()<<"accept"<<QString::number(row);
-    m_title=m_pending->item(row,0)->text();
-    m_username=m_pending->item(row,1)->text();
-    qDebug()<<m_title;
-    //get ID and accept
-    DocumentsDB *db=new DocumentsDB();
-    int m_id=db->getbookID(m_title,m_username,1,0);
+    m_uid=m_pending->item(row,UID)->text();
+    m_username=m_pending->item(row,USER)->text();
+    m_credits = m_pending->item(row,REQCRED)->text();
+
+    m_giveCredit = m_credits.toInt();
+
+    RegisteredUser* user = new RegisteredUser(m_username);
+    user->changeCreditsBy(m_giveCredit);
+    delete user;
+
+    //upload the book to the table
+    m_id = m_uid.toInt();
     m_user->acceptDocumentWithUID(m_id);
-    qDebug()<<"Accept "<<m_id;
-    */
+
+    // Get username
+    // create registered user
+    // change credits by
+
+    // get username
+    // update database info for username key credits
+
 }
 
 void SuperWidget::decline(int row)

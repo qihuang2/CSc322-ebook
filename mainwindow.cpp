@@ -117,13 +117,18 @@ void MainWindow::createActions() {
 
 void MainWindow::s_refreshTable(int current) {
     if(current == LIB) {
-        LibraryWidget* w = (LibraryWidget*)m_tabWidget->widget(LIB);
+        LibraryWidget* w = static_cast<LibraryWidget*>(m_tabWidget->widget(LIB));
         w->s_refresh();
     }
     else if(current == DOC)
     {
         DocumentWidget*d=(DocumentWidget*)m_tabWidget->widget(DOC);
         d->ResumeTimer();
+    }
+    else if(current == SUPER)
+    {
+        SuperWidget* sp = static_cast<SuperWidget*>(m_tabWidget->widget(SUPER));
+        sp->populateTable();
     }
 }
 
@@ -188,6 +193,13 @@ void MainWindow::s_updateCredit()
     ProfileWidget* pw = (ProfileWidget*)m_tabWidget->widget(PROFILE);
     dw->updateCredits();
     pw->updatepwCredits();
+}
+
+//Add the book from approved Super User to library table
+void MainWindow::s_addBook()
+{
+    LibraryWidget* w = (LibraryWidget*)m_tabWidget->widget(LIB);
+    w->s_refresh();
 }
 
 
