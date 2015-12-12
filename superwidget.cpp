@@ -35,8 +35,8 @@ void SuperWidget::createWidgets() {
 
     // complaint table
     m_complaint = new QTableWidget();
-    m_complaint->setColumnCount(4);
-    m_complaint->setHorizontalHeaderLabels(QStringList() <<"User" << "Title" << "Reason" << "");
+    m_complaint->setColumnCount(5);
+    m_complaint->setHorizontalHeaderLabels(QStringList() <<"UID"<<"Title" << "User" << "Reason" << "");
     m_complaint->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_complaint->setEditTriggers(QAbstractItemView::NoEditTriggers);
     // todo combo box 
@@ -136,19 +136,20 @@ void SuperWidget::populateComplaint()
     while(complaints.next()) {
         int index = m_complaint->rowCount();
         m_complaint->insertRow(index);
-        QString uid(complaints.value(0).toString());
+        QString id(complaints.value(0).toString());
         QString user(complaints.value(1).toString());
-        QString reason(complaints.value(2).toString());
+        QString title(complaints.value(2).toString());
+        QString reason(complaints.value(3).toString());
 
         QTablePushButton*   DeleteButton = new QTablePushButton(tr("Delete"), index, 3, this);
         connect(DeleteButton, SIGNAL(sendLoc(int,int)),
                 this, SLOT(s_delete(int,int)));
 
-
-        m_complaint->setItem(index, 0, new QTableWidgetItem(uid));
-        m_complaint->setItem(index, 1, new QTableWidgetItem(user));
-        m_complaint->setItem(index, 2, new QTableWidgetItem(reason));
-        m_complaint->setCellWidget(index, 3, DeleteButton);
+        m_complaint->setItem(index, 0, new QTableWidgetItem(id));
+        m_complaint->setItem(index, 1, new QTableWidgetItem(title));
+        m_complaint->setItem(index, 2, new QTableWidgetItem(user));
+        m_complaint->setItem(index, 3, new QTableWidgetItem(reason));
+        m_complaint->setCellWidget(index, 4, DeleteButton);
     }
 }
 
@@ -156,7 +157,12 @@ void SuperWidget::s_delete(int row, int col)
 {
     if(col == 3) {
         qDebug()<<"delete the document";
-        m_user->deleteBookWithUID(m_complaint->item(row, 1)->text().toInt());
+        m_user->deleteBookWithUID(m_complaint->item(row, 0)->text().toInt());
+        while (m_complaint->rowCount() > 0)
+        {
+            m_complaint->removeRow(0);
+        }
+        populateComplaint();
     }
 }
 
