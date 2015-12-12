@@ -78,16 +78,26 @@ void LibraryWidget::createWidgets() {
 
     //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
+    m_tableWidget->setColumnHidden(UID,true);
     m_tableWidget->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "Author" << "Genre" << "Rating");
     m_tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    //Create the preview Table
+    //Create the Preview Table
     m_previewWidget = new QTableWidget();
+
+    //Create the Comment Table
+    m_commentWidget = new QTableWidget();
+    m_commentWidget->setColumnCount(4);
+    m_commentWidget->setColumnHidden(1, true);
+    m_commentWidget->setHorizontalHeaderLabels(QStringList() << "User Name" << "Book ID" << "Rating" << "Comment");
+    m_commentWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_commentWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     //Create the Recommendation Table
     m_recommendWidget = new QTableWidget();
     m_recommendWidget->setColumnCount(RATING+1);
+    m_recommendWidget->setColumnHidden(UID, true);
     m_recommendWidget->setHorizontalHeaderLabels(QStringList() << "UID" << "Title" << "Author" << "Genre" << "Rating");
     m_recommendWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_recommendWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -125,7 +135,8 @@ void LibraryWidget::createLayouts() {
     m_ratingLayout->addWidget(m_rating);
     m_ratingLayout->addWidget(m_bookrating);
     m_previewLayout->addLayout(m_ratingLayout); //Place rating into preview layout
-    m_previewLayout->addWidget(m_previewWidget); //reviews + ratings
+    m_previewLayout->addWidget(m_previewWidget);
+    m_previewLayout->addWidget(m_commentWidget);
     m_previewbuttonLayout->addWidget(m_hidePreview);
     m_previewbuttonLayout->addWidget(m_openBook);
     m_previewLayout->addLayout(m_previewbuttonLayout); //Place the button layout into the Preview Layout
@@ -139,6 +150,7 @@ void LibraryWidget::createLayouts() {
     //m_mainLayout->addWidget(m_refresh);
 
     //Hide the preview buttons and tables initially
+    m_commentWidget->hide();
     m_recommend->hide();
     m_recommendWidget->hide();
     m_hideRecommend->hide();
@@ -232,6 +244,7 @@ void LibraryWidget::createActions() {
 //Show the Preview
 void LibraryWidget::showPreview()
 {
+    m_commentWidget->show();
     m_title->show();
     m_author->show();
     m_genre->show();
@@ -248,6 +261,7 @@ void LibraryWidget::showPreview()
 //Hide the Preview
 void LibraryWidget::hidePreview()
 {
+    m_commentWidget->hide();
     m_title->hide();
     m_author->hide();
     m_genre->hide();
@@ -277,6 +291,7 @@ void LibraryWidget::selectCell()
 
     QString bookid = m_tableWidget->item(row, UID)->text();
     path = docDir + "/" + bookid + ".txt";
+
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
@@ -301,6 +316,28 @@ void LibraryWidget::selectCell()
         m_previewWidget->verticalHeader()->setVisible(false);
         m_previewWidget->setItem(i, 1, new QTableWidgetItem(current));
         m_previewWidget->update();
+    }
+
+    //Set up the Comment Table
+    m_commentWidget->setRowCount(0);
+
+    //Get the Comment for Comment Table
+    QSqlQuery getComment = m_db->getCommentsOfDocWithUID(bookid.toInt());
+
+    while(getComment.next())
+    {
+        int rowIndex = m_commentWidget->rowCount();
+         m_commentWidget->insertRow(rowIndex);
+
+        QString username(getComment.value(0).toString());
+        QString book_id(getComment.value(1).toString());
+        QString rating(getComment.value(2).toString());
+        QString comment(getComment.value(3).toString());
+
+        m_commentWidget->setItem(rowIndex, 0, new QTableWidgetItem(username, 0));
+        m_commentWidget->setItem(rowIndex, 1, new QTableWidgetItem(book_id, 0));
+        m_commentWidget->setItem(rowIndex, 2, new QTableWidgetItem(rating, 0));
+        m_commentWidget->setItem(rowIndex, 3, new QTableWidgetItem(comment, 0));
     }
 }
 
@@ -347,7 +384,7 @@ void LibraryWidget::selectRecommendation()
     m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
 
-    //Set up the Comment Table
+    //Set up the Summary Table
     number_ofSummary = m_db->getnumSumm(Title);
     m_previewWidget->clear();
     m_previewWidget->setColumnCount(1);
@@ -365,6 +402,28 @@ void LibraryWidget::selectRecommendation()
         m_previewWidget->verticalHeader()->setVisible(false);
         m_previewWidget->setItem(i, 1, new QTableWidgetItem(current));
         m_previewWidget->update();
+    }
+
+    //Set up the Comment Table
+    m_commentWidget->setRowCount(0);
+
+    //Get the Comment for Comment Table
+    QSqlQuery getComment = m_db->getCommentsOfDocWithUID(bookid.toInt());
+
+    while(getComment.next())
+    {
+        int rowIndex = m_commentWidget->rowCount();
+         m_commentWidget->insertRow(rowIndex);
+
+        QString username(getComment.value(0).toString());
+        QString book_id(getComment.value(1).toString());
+        QString rating(getComment.value(2).toString());
+        QString comment(getComment.value(3).toString());
+
+        m_commentWidget->setItem(rowIndex, 0, new QTableWidgetItem(username, 0));
+        m_commentWidget->setItem(rowIndex, 1, new QTableWidgetItem(book_id, 0));
+        m_commentWidget->setItem(rowIndex, 2, new QTableWidgetItem(rating, 0));
+        m_commentWidget->setItem(rowIndex, 3, new QTableWidgetItem(comment, 0));
     }
 }
 

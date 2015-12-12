@@ -305,7 +305,6 @@ QSqlQuery DocumentsDB::getFiveMostViewed(){
 }
 
 //COMMENTS: use if we want to add comments
-//USE THIS ONE FOR DB TO PREVIEW
 QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
     QSqlQuery q;
     if(!q.exec("SELECT * FROM rating_info WHERE book_id = "+QString::number(uid))){

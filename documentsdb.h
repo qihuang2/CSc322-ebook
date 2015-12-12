@@ -33,6 +33,8 @@ class QSqlQuery;
 //rating_info has the following columns
 //0         username        name of the user
 //1         book_id         u_id of the book
+//2         rating          rating user give doc
+//3         comment         comment user gives
 
 //report_info has the following columns:
 //0         username        name of user

@@ -45,6 +45,7 @@ private:
     QTableWidget*       m_tableWidget;
     QTableWidget*       m_previewWidget;
     QTableWidget*       m_recommendWidget;
+    QTableWidget*       m_commentWidget;
 
     QLabel*             m_title;
     QLabel*             m_author;

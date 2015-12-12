@@ -46,6 +46,7 @@ public slots:
     void hideReport();
     void submitReport();
     void s_search();
+    void clearReview();
 private:
     void createLayouts();
     void createActions();
@@ -55,6 +56,8 @@ private:
     MainWindow* m_parent;
 
     QTextEdit *m_reportText;
+    QTextEdit *m_reviewText;
+    QTextEdit *m_txt;
     QLineEdit *m_searchLine;
 
     QVBoxLayout *m_mainLayout;
@@ -76,6 +79,7 @@ private:
     QPushButton* m_reviewButton;
     QPushButton* m_reportButton;
     QPushButton *m_hideReview;
+    QPushButton *m_clearReview;
     QPushButton *m_hideReport;
     QPushButton *m_submitReport;
     QPushButton *m_clearReport;

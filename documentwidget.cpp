@@ -4,7 +4,6 @@
 #include "documentsdb.h"
 
 QString g_path;
-QTextEdit *m_txt;
 
 DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu,QTabWidget*tab) : QWidget(parent)
 {
@@ -24,22 +23,22 @@ void DocumentWidget::createLayouts()
     QWidget* widget = new QWidget();
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
 
+    //Create the text edit
     m_txt = new QTextEdit(widget); //Create a Text Box Widget
+    m_txt->setPlaceholderText("Open a book, its text goes here!");
+    m_txt->setReadOnly(true);
     m_reportText = new QTextEdit(widget); //Create a Report Box Widget
+    m_reportText->setPlaceholderText("Write your report here");
+    m_reviewText = new QTextEdit(widget); //Create a Review Box Widget
+    m_reviewText->setPlaceholderText("Write your review here");
+
+    //Create the Line Edit
     m_searchLine = new QLineEdit(widget);
     m_searchLine->setPlaceholderText("Type what you want to search here");
 
     //Create Labels
     m_rating = new QLabel("Rate this book:");
     m_searchLabel=new QLabel("Search:");
-
-    m_txt->setText("Open a book, its text goes here!");
-    m_txt->setReadOnly(true);//text box is read only
-
-
-    m_reportText->append("Write your report here.");
-
-    //Create Labels
     m_rating = new QLabel("Rate this book:");
     m_time = new QLabel("Time:0:00");
     m_credits = new QLabel("Credits:"+QString::number(t->getNumOfCredits()));
@@ -61,6 +60,8 @@ void DocumentWidget::createLayouts()
     m_submitReport->setMaximumSize(QSize(150, 50));
     m_clearReport = new QPushButton("Clear Report");
     m_clearReport->setMaximumSize(QSize(150, 50));
+    m_clearReview = new QPushButton("Clear Review");
+    m_clearReview->setMaximumSize(QSize(150, 50));
 
     //Create the Slider with initial values
     m_slider = new QSlider(Qt::Horizontal);
@@ -100,8 +101,10 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addLayout(m_buttonLayout);//Place the buttons layout into the main layout
     m_ratingLayout->addWidget(m_slider);
     m_ratingLayout->addWidget(m_box);
+    m_reviewButtonLayout->addWidget(m_clearReview);
     m_reviewButtonLayout->addWidget(m_hideReview);
     m_reviewButtonLayout->addWidget(m_submitReview);
+    m_reviewLayout->addWidget(m_reviewText);
     m_mainLayout->addLayout(m_reviewLayout);//Place the review layout into main layout
     m_mainLayout->addWidget(m_rating);
     m_mainLayout->addLayout(m_ratingLayout);//Place the rating layout into main layout
@@ -113,8 +116,10 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addLayout(m_reportLayout);//Place the Report Layout into main layout
 
     //Hide the Report and Review Sections initially
+    m_clearReview->hide();
     m_hideReport->hide();
     m_reportText->hide();
+    m_reviewText->hide();
     m_submitReport->hide();
     m_rating->hide();
     m_box->hide();
@@ -141,6 +146,7 @@ void DocumentWidget::createActions()
     connect(m_submitReport, SIGNAL(clicked()), this, SLOT(submitReport()));
     connect(m_timer, SIGNAL(timeout()), this, SLOT(s_counter()));
     connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
+    connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
 }
 
 //Resume the timer
@@ -236,6 +242,7 @@ void DocumentWidget::readFile(QString path)
     t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
     t->changeCreditsBy(-15);
     m_txt->clear();
+    g_path = path;
     QFile file(path); //open file
     QString line;
     m_timevalue=0;
@@ -269,6 +276,8 @@ void DocumentWidget::closeFile()
 //Show the Review Box
 void DocumentWidget::showReview()
 {
+    m_clearReview->show();
+    m_reviewText->show();
     m_rating->show();
     m_box->show();
     m_slider->show();
@@ -279,6 +288,8 @@ void DocumentWidget::showReview()
 //Hide the Review Box
 void DocumentWidget::hideReview()
 {
+    m_clearReview->hide();
+    m_reviewText->hide();
     m_rating->hide();
     m_box->hide();
     m_slider->hide();
@@ -291,10 +302,19 @@ void DocumentWidget::submitReview()
 {
     //U_ID to get rating
     DocumentsDB *d =new DocumentsDB();
-    d->addRatingToDocWithUID(m_baseUser->getUsername(),4,m_slider->value());
-    qDebug() << "The review for " << g_path << ": " << " is rated " << m_slider->value();
+    QFileInfo fileInfo(g_path);
+    QString filename(fileInfo.fileName());
+    QString id = filename.section(".",0,0);
+    QString text = m_reviewText->toPlainText();
+    d->addRatingToDocWithUID(m_baseUser->getUsername(), id.toInt(), m_slider->value(), text);
     QMessageBox::information(this, tr("Sent!"),
         "Your Review has been sent!");
+}
+
+//Clear the review
+void DocumentWidget::clearReview()
+{
+    m_reviewText->clear();
 }
 
 //Get slider value

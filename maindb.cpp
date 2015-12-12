@@ -145,7 +145,6 @@ MainDB::MainDB()
            //rating: rating user give doc
            //comment: comment user gives
 
-           /* COMMENTS: user this if we are adding comments
            qry.prepare( "CREATE TABLE IF NOT EXISTS rating_info ("
                                                            "username VARCHAR(12) NOT NULL, "
                                                            "book_id INTEGER NOT NULL, "
@@ -153,13 +152,12 @@ MainDB::MainDB()
                                                            "comment VARCHAR(250),"
                                                            "PRIMARY KEY (username, book_id)"
                                                            ");" );
-                                                           */
 
-           qry.prepare( "CREATE TABLE IF NOT EXISTS rating_info ("
+           /*qry.prepare( "CREATE TABLE IF NOT EXISTS rating_info ("
                                                            "username VARCHAR(12) NOT NULL, "
                                                            "book_id INTEGER NOT NULL, "
                                                            "PRIMARY KEY (username, book_id)"
-                                                           ");" );
+                                                           ");" );*/
 
            if( !qry.exec() ){
                qDebug()<<"Error creating rating_info in MainDB()";
