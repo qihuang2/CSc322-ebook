@@ -227,7 +227,6 @@ void SuperWidget::counter(int row)
     DocumentsDB* db = new DocumentsDB();
     db->modifyCounterForUID(uid, counterVal);
 
-
 }
 
 void SuperWidget::s_buttonClicked(int row, int col) {

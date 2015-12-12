@@ -68,7 +68,7 @@ void DocumentsDB::deleteDocumentWithUID(int id){
 }
 
 void DocumentsDB::modifyCounterForUID(int id, int counter) {
-    QString query = QString("UPDATE doc_info SET approved = %1 WHERE u_id = %2").arg(QString::number(counter), QString::number(id));
+    QString query = QString("UPDATE doc_info SET counter_offer = %1, approved=1 WHERE u_id = %2").arg(QString::number(counter), QString::number(id));
     qDebug() << "Query: " << query;
     QSqlQuery q;
     if(!(q.exec(query))) {
