@@ -123,6 +123,7 @@ void LibraryWidget::createLayouts() {
     m_searchLayout->addWidget(m_search);
     m_searchLayout->addWidget(m_searchBy);
     m_searchLayout->addWidget(m_startSearch);
+    m_searchLayout->setAlignment(Qt::AlignLeft);
     m_titleLayout->addWidget(m_title);
     m_titleLayout->addWidget(m_booktitle);
     m_previewLayout->addLayout(m_titleLayout); //Place title into preview layout
@@ -344,6 +345,9 @@ void LibraryWidget::selectCell()
 //Hide recommendations
 void LibraryWidget::hideRecommendations()
 {
+    m_search->show();
+    m_searchBy->show();
+    m_startSearch->show();
     m_tableWidget->show();
     m_recommend->hide();
     m_recommendWidget->hide();
@@ -354,6 +358,9 @@ void LibraryWidget::hideRecommendations()
 //Show recommendations
 void LibraryWidget::showRecommendations()
 {
+    m_search->hide();
+    m_searchBy->hide();
+    m_startSearch->hide();
     m_tableWidget->hide();
     m_recommend->show();
     m_recommendWidget->show();
