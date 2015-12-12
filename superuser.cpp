@@ -57,7 +57,9 @@ void SuperUser::banUser(QString username){
 //reason for report
 QSqlQuery SuperUser::getAllDocumentsWithComplaints(){
     QSqlQuery query;
-    if(query.exec("SELECT * FROM report_info"))
+    if(query.exec("SELECT report_info.book_id, doc_info.title, report_info.username,"
+            " report_info.reason  FROM report_info, doc_info WHERE report_info.book_id = doc_info.u_id"
+            " AND doc_info.is_deleted = 0"))
         return query;
     else {
         qDebug()<<"Error in getAllDocumentsWithComplaints by SU";
