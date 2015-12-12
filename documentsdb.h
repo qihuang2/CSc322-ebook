@@ -121,6 +121,9 @@ public:
 
     //returns comments of document
     QSqlQuery getCommentsOfDocWithUID(int uid);
+
+    //returns matching text from the search
+    QSqlQuery matchSearch(QString, int);
 };
 
 #endif // DOCUMENTSDB_H

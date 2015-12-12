@@ -315,3 +315,20 @@ QSqlQuery DocumentsDB::getCommentsOfDocWithUID(int uid){
     return q;
 }
 
+QSqlQuery DocumentsDB::matchSearch(QString text, int column)
+{
+    QString col;
+    if(column == 1)
+        col = "title";
+    else if(column == 2)
+        col = "posted_by";
+    else
+        col = "genre";
+    QSqlQuery q;
+    if(!q.exec("select * from doc_info where "+col+" = '"+text+"';"))
+    {
+        qDebug() << "Error in matchSearch";
+        qDebug() <<  q.lastError();
+    }
+    return q;
+}
