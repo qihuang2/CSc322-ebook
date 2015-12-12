@@ -306,9 +306,19 @@ void DocumentWidget::submitReview()
     QString filename(fileInfo.fileName());
     QString id = filename.section(".",0,0);
     QString text = m_reviewText->toPlainText();
-    d->addRatingToDocWithUID(m_baseUser->getUsername(), id.toInt(), m_slider->value(), text);
-    QMessageBox::information(this, tr("Sent!"),
-        "Your Review has been sent!");
+    bool check = d->userHasRatedBook(m_baseUser->getUsername(), id.toInt());
+    if(check == false)
+    {
+        d->addRatingToDocWithUID(m_baseUser->getUsername(), id.toInt(), m_slider->value(), text);
+        m_reviewText->clear();
+        QMessageBox::information(this, tr("Sent!"),
+            "Your Review has been sent!");
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Error!"),
+            "You already reviewed this book!");
+    }
 }
 
 //Clear the review
@@ -347,10 +357,24 @@ void DocumentWidget::submitReport()
 {
     QString report;
     report = m_reportText->toPlainText();
-    qDebug() << "The review for " << g_path << ": " << report;
-    m_reportText->clear();
-    QMessageBox::information(this, tr("Sent!"),
-        "Your report has been sent!");
+    DocumentsDB *d =new DocumentsDB();
+    QFileInfo fileInfo(g_path);
+    QString filename(fileInfo.fileName());
+    QString id = filename.section(".",0,0);
+    //Check if the user had already reported this book
+    bool reported = d->userHasReportedBook(m_baseUser->getUsername(),id.toInt());
+    if(reported == false)
+    {
+        d->addComplaintToDocumentWithUID(m_baseUser->getUsername(),id.toInt(),report);
+        m_reportText->clear();
+        QMessageBox::information(this, tr("Sent!"),
+            "Your report has been sent!");
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Error!"),
+            "You already reported this book!");
+    }
 }
 
 //Clear the report text
