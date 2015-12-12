@@ -18,12 +18,14 @@ public:
     explicit SuperWidget(SuperUser* user = 0, QWidget *parent = 0);
 
     void populateTable();
+    void populateComplaint();
     void clearTable();
+    void initialLayout();
 private:
     SuperUser*      m_user;
     QVBoxLayout*    m_mainLayout;
     QTableWidget*   m_pending;
-
+    QTableWidget*   m_complaint;
     QComboBox*      m_counterField;
     QComboBox*      m_banuser;
     QString m_title;
@@ -33,6 +35,8 @@ private:
     QPushButton *   m_ban;
     QPushButton *   m_showPending;
     QPushButton *   m_hidePending;
+    QPushButton *   m_showComplaint;
+    QPushButton *   m_hideComplaint;
 
     void createWidgets();
     void createLayouts();
@@ -52,6 +56,9 @@ public slots:
     void s_ban();
     void s_showPendingTable();
     void s_hidePendingTable();
+    void s_showComplaintTable();
+    void s_hideComplaintTable();
+    void s_delete(int row, int col);
 };
 
 #endif // SUPERWIDGET_H
