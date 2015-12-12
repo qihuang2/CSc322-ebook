@@ -75,7 +75,6 @@ void LibraryWidget::createWidgets() {
     m_searchBy->addItem("Title");
     m_searchBy->addItem("Author");
     m_searchBy->addItem("Genre");
-    m_searchBy->addItem("Rating");
 
     //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
@@ -276,6 +275,8 @@ void LibraryWidget::selectCell()
     Genre = m_tableWidget->item(row,GENRE)->text();
     Rating = m_tableWidget->item(row,RATING)->text();
 
+    QString bookid = m_tableWidget->item(row, UID)->text();
+    path = docDir + "/" + bookid + ".txt";
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
@@ -337,6 +338,9 @@ void LibraryWidget::selectRecommendation()
     Genre = m_recommendWidget->item(row,GENRE)->text();
     Rating = m_recommendWidget->item(row,RATING)->text();
 
+    QString bookid = m_tableWidget->item(row, UID)->text();
+    path = docDir + "/" + bookid + ".txt";
+
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
@@ -387,6 +391,35 @@ void LibraryWidget::s_addHistory()
 //Search the table
 void LibraryWidget::startSearch()
 {
-    qDebug() << "Searching" << m_search->text() << " in " << m_searchBy->currentIndex();
-    //complete this function
+    //Empty the table
+    m_tableWidget->setRowCount(0);
+
+    //Get the Search and Column
+    QString text = m_search->text();
+    int column = m_searchBy->currentIndex();
+
+    if(column == TITLE || column == AUTHOR || column == GENRE)
+    {
+        QSqlQuery matched = m_db->matchSearch(text, column);
+        while (matched.next())
+        {
+            //Insert into the table
+            int rowIndex = m_tableWidget->rowCount();
+            m_tableWidget->insertRow(rowIndex);
+
+            QString uid(matched.value(MainDB::UID).toString());
+            QString title(matched.value(MainDB::TITLE).toString());
+            QString author(matched.value(MainDB::POSTEDBY).toString());
+            QString genre(matched.value(MainDB::GENRE).toString());
+            QString rating(matched.value(MainDB::RATING).toString());
+
+            m_tableWidget->setItem(rowIndex, UID, new QTableWidgetItem(uid, 0));
+            m_tableWidget->setItem(rowIndex, TITLE, new QTableWidgetItem(title, 0));
+            m_tableWidget->setItem(rowIndex, AUTHOR, new QTableWidgetItem(author, 0));
+            m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
+            m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
+        }
+    }
+    else
+        s_refresh();
 }
