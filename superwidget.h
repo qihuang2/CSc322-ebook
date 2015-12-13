@@ -21,18 +21,26 @@ public:
     void populateComplaint();
     void clearTable();
     void initialLayout();
+
 private:
     SuperUser*      m_user;
+
     QVBoxLayout*    m_mainLayout;
+    QHBoxLayout*    m_banLayout;
+
     QTableWidget*   m_pending;
     QTableWidget*   m_complaint;
+
     QComboBox*      m_counterField;
     QComboBox*      m_banuser;
+
     QString m_title;
     QString m_username;
     QString m_credits;
     QString m_uid;
+
     QPushButton *   m_ban;
+    QPushButton *   m_banButton;
     QPushButton *   m_showPending;
     QPushButton *   m_hidePending;
     QPushButton *   m_showComplaint;
@@ -59,6 +67,7 @@ public slots:
     void s_showComplaintTable();
     void s_hideComplaintTable();
     void s_delete(int row, int col);
+    void s_showBan();
 };
 
 #endif // SUPERWIDGET_H

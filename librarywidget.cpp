@@ -16,6 +16,9 @@
 // Values for books in table
 enum {UID, TITLE, AUTHOR, GENRE, RATING};
 
+int current_row;
+int number_ofSummary;
+
 LibraryWidget::LibraryWidget(QString loginUserName,MainWindow* mw, QWidget *parent) : QWidget(parent)
 {
     m_parent = mw;

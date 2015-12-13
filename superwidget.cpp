@@ -39,6 +39,7 @@ void SuperWidget::createWidgets() {
     m_complaint->setHorizontalHeaderLabels(QStringList() <<"UID"<<"Title" << "User" << "Reason" << "");
     m_complaint->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_complaint->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     // todo combo box 
     m_banuser = new QComboBox();
     QSqlQuery user_list = m_user->getAllUsers();
@@ -56,22 +57,30 @@ void SuperWidget::createWidgets() {
     m_hidePending =new QPushButton("Hide Pending Table");
     m_showComplaint= new QPushButton("Show Complaint Table");
     m_hideComplaint= new QPushButton("Hide Complaint Table");
+    m_banButton = new QPushButton("Ban a Registered User");
     m_ban = new QPushButton("Ban");
-    m_ban->setMaximumWidth(50);
-    m_banuser->setMinimumWidth(150);
-    m_showPending->setMaximumWidth(200);
-    m_hidePending->setMaximumWidth(200);
-    m_showComplaint->setMaximumWidth(200);
-    m_hideComplaint->setMaximumWidth(200);
+    m_ban->setMaximumSize(QSize(200, 50));
+    m_banButton->setMinimumWidth(200);
+    m_banButton->setMaximumHeight(50);
+    m_banuser->setMaximumSize(QSize(200, 50));
+    m_showPending->setMaximumSize(QSize(200, 50));
+    m_hidePending->setMaximumSize(QSize(200, 50));
+    m_showComplaint->setMaximumSize(QSize(200, 50));
+    m_hideComplaint->setMaximumSize(QSize(200, 50));
 }
 
-void SuperWidget::createLayouts() {
+void SuperWidget::createLayouts()
+{
+    //Create the Layout
     m_mainLayout = new QVBoxLayout();
-    QHBoxLayout *banLayout= new QHBoxLayout();
-    banLayout->setAlignment(Qt::AlignLeft);
-    banLayout->addWidget(m_banuser);
-    banLayout->addWidget(m_ban);
-    m_mainLayout->addLayout(banLayout);
+    m_banLayout= new QHBoxLayout();
+
+    //Set the Layout
+    m_banLayout->setAlignment(Qt::AlignLeft);
+    m_banLayout->addWidget(m_banButton);
+    m_banLayout->addWidget(m_banuser);
+    m_banLayout->addWidget(m_ban);
+    m_mainLayout->addLayout(m_banLayout); //Place in the ban layout;
     m_mainLayout->addWidget(m_showPending);
     m_mainLayout->addWidget(m_hidePending);
     m_mainLayout->addWidget(m_showComplaint);
@@ -82,15 +91,20 @@ void SuperWidget::createLayouts() {
     setLayout(m_mainLayout);
 }
 
-void SuperWidget::createActions() {
+//Create the actions
+void SuperWidget::createActions()
+{
     connect(m_ban, SIGNAL(clicked()), this, SLOT(s_ban()));
     connect(m_showPending, SIGNAL(clicked()), this, SLOT(s_showPendingTable()));
     connect(m_hidePending, SIGNAL(clicked()), this, SLOT(s_hidePendingTable()));
     connect(m_showComplaint, SIGNAL(clicked()), this, SLOT(s_showComplaintTable()));
     connect(m_hideComplaint, SIGNAL(clicked()), this, SLOT(s_hideComplaintTable()));
+    connect(m_banButton, SIGNAL(clicked()), this, SLOT(s_showBan()));
 }
 
+//Populate the table
 void SuperWidget::populateTable() {
+    //Clear the table
     clearTable();
 
     QSqlQuery pending = m_user->getSupersPendingDocuments();
@@ -130,6 +144,7 @@ void SuperWidget::populateTable() {
     }
 }
 
+//Populate the complaint table
 void SuperWidget::populateComplaint()
 {
     QSqlQuery complaints=m_user->getAllDocumentsWithComplaints();
@@ -153,6 +168,7 @@ void SuperWidget::populateComplaint()
     }
 }
 
+//Delete document
 void SuperWidget::s_delete(int row, int col)
 {
     if(col == 3) {
@@ -166,6 +182,7 @@ void SuperWidget::s_delete(int row, int col)
     }
 }
 
+//Accept Document
 void SuperWidget::accept(int row)
 {
     qDebug() << "Accepted row " << row;
@@ -181,15 +198,10 @@ void SuperWidget::accept(int row)
     //upload the book to the table
     m_user->acceptDocumentWithUID(uid);
 
-    // Get username
-    // create registered user
-    // change credits by
-
-    // get username
-    // update database info for username key credits
-
 }
 
+
+//Decline document
 void SuperWidget::decline(int row)
 {
     qDebug() << "Declined row " << row;
@@ -205,6 +217,7 @@ void SuperWidget::decline(int row)
 
 }
 
+//Counter offer from SU
 void SuperWidget::counter(int row)
 {
     /*
@@ -251,6 +264,7 @@ void SuperWidget::s_buttonClicked(int row, int col) {
     populateTable();
 }
 
+//Clear the table
 void SuperWidget::clearTable()
 {
     while (m_pending->rowCount() > 0)
@@ -259,15 +273,22 @@ void SuperWidget::clearTable()
     }
 }
 
+
+//Ban the user
 void SuperWidget::s_ban()
 {
 
     QString picked = m_banuser->currentText();
     m_user->banUser(picked);
-    QMessageBox::information(this, tr("Ban!"),
-                             "The use has been baned");
+    QMessageBox::information(this, tr("Success!"),
+                             "The user has been banned");
+    //Hide the layout
+    m_ban->hide();
+    m_banuser->hide();
 }
 
+
+//Show the Document Upload from User table
 void SuperWidget::s_showPendingTable()
 {
     m_pending->show();
@@ -275,6 +296,7 @@ void SuperWidget::s_showPendingTable()
     m_hidePending->show();
 }
 
+//Hide the Document upload from User table
 void SuperWidget::s_hidePendingTable()
 {
     m_pending->hide();
@@ -282,6 +304,8 @@ void SuperWidget::s_hidePendingTable()
     m_hidePending->hide();
 }
 
+
+//Show Complaints table
 void SuperWidget::s_showComplaintTable()
 {
     m_complaint->show();
@@ -289,6 +313,7 @@ void SuperWidget::s_showComplaintTable()
     m_hideComplaint->show();
 }
 
+//Hide Complaints table
 void SuperWidget::s_hideComplaintTable()
 {
     m_complaint->hide();
@@ -296,13 +321,22 @@ void SuperWidget::s_hideComplaintTable()
     m_hideComplaint->hide();
 }
 
+//Initial Layout
 void SuperWidget::initialLayout()
 {
     m_complaint->hide();
     m_pending->hide();
     m_hidePending->hide();
     m_hideComplaint->hide();
+    m_banuser->hide();
+    m_ban->hide();
 }
 
-
+//Show Ban layout
+void SuperWidget::s_showBan()
+{
+   m_banButton->hide();
+   m_ban->show();
+   m_banuser->show();
+}
 

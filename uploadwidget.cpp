@@ -52,6 +52,10 @@ void UploadWidget::createWidgets() {
     for(int i = _SELECT_; i <= YOUNGADULT; ++i) {
         m_genreField->addItem(genres[i]);
     }
+
+    m_titleField->setPlaceholderText("Name your document");
+    m_fileLabel->setPlaceholderText("Browse and find your book");
+    m_summaryField->setPlaceholderText("Summarize your book");
 }
 
 void UploadWidget::createLayouts() {

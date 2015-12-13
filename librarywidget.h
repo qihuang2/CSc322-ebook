@@ -78,9 +78,6 @@ private:
 
     void removeFileWithID(int id);
 
-    int current_row;
-    int number_ofSummary;
-
 public slots:
     void s_refresh();
     void showPreview();

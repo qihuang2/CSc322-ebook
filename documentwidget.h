@@ -94,10 +94,6 @@ private:
 
     QTabWidget* m_tab;
 
-    int				m_timevalue;
-    int				m_currentCredits;
-    bool isFirstTime;
-
 };
 
 #endif // DOCUMENTWIDGET_H

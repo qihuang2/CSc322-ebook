@@ -4,6 +4,9 @@
 #include "documentsdb.h"
 
 QString g_path;
+int	m_timevalue;
+int	m_currentCredits;
+bool isFirstTime;
 
 DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu,QTabWidget*tab) : QWidget(parent)
 {
