@@ -50,7 +50,9 @@ void LibraryWidget::createWidgets() {
     m_showRecommend = new QPushButton("Open Recommendations");
     m_refresh = new QPushButton(tr("Refresh"));
     m_refresh->setFixedSize(QSize(100,50));
-    m_startSearch = new QPushButton("Search");
+    m_startSearch = new QPushButton(tr("Search"));
+    m_showAll = new QPushButton(tr("Show All"));
+    m_showAll->setEnabled(false);
 
     //Create the labels
     m_recommend = new QLabel("This is our recommendation table of our most viewed documents!\nYou can close this table and continue to browse \nthrough our library if the recommendations don't interest you.");
@@ -118,6 +120,7 @@ void LibraryWidget::createLayouts() {
     m_searchLayout->addWidget(m_search);
     m_searchLayout->addWidget(m_searchBy);
     m_searchLayout->addWidget(m_startSearch);
+    m_searchLayout->addWidget(m_showAll);
     m_searchLayout->setAlignment(Qt::AlignLeft);
     m_titleLayout->addWidget(m_title);
     m_titleLayout->addWidget(m_booktitle);
@@ -187,6 +190,7 @@ void LibraryWidget::s_refresh() {
         m_tableWidget->setItem(rowIndex, GENRE, new QTableWidgetItem(genre, 0));
         m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
     }
+    m_showAll->setEnabled(false);
 }
 
 //Create recommendation table
@@ -235,6 +239,7 @@ void LibraryWidget::createActions() {
     connect(m_recommendWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(showPreview()));
     connect(m_recommendWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(selectRecommendation()));
     connect(m_startSearch, SIGNAL(clicked()), this, SLOT(startSearch()));
+    connect(m_showAll, SIGNAL(clicked()), this, SLOT(s_refresh()));
 }
 
 //Show the Preview
@@ -482,8 +487,7 @@ void LibraryWidget::startSearch()
             m_tableWidget->setItem(rowIndex, RATING, new QTableWidgetItem(rating, 0));
         }
     }
-    else
-        s_refresh();
+    m_showAll->setEnabled(true);
 }
 
 QString LibraryWidget::stringToEnumValue(QString subject){

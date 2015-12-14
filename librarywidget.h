@@ -41,6 +41,7 @@ private:
     QPushButton*        m_hideRecommend;
     QPushButton*        m_showRecommend;
     QPushButton*        m_startSearch;
+    QPushButton*        m_showAll;
 
     QTableWidget*       m_tableWidget;
     QTableWidget*       m_previewWidget;
