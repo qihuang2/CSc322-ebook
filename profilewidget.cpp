@@ -67,7 +67,6 @@ ProfileWidget::ProfileWidget(RegisteredUser *user, MainWindow* mw, QWidget *pare
 
     //Create the Combo Box
     m_userList = new QComboBox();
-    m_userList->setMaximumSize(200, 50);
     QSqlQuery user_list = user->getAllUsers();
     while (user_list.next())
     {

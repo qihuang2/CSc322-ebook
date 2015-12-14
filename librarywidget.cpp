@@ -47,16 +47,13 @@ void LibraryWidget::createWidgets() {
     m_openBook = new QPushButton("Open Book");
     m_openBook->setMaximumSize(QSize(150,50));
     m_hideRecommend = new QPushButton("Close Recommendations");
-    m_hideRecommend->setMaximumSize(QSize(200,50));
     m_showRecommend = new QPushButton("Open Recommendations");
-    m_showRecommend->setMaximumSize(QSize(200,50));
     m_refresh = new QPushButton(tr("Refresh"));
     m_refresh->setFixedSize(QSize(100,50));
     m_startSearch = new QPushButton("Search");
-    m_startSearch->setFixedSize(QSize(100,50));
 
     //Create the labels
-    m_recommend = new QLabel("This is our recommendation table of our most viewed documents!\n You can close this table and continue to browse through our library if the recommendations don't interest you.");
+    m_recommend = new QLabel("This is our recommendation table of our most viewed documents!\nYou can close this table and continue to browse \nthrough our library if the recommendations don't interest you.");
     m_title = new QLabel("Title: ");
     m_author = new QLabel("Author: ");
     m_genre = new QLabel("Genre: ");
@@ -69,15 +66,10 @@ void LibraryWidget::createWidgets() {
     //Create the Line Edit
     m_search = new QLineEdit();
     m_search->setPlaceholderText("Search");
-    m_search->setMaximumSize(QSize(200, 50));
 
     //Create the Combo Box
     m_searchBy = new QComboBox();
-    m_searchBy->setMaximumSize(200, 50);
-    m_searchBy->addItem("Select");
-    m_searchBy->addItem("Title");
-    m_searchBy->addItem("Author");
-    m_searchBy->addItem("Genre");
+    populateSearch();
 
     //Create the Library Table
     m_tableWidget = new QTableWidget(m_db->getNumDocs(), RATING+1);
@@ -520,4 +512,12 @@ QString LibraryWidget::stringToEnumValue(QString subject){
     else
         return "0";
 
+}
+
+void LibraryWidget::populateSearch()
+{
+    m_searchBy->addItem("Select");
+    m_searchBy->addItem("Title");
+    m_searchBy->addItem("Author");
+    m_searchBy->addItem("Genre");
 }
