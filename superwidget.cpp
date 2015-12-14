@@ -156,7 +156,7 @@ void SuperWidget::populateComplaint()
         QString title(complaints.value(2).toString());
         QString reason(complaints.value(3).toString());
 
-        QTablePushButton*   DeleteButton = new QTablePushButton(tr("Delete"), index, 3, this);
+        QTablePushButton*   DeleteButton = new QTablePushButton(tr("Delete Book"), index, 3, this);
         connect(DeleteButton, SIGNAL(sendLoc(int,int)),
                 this, SLOT(s_delete(int,int)));
 
@@ -173,7 +173,7 @@ void SuperWidget::s_delete(int row, int col)
 {
     if(col == 3) {
         qDebug()<<"delete the document";
-        m_user->deleteBookWithUID(m_complaint->item(row, 0)->text().toInt());
+        m_user->deleteReportedBookWithUID(m_complaint->item(row, 0)->text().toInt());
         while (m_complaint->rowCount() > 0)
         {
             m_complaint->removeRow(0);
@@ -205,31 +205,14 @@ void SuperWidget::accept(int row)
 void SuperWidget::decline(int row)
 {
     qDebug() << "Declined row " << row;
-    /*
-    //use m_user->deleteBookWithUID(int uid) to delete the book
-    qDebug() << "Declined row " << row;
-    m_title=m_pending->item(row,0)->text();
-    m_username=m_pending->item(row,1)->text();
-    DocumentsDB *db=new DocumentsDB();
-    int m_id=db->getbookID(m_title,m_username,1,0);
-    m_user->deleteBookWithUID(m_id);
-    */
+    int uid = m_pending->item(row, UID)->text().toInt();
+    m_user->deleteBookWithUID(uid);
 
 }
 
 //Counter offer from SU
 void SuperWidget::counter(int row)
 {
-    /*
-    QSqlQuery q;
-    //delete row where u_id == id
-    if(q.exec("UPDATE doc_info SET is_deleted = 1 WHERE u_id = "+QString::number(id)))
-        qDebug()<< "Document has been deleted.";
-    else{
-        qDebug()<<"deleteDocumentWitUID: "+QString::number(id)+ " failed";
-        qDebug()<<q.lastError();
-    }
-    */
 
     QSpinBox* box = dynamic_cast<QSpinBox*>(m_pending->cellWidget(row, COUNTERVAL));
     qDebug() << "Countered row " << row << " for " << box->value();
