@@ -155,7 +155,9 @@ void MainWindow::s_openBook()
             s_updateHistory();
             doc->readFile(p);
             s_updateCredit();
-            m_tabWidget->setCurrentIndex(2);
+            m_tabWidget->setCurrentIndex(DOC);
+            DocumentWidget* tmpDoc = (DocumentWidget*)m_tabWidget->widget(DOC);
+            tmpDoc->makeFirstTimeTrue();
       }
       //User has less than 15 credits
       else if (reply == QMessageBox::Yes and user->getNumOfCredits() < 15)

@@ -47,6 +47,7 @@ public slots:
     void submitReport();
     void s_search();
     void clearReview();
+    void makeFirstTimeTrue();
 private:
     void createLayouts();
     void createActions();
@@ -94,6 +95,7 @@ private:
     QSpinBox *m_box;
 
     QTabWidget* m_tab;
+    bool isFirstTime;
 
 };
 

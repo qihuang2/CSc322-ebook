@@ -6,7 +6,7 @@
 QString g_path;
 int	m_timevalue;
 int	m_currentCredits;
-bool isFirstTime;
+
 
 DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu,QTabWidget*tab) : QWidget(parent)
 {
@@ -14,6 +14,7 @@ DocumentWidget::DocumentWidget(QWidget *parent, MainWindow* mw, BaseUser *bu,QTa
     m_tab=tab;
     m_parent = mw;
     m_baseUser=bu;
+    isFirstTime=true;
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     m_currentCredits=t->getNumOfCredits();
     createLayouts(); //Create layout within Document Tab
@@ -213,6 +214,7 @@ void DocumentWidget::s_search()
     {
         QMessageBox::information(this, tr("Empty Search Field"),
                                  "Please enter a word.");
+        isFirstTime=true;
     }
     else
     {
@@ -236,11 +238,18 @@ void DocumentWidget::s_search()
         if (found == false) {
             QMessageBox::information(this, tr("Word Not Found"),
                                      "Sorry, the word cannot be found.");
+            isFirstTime = true;
         }
     }
 
     m_searchLine->clear();
 }
+
+void DocumentWidget::makeFirstTimeTrue(){
+    isFirstTime = true;
+}
+
+
 #include <QLineEdit>
 
 //read the file
