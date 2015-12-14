@@ -17,6 +17,7 @@ WelcomeDialog::WelcomeDialog(QString *username)
     // Connect buttons to slots
     createActions();
 
+
     // Configure window
     setWindowTitle(tr("Welcome!"));
     setFixedSize(QSize(300, 150));

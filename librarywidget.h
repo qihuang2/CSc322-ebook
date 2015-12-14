@@ -78,6 +78,8 @@ private:
 
     void removeFileWithID(int id);
 
+    QString stringToEnumValue(QString subject);
+
 public slots:
     void s_refresh();
     void showPreview();

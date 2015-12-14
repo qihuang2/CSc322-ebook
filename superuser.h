@@ -21,6 +21,7 @@ public:
     void banUser(QString username);
 
     //delete book
+    void deleteReportedBookWithUID(int uid);
     void deleteBookWithUID(int uid);
 
     //list of documents that have complaints

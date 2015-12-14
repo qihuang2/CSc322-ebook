@@ -1,5 +1,7 @@
 #include "superuser.h"
 #include <QtSql>
+#include "documentsdb.h"
+#include <QDebug>
 
 class QSqlQuery;
 
@@ -33,6 +35,34 @@ void SuperUser::declineDocumentWithUID(int bookID, int counterOffer){
         qDebug()<<"Error in declineDocumentWithUID by superuser";
         qDebug()<<q.lastError();
     }
+}
+
+//deletes book and increments number of books deleted for a user
+void SuperUser::deleteReportedBookWithUID(int uid){
+
+    this->deleteBookWithUID(uid); //delete book
+
+
+    //get uploader of document
+    DocumentsDB* db = new DocumentsDB();
+    QSqlQuery q = db->getDocInfoForUID(uid);
+    if(q.first()){
+        QString uploader = q.value(DocumentsDB::POSTEDBY).toString();
+        RegisteredUser* user = new RegisteredUser(uploader);
+
+        int creditsForBook = q.value(DocumentsDB::ASKINGPRICE).toInt()+100;
+        user->changeCreditsBy(-creditsForBook);
+
+        //increment number of deleted books
+
+        user->incrementBooksDeletedBy(1);
+
+        if(user->getNumOfDeletedBooks() >=2) this->banUser(uploader); //if 2 more more, ban user
+        delete user;
+    }else {
+        qDebug()<<"ERROR in deleteReportedBookWithUID";
+    }
+    delete db;
 }
 
 void SuperUser::deleteBookWithUID(int uid){

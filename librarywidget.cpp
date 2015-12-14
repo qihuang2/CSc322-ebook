@@ -209,7 +209,7 @@ void LibraryWidget::createRecommend()
         QString uid(topFive.value(MainDB::UID).toString());
         QString title(topFive.value(MainDB::TITLE).toString());
         QString author(topFive.value(MainDB::POSTEDBY).toString());
-        QString genre(topFive.value(MainDB::GENRE).toString());
+        QString genre(genres[topFive.value(MainDB::GENRE).toInt()]);
         QString rating(topFive.value(MainDB::RATING).toString());
 
         m_recommendWidget->setItem(rowIndex, UID, new QTableWidgetItem(uid, 0));
@@ -391,7 +391,7 @@ void LibraryWidget::selectRecommendation()
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
-    m_bookgenre->setText(Genre);
+    m_bookgenre->setText(genres[Genre.toInt()]);
     m_bookrating->setText(Rating);
 
     //Set up the Summary Table
@@ -469,6 +469,7 @@ void LibraryWidget::startSearch()
 
     if(column == TITLE || column == AUTHOR || column == GENRE)
     {
+        if (column == GENRE) text = stringToEnumValue(text);
         QSqlQuery matched = m_db->matchSearch(text, column);
         while (matched.next())
         {
@@ -479,7 +480,7 @@ void LibraryWidget::startSearch()
             QString uid(matched.value(MainDB::UID).toString());
             QString title(matched.value(MainDB::TITLE).toString());
             QString author(matched.value(MainDB::POSTEDBY).toString());
-            QString genre(matched.value(MainDB::GENRE).toString());
+            QString genre(genres[matched.value(MainDB::GENRE).toInt()]);
             QString rating(matched.value(MainDB::RATING).toString());
 
             m_tableWidget->setItem(rowIndex, UID, new QTableWidgetItem(uid, 0));
@@ -491,4 +492,32 @@ void LibraryWidget::startSearch()
     }
     else
         s_refresh();
+}
+
+QString LibraryWidget::stringToEnumValue(QString subject){
+    if(!QString::compare(subject,"bio", Qt::CaseInsensitive))
+        return "1";
+    else if( !QString::compare(subject,"fantasy", Qt::CaseInsensitive))
+        return "2";
+    else if(!QString::compare(subject,"history", Qt::CaseInsensitive))
+        return "3";
+    else if(!QString::compare(subject,"horror", Qt::CaseInsensitive))
+        return "4";
+    else if(!QString::compare(subject,"kids", Qt::CaseInsensitive))
+        return "5";
+    else if(!QString::compare(subject,"manga", Qt::CaseInsensitive))
+        return "6";
+    else if(!QString::compare(subject,"mystery", Qt::CaseInsensitive))
+        return "7";
+    else if (!QString::compare(subject,"myth", Qt::CaseInsensitive))
+        return "8";
+    else if (!QString::compare(subject,"romance", Qt::CaseInsensitive))
+        return "9";
+    else if (!QString::compare(subject,"scifi", Qt::CaseInsensitive))
+        return "10";
+    else if (!QString::compare(subject,"youngadult", Qt::CaseInsensitive))
+        return "11";
+    else
+        return "0";
+
 }
