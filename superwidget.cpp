@@ -42,15 +42,7 @@ void SuperWidget::createWidgets() {
 
     // todo combo box 
     m_banuser = new QComboBox();
-    QSqlQuery user_list = m_user->getAllUsers();
-    while (user_list.next())
-    {
-        QString am_user(user_list.value(0).toString());
-        if (am_user == m_user->getUsername())
-            continue;
-        else
-            m_banuser->addItem(am_user);
-    }
+    populateCombo();
 
     // setup buttons
     m_showPending =new QPushButton("Show Pending Table");
@@ -260,7 +252,6 @@ void SuperWidget::clearTable()
 //Ban the user
 void SuperWidget::s_ban()
 {
-
     QString picked = m_banuser->currentText();
     m_user->banUser(picked);
     QMessageBox::information(this, tr("Success!"),
@@ -268,6 +259,10 @@ void SuperWidget::s_ban()
     //Hide the layout
     m_ban->hide();
     m_banuser->hide();
+    m_banButton->show();
+
+    //Update the list
+    populateCombo();
 }
 
 
@@ -323,3 +318,17 @@ void SuperWidget::s_showBan()
    m_banuser->show();
 }
 
+//Populate the Ban List
+void SuperWidget::populateCombo()
+{
+    m_banuser->clear();
+    QSqlQuery user_list = m_user->getAllUsers();
+    while (user_list.next())
+    {
+        QString am_user(user_list.value(0).toString());
+        if (am_user == m_user->getUsername())
+            continue;
+        else
+            m_banuser->addItem(am_user);
+    }
+}

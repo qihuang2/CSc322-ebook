@@ -21,6 +21,7 @@ public:
     void populateComplaint();
     void clearTable();
     void initialLayout();
+    void populateCombo();
 
 private:
     SuperUser*      m_user;
