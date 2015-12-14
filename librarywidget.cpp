@@ -388,7 +388,7 @@ void LibraryWidget::selectRecommendation()
     //Set the Strings
     m_booktitle->setText(Title);
     m_bookauthor->setText(Author);
-    m_bookgenre->setText(genres[Genre.toInt()]);
+    m_bookgenre->setText(Genre);
     m_bookrating->setText(Rating);
 
     //Set up the Summary Table
