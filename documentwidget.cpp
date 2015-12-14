@@ -65,6 +65,8 @@ void DocumentWidget::createLayouts()
     m_clearReport->setMaximumSize(QSize(150, 50));
     m_clearReview = new QPushButton("Clear Review");
     m_clearReview->setMaximumSize(QSize(150, 50));
+    m_searchButton = new QPushButton("Search");
+    m_searchButton->setMaximumSize(QSize(150, 50));
 
     //Create the Slider with initial values
     m_slider = new QSlider(Qt::Horizontal);
@@ -96,6 +98,7 @@ void DocumentWidget::createLayouts()
     m_mainLayout->addLayout(m_creditLayout);//Place the credit layout into main layout
     m_searchLayout->addWidget(m_searchLabel);
     m_searchLayout->addWidget(m_searchLine);
+    m_searchLayout->addWidget(m_searchButton);
     m_mainLayout->addLayout(m_searchLayout);
     m_mainLayout->addWidget(m_txt); //Place the Text Box Widget into the main layout
     m_buttonLayout->addWidget(m_reviewButton);
@@ -142,7 +145,6 @@ void DocumentWidget::createActions()
     connect(m_submitReview, SIGNAL(clicked()), this, SLOT(submitReview()));
     connect(m_slider, SIGNAL(valueChanged(int)), m_box, SLOT(setValue(int)));
     connect(m_box, SIGNAL(valueChanged(int)), m_slider, SLOT(setValue(int)));
-    connect(m_slider, SIGNAL(sliderReleased()), this, SLOT(getSliderValueandQuit()));
     connect(m_reportButton, SIGNAL(clicked()), this, SLOT(showReport()));
     connect(m_clearReport, SIGNAL(clicked()), this, SLOT(clearReport()));
     connect(m_hideReport, SIGNAL(clicked()), this, SLOT(hideReport()));
@@ -150,12 +152,13 @@ void DocumentWidget::createActions()
     connect(m_timer, SIGNAL(timeout()), this, SLOT(s_counter()));
     connect(m_timer, SIGNAL(timeout()), m_parent, SLOT(s_updateCredit()));
     connect(m_clearReview, SIGNAL(clicked()), this, SLOT(clearReview()));
+    connect(m_searchButton, SIGNAL(clicked()), this, SLOT(s_search()));
 }
 
 //Resume the timer
 void DocumentWidget::ResumeTimer()
 {
-        m_timer->blockSignals(false);
+    m_timer->blockSignals(false);
 }
 
 // Counter Function
@@ -171,7 +174,7 @@ void DocumentWidget::s_counter()
     {
         closeFile();
         QMessageBox::information(this, tr("Sorry!"),
-            "You ran out of credits!");
+                                 "You ran out of credits!");
     }
 
     //Update credits every minute
@@ -204,37 +207,39 @@ void DocumentWidget::s_search()
 
     bool found = false;
 
-         if (isFirstTime == false)
-             document->undo();
-         if (searchString.isEmpty())
-         {
-             QMessageBox::information(this, tr("Empty Search Field"),
-                     "Please enter a word.");
-         }
-         else
-         {
-             QTextCursor highlightCursor(document);
-             QTextCursor cursor(document);
-             cursor.beginEditBlock();
-             QTextCharFormat plainFormat(highlightCursor.charFormat());
-             QTextCharFormat colorFormat = plainFormat;
-             colorFormat.setForeground(Qt::red);
-             while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
-                 highlightCursor = document->find(searchString, highlightCursor, QTextDocument::FindWholeWords);
-                 if (!highlightCursor.isNull()) {
-                     found = true;
-                     highlightCursor.movePosition(QTextCursor::WordRight,
-                                            QTextCursor::KeepAnchor);
-                     highlightCursor.mergeCharFormat(colorFormat);
-                 }
-             }
-             cursor.endEditBlock();
-             isFirstTime = false;
-                      if (found == false) {
-                          QMessageBox::information(this, tr("Word Not Found"),
-                              "Sorry, the word cannot be found.");
-                      }
-                  }
+    if (isFirstTime == false)
+        document->undo();
+    if (searchString.isEmpty())
+    {
+        QMessageBox::information(this, tr("Empty Search Field"),
+                                 "Please enter a word.");
+    }
+    else
+    {
+        QTextCursor highlightCursor(document);
+        QTextCursor cursor(document);
+        cursor.beginEditBlock();
+        QTextCharFormat plainFormat(highlightCursor.charFormat());
+        QTextCharFormat colorFormat = plainFormat;
+        colorFormat.setForeground(Qt::red);
+        while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
+            highlightCursor = document->find(searchString, highlightCursor, QTextDocument::FindWholeWords);
+            if (!highlightCursor.isNull()) {
+                found = true;
+                highlightCursor.movePosition(QTextCursor::WordRight,
+                                             QTextCursor::KeepAnchor);
+                highlightCursor.mergeCharFormat(colorFormat);
+            }
+        }
+        cursor.endEditBlock();
+        isFirstTime = false;
+        if (found == false) {
+            QMessageBox::information(this, tr("Word Not Found"),
+                                     "Sorry, the word cannot be found.");
+        }
+    }
+
+    m_searchLine->clear();
 }
 #include <QLineEdit>
 
@@ -315,12 +320,12 @@ void DocumentWidget::submitReview()
         d->addRatingToDocWithUID(m_baseUser->getUsername(), id.toInt(), m_slider->value(), text);
         m_reviewText->clear();
         QMessageBox::information(this, tr("Sent!"),
-            "Your Review has been sent!");
+                                 "Your Review has been sent!");
     }
     else
     {
         QMessageBox::information(this, tr("Error!"),
-            "You already reviewed this book!");
+                                 "You already reviewed this book!");
     }
 }
 
@@ -371,12 +376,12 @@ void DocumentWidget::submitReport()
         d->addComplaintToDocumentWithUID(m_baseUser->getUsername(),id.toInt(),report);
         m_reportText->clear();
         QMessageBox::information(this, tr("Sent!"),
-            "Your report has been sent!");
+                                 "Your report has been sent!");
     }
     else
     {
         QMessageBox::information(this, tr("Error!"),
-            "You already reported this book!");
+                                 "You already reported this book!");
     }
 }
 
