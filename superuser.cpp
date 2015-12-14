@@ -99,5 +99,6 @@ QSqlQuery SuperUser::getAllDocumentsWithComplaints(){
 }
 
 void SuperUser::changeCreditsBy(int credits) {
+    qDebug() << "SU CREDITS CALLED";
     credits = 0;   // to silence warning
 }

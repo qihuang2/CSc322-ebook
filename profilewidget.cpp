@@ -160,11 +160,12 @@ void ProfileWidget::hideGift()
     QRegExp re("\\d*");  // a digit (\d), zero or more times (*)
     if (re.exactMatch(credits) && credits.toInt() <= m_user->getNumOfCredits())
     {
-        m_user->changeCreditsBy(-credits.toInt());
+        int val = m_user->getUserType() == BaseUser::SUPER ? 0 : credits.toInt();
+        m_user->changeCreditsBy(-val);
         m_creditLabel->setText("Remaining Credits: " + QString::number(m_user->getNumOfCredits()));
         QString picked = m_userList->currentText();
         RegisteredUser* r_user = new RegisteredUser(picked);
-        r_user->changeCreditsBy(credits.toInt());
+        r_user->changeCreditsBy(val);
         QMessageBox::information(this, tr("Sent!"),
                                  "Your gift has been sent!");
     }

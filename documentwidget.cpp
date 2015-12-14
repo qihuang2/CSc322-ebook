@@ -180,7 +180,7 @@ void DocumentWidget::s_counter()
 
     //Update credits every minute
     int minute=m_timevalue/60;
-    if (m_timevalue%60 == 0)
+    if (m_timevalue%60 == 0 && m_baseUser->getUserType() != BaseUser::SUPER)
         t->changeCreditsBy(-1);
 
     //calculate current credit in every minute
@@ -257,7 +257,7 @@ void DocumentWidget::readFile(QString path)
 {
     RegisteredUser* t = static_cast<RegisteredUser*>(m_baseUser);
     t->changeCreditsBy(m_currentCredits-t->getNumOfCredits());
-    t->changeCreditsBy(-15);
+    if(t->getUserType() != BaseUser::SUPER) t->changeCreditsBy(-15);
     m_txt->clear();
     g_path = path;
     QFile file(path); //open file
